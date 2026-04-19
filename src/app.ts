@@ -50,7 +50,20 @@ app.use('/api/v1', router);
 
 
 app.get("/", (req: Request, res: Response) => {
-    res.send("Welcome to the Backend Template!");
+    res.send(`
+    <body style="margin: 0; padding: 0;">
+        <div style="background: #FEF5F0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+            <h1 style="color: #FF4A00; font-size: 3rem; margin-bottom: 10px; text-shadow: 0 4px 10px rgba(255, 74, 0, 0.2);">🚀 Welcome to Rapid-Delivery! 🚚</h1>
+            <p style="color: #4D1600; font-size: 1.2rem; max-width: 600px; text-align: center; line-height: 1.6;">
+                The fastest and most reliable delivery service. Our backend API is up and running smoothly.
+            </p>
+            <div style="border-top: 2px solid rgba(255, 74, 0, 0.3); width: 80px; margin: 30px 0;"></div>
+            <p style="color: #662400; font-size: 0.95rem;">
+                Powered by <strong style="color: #FF4A00;">Rapid-Delivery</strong> API ✨
+            </p>
+        </div>
+    </body>
+    `);
 })
 
 //global error handle

@@ -1,6 +1,8 @@
 export enum USER_ROLES {
     ADMIN = "admin",
-    USER = "user"
+    SUPER_ADMIN = "super_admin",
+    SENDER = "sender",
+    DRIVER = "driver"
 }
 
 export enum USER_STATUS {
@@ -9,7 +11,3 @@ export enum USER_STATUS {
     DELETED = 'deleted',
 }
 
-export enum ADMIN_ROLES {
-    ADMIN = "admin",
-    SUPER_ADMIN = "super_admin"
-}

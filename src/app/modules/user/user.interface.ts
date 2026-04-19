@@ -1,6 +1,6 @@
 import { Model, Types } from "mongoose";
 import { USER_ROLES, USER_STATUS } from "../../../enum/user";
-export { USER_ROLES, USER_STATUS };
+
 
 type IAuthentication = {
     restrictionLeftAt: Date | null
@@ -16,18 +16,32 @@ type IAuthentication = {
 
 export type IUser = {
     _id: Types.ObjectId;
+    fullName?: string;
     email: string;
+    phone?: string;
     image?: string;
     password: string;
-    firstName: string;
-    lastName: string;
     status: USER_STATUS;
-    verified: boolean;
     role: USER_ROLES;
+    address?: string;
+    location?: {
+        latitude: number;
+        longitude: number;
+    }
+    isEmailVerified: boolean;
+    isPhoneVerified: boolean;
     authentication: IAuthentication;
-    deviceToken?: string;
-    fcmToken?: string;
-    fullName?: string;
+    fcmToken?: string[];
+    driverInfo?: {
+        nid: string[];
+        drivingLicense: string[];
+        isVerified: boolean;
+        totalRating: number;
+        averageRating: number;
+        totalDelivery: number;
+        totalEarnings: number;
+        todayEarnings: number;
+    }
 };
 
 export type UserModel = {

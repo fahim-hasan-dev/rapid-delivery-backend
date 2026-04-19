@@ -5,7 +5,7 @@ const createAccount = (values: ICreateAccount) => {
   console.log(values, 'values')
   const data = {
     to: values.email,
-    subject: `Verify your Template account, ${values.name}`,
+    subject: `Verify your Rapid-Delivery account, ${values.name}`,
     html: `
 <body style="margin:0; padding:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0"
@@ -14,8 +14,8 @@ const createAccount = (values: ICreateAccount) => {
     
     <!-- Header -->
     <tr>
-      <td align="center" style="background:linear-gradient(135deg,#F5FAFF,#E6F0FF); padding:35px 20px; border-bottom:1px solid #0096FF33;">
-        <img src="https://i.ibb.co.com/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" alt="App"
+      <td align="center" style="background:linear-gradient(135deg,#FEF5F0,#FFE6D9); padding:35px 20px; border-bottom:1px solid #FF4A0033;">
+        <img src="https://i.ibb.co.com/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" alt="Rapid-Delivery"
              style="width:220px; height:auto; filter:drop-shadow(0 0 6px rgba(0,0,0,0.25));">
       </td>
     </tr>
@@ -23,24 +23,24 @@ const createAccount = (values: ICreateAccount) => {
     <!-- Body -->
     <tr>
       <td style="padding:45px;">
-        <h1 style="color:#0096FF; font-size:26px; font-weight:700; margin-bottom:15px; text-align:center;">
+        <h1 style="color:#FF4A00; font-size:26px; font-weight:700; margin-bottom:15px; text-align:center;">
           Verify Your Email ✨
         </h1>
 
-        <p style="color:#003060; font-size:16px; line-height:1.6; margin-bottom:25px; text-align:center;">
-          Hey <strong>${values.name}</strong>, welcome to <strong>Template</strong>! 🎉<br>
+        <p style="color:#4D1600; font-size:16px; line-height:1.6; margin-bottom:25px; text-align:center;">
+          Hey <strong>${values.name}</strong>, welcome to <strong>Rapid-Delivery</strong>! 🎉<br>
           Please verify your email to activate your account.
         </p>
 
         <!-- OTP Box -->
-        <div style="background:linear-gradient(145deg,#EAF4FF,#D7E9FF); border:2px solid #0096FF; 
+        <div style="background:linear-gradient(145deg,#FFEBE0,#FFD6C2); border:2px solid #FF4A00; 
                     border-radius:12px; padding:25px 0; text-align:center; margin:30px auto; max-width:300px;">
-          <span style="font-size:40px; font-weight:700; color:#003060; letter-spacing:6px;">
+          <span style="font-size:40px; font-weight:700; color:#4D1600; letter-spacing:6px;">
             ${values.otp}
           </span>
         </div>
 
-        <p style="color:#003060; font-size:15px; line-height:1.6; text-align:center;">
+        <p style="color:#4D1600; font-size:15px; line-height:1.6; text-align:center;">
           This code will expire in <strong>5 minutes</strong>.<br>
           If you didn’t request this, you can safely ignore this email.
         </p>
@@ -56,10 +56,10 @@ const createAccount = (values: ICreateAccount) => {
         <!-- Button -->
         <div style="text-align:center; margin-top:45px;">
           <a href="${config.frontend_url}/otp-verify" 
-             style="background-color:#0096FF; color:#ffffff; padding:14px 32px; font-size:16px; 
+             style="background-color:#FF4A00; color:#ffffff; padding:14px 32px; font-size:16px; 
                     font-weight:600; border-radius:10px; text-decoration:none; display:inline-block; 
-                    box-shadow:0 4px 12px rgba(0,150,255,0.3); transition:all 0.3s;">
-            Open App 🚀
+                    box-shadow:0 4px 12px rgba(255,74,0,0.3); transition:all 0.3s;">
+            Open Rapid-Delivery 🚀
           </a>
         </div>
       </td>
@@ -67,12 +67,12 @@ const createAccount = (values: ICreateAccount) => {
 
     <!-- Footer -->
     <tr>
-      <td align="center" style="background:linear-gradient(135deg,#F5FAFF,#E6F0FF); padding:25px 20px; border-top:1px solid #0096FF33;">
-        <p style="margin:0; color:#003060; font-size:13px;">
-          © ${new Date().getFullYear()} <strong>Template</strong>. All rights reserved.
+      <td align="center" style="background:linear-gradient(135deg,#FEF5F0,#FFE6D9); padding:25px 20px; border-top:1px solid #FF4A0033;">
+        <p style="margin:0; color:#4D1600; font-size:13px;">
+          © ${new Date().getFullYear()} <strong>Rapid-Delivery</strong>. All rights reserved.
         </p>
-        <p style="margin:6px 0 0; color:#003060; font-size:13px;">
-          Powered by <strong style="color:#0096FF;">Template API</strong> ✨
+        <p style="margin:6px 0 0; color:#4D1600; font-size:13px;">
+          Powered by <strong style="color:#FF4A00;">Rapid-Delivery API</strong> ✨
         </p>
       </td>
     </tr>
@@ -88,7 +88,7 @@ const resetPassword = (values: IResetPassword) => {
   console.log(values, 'values')
   const data = {
     to: values.email,
-    subject: `Reset your App password, ${values.name}`,
+    subject: `Reset your Rapid-Delivery password, ${values.name}`,
     html: `
 <body style="margin:0; padding:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0"
@@ -97,8 +97,8 @@ const resetPassword = (values: IResetPassword) => {
     
     <!-- Header -->
     <tr>
-      <td align="center" style="background:linear-gradient(135deg,#F5FAFF,#E6F0FF); padding:35px 20px; border-bottom:1px solid #0096FF33;">
-        <img src="https://i.ibb.co.com/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" alt="App"
+      <td align="center" style="background:linear-gradient(135deg,#FEF5F0,#FFE6D9); padding:35px 20px; border-bottom:1px solid #FF4A0033;">
+        <img src="https://i.ibb.co.com/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" alt="Rapid-Delivery"
              style="width:220px; height:auto; filter:drop-shadow(0 0 6px rgba(0,0,0,0.25));">
       </td>
     </tr>
@@ -106,25 +106,25 @@ const resetPassword = (values: IResetPassword) => {
     <!-- Body -->
     <tr>
       <td style="padding:45px;">
-        <h1 style="color:#0096FF; font-size:26px; font-weight:700; margin-bottom:15px; text-align:center;">
+        <h1 style="color:#FF4A00; font-size:26px; font-weight:700; margin-bottom:15px; text-align:center;">
           Password Reset Request 🔐
         </h1>
 
-        <p style="color:#003060; font-size:16px; line-height:1.6; margin-bottom:25px; text-align:center;">
+        <p style="color:#4D1600; font-size:16px; line-height:1.6; margin-bottom:25px; text-align:center;">
           Hi <strong>${values.name}</strong>, 👋<br>
-          We received a request to reset your password for your <strong>App</strong> account.
+          We received a request to reset your password for your <strong>Rapid-Delivery</strong> account.
           <br>Enter the code below to complete the process:
         </p>
 
         <!-- OTP Box -->
-        <div style="background:linear-gradient(145deg,#EAF4FF,#D7E9FF); border:2px solid #0096FF;
+        <div style="background:linear-gradient(145deg,#FFEBE0,#FFD6C2); border:2px solid #FF4A00;
                     border-radius:12px; padding:25px 0; text-align:center; margin:30px auto; max-width:300px;">
-          <span style="font-size:40px; font-weight:700; color:#003060; letter-spacing:6px;">
+          <span style="font-size:40px; font-weight:700; color:#4D1600; letter-spacing:6px;">
             ${values.otp}
           </span>
         </div>
 
-        <p style="color:#003060; font-size:15px; line-height:1.6; text-align:center;">
+        <p style="color:#4D1600; font-size:15px; line-height:1.6; text-align:center;">
           This verification code is valid for <strong>5 minutes</strong>.<br>
           If you didn’t request this, please ignore this email — your account is safe.
         </p>
@@ -133,16 +133,16 @@ const resetPassword = (values: IResetPassword) => {
         <div style="margin-top:35px; background-color:#fff8e1; border-left:6px solid #ffd54f;
                     border-radius:8px; padding:15px 18px;">
           <p style="margin:0; color:#4a4a4a; font-size:14px;">
-            ⚠️ <strong>Security Tip:</strong> Never share your reset code with anyone. App will never ask for it.
+            ⚠️ <strong>Security Tip:</strong> Never share your reset code with anyone. Rapid-Delivery will never ask for it.
           </p>
         </div>
 
         <!-- Button -->
         <div style="text-align:center; margin-top:45px;">
           <a href="${config.frontend_url}/otp-verify" target="_blank"
-             style="background-color:#0096FF; color:#ffffff; padding:14px 32px; font-size:16px;
+             style="background-color:#FF4A00; color:#ffffff; padding:14px 32px; font-size:16px;
                     font-weight:600; border-radius:10px; text-decoration:none; display:inline-block;
-                    box-shadow:0 4px 12px rgba(0,150,255,0.3); transition:all 0.3s;">
+                    box-shadow:0 4px 12px rgba(255,74,0,0.3); transition:all 0.3s;">
             🔑 Reset Password
           </a>
         </div>
@@ -151,12 +151,12 @@ const resetPassword = (values: IResetPassword) => {
 
     <!-- Footer -->
     <tr>
-      <td align="center" style="background:linear-gradient(135deg,#F5FAFF,#E6F0FF); padding:25px 20px; border-top:1px solid #0096FF33;">
-        <p style="margin:0; color:#003060; font-size:13px;">
-          © ${new Date().getFullYear()} <strong>Template</strong>. All rights reserved.
+      <td align="center" style="background:linear-gradient(135deg,#FEF5F0,#FFE6D9); padding:25px 20px; border-top:1px solid #FF4A0033;">
+        <p style="margin:0; color:#4D1600; font-size:13px;">
+          © ${new Date().getFullYear()} <strong>Rapid-Delivery</strong>. All rights reserved.
         </p>
-        <p style="margin:6px 0 0; color:#003060; font-size:13px;">
-          Powered by <strong style="color:#0096FF;">Template API</strong> ✨
+        <p style="margin:6px 0 0; color:#4D1600; font-size:13px;">
+          Powered by <strong style="color:#FF4A00;">Rapid-Delivery API</strong> ✨
         </p>
       </td>
     </tr>
@@ -189,8 +189,8 @@ const resendOtp = (values: {
 
     <!-- Header -->
     <tr>
-      <td align="center" style="background-color:#f1f8f4; padding:35px 20px; border-top:1px solid #e6f4ea;">
-        <img src="https://i.ibb.co.com/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" alt="App"
+      <td align="center" style="background-color:#FEF5F0; padding:35px 20px; border-top:1px solid #FFE6D9;">
+        <img src="https://i.ibb.co.com/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" alt="Rapid-Delivery"
              style="width:210px; height:auto; filter:drop-shadow(0 0 6px rgba(0,0,0,0.3));">
       </td>
     </tr>
@@ -198,30 +198,30 @@ const resendOtp = (values: {
     <!-- Body -->
     <tr>
       <td style="padding:45px;">
-        <h1 style="color:#1b4332; font-size:26px; font-weight:700; margin-bottom:15px; text-align:center;">
+        <h1 style="color:#4D1600; font-size:26px; font-weight:700; margin-bottom:15px; text-align:center;">
           ${isReset ? 'Reset Your Password 🔐' : 'Verify Your Account 🚀'}
         </h1>
 
-        <p style="color:#3a5a40; font-size:16px; line-height:1.6; margin-bottom:25px; text-align:center;">
+        <p style="color:#662400; font-size:16px; line-height:1.6; margin-bottom:25px; text-align:center;">
           Hi <strong>${values.name}</strong>, 👋<br>
           ${isReset
-        ? 'You requested a new verification code to reset your Template password.'
-        : 'Here is your new verification code to complete your Template account setup.'
+        ? 'You requested a new verification code to reset your Rapid-Delivery password.'
+        : 'Here is your new verification code to complete your Rapid-Delivery account setup.'
       }<br>
           Use the code below to continue:
         </p>
 
         <!-- OTP Box -->
-        <div style="background:linear-gradient(145deg,#d8f3dc,#b7e4c7);
-                    border:2px solid #52b788; border-radius:12px;
+        <div style="background:linear-gradient(145deg,#FFEBE0,#FFD6C2);
+                    border:2px solid #FF4A00; border-radius:12px;
                     padding:25px 0; text-align:center;
                     margin:30px auto; max-width:300px;">
-          <span style="font-size:40px; font-weight:700; color:#1b4332; letter-spacing:6px;">
+          <span style="font-size:40px; font-weight:700; color:#4D1600; letter-spacing:6px;">
             ${values.otp}
           </span>
         </div>
 
-        <p style="color:#3a5a40; font-size:15px; line-height:1.6; text-align:center;">
+        <p style="color:#662400; font-size:15px; line-height:1.6; text-align:center;">
           This code is valid for <strong>5 minutes</strong>.<br>
           If this was not you, please ignore the email.
         </p>
@@ -231,7 +231,7 @@ const resendOtp = (values: {
                     border-left:6px solid #ffd54f;
                     border-radius:8px; padding:15px 18px;">
           <p style="margin:0; color:#4a4a4a; font-size:14px;">
-            🔒 <strong>Security Tip:</strong> Never share your OTP with anyone. Template
+            🔒 <strong>Security Tip:</strong> Never share your OTP with anyone. Rapid-Delivery
  will never request it.
           </p>
         </div>
@@ -239,10 +239,10 @@ const resendOtp = (values: {
         <!-- Button -->
         <div style="text-align:center; margin-top:45px;">
           <a href="${config.frontend_url}/otp-verify"
-             style="background-color:#2d6a4f; color:#ffffff; padding:14px 32px;
+             style="background-color:#FF4A00; color:#ffffff; padding:14px 32px;
                     font-size:16px; font-weight:600; border-radius:10px;
                     text-decoration:none; display:inline-block;
-                    box-shadow:0 4px 12px rgba(45,106,79,0.3);">
+                    box-shadow:0 4px 12px rgba(255,74,0,0.3);">
             ${isReset ? 'Reset Password' : 'Verify Account'}
           </a>
         </div>
@@ -251,12 +251,12 @@ const resendOtp = (values: {
 
     <!-- Footer -->
     <tr>
-      <td align="center" style="background-color:#f1f8f4; padding:25px 20px; border-top:1px solid #e6f4ea;">
-        <p style="margin:0; color:#52796f; font-size:13px;">
-          © ${new Date().getFullYear()} <strong>Template</strong>. All rights reserved.
+      <td align="center" style="background-color:#FEF5F0; padding:25px 20px; border-top:1px solid #FFE6D9;">
+        <p style="margin:0; color:#4D1600; font-size:13px;">
+          © ${new Date().getFullYear()} <strong>Rapid-Delivery</strong>. All rights reserved.
         </p>
-        <p style="margin:6px 0 0; color:#3a5a40; font-size:13px;">
-          Powered by <strong style="color:#1b4332;">Template API</strong> 🚀
+        <p style="margin:6px 0 0; color:#662400; font-size:13px;">
+          Powered by <strong style="color:#4D1600;">Rapid-Delivery API</strong> 🚀
         </p>
       </td>
     </tr>
@@ -277,7 +277,7 @@ const adminContactNotificationEmail = (payload: {
 }) => {
   return {
     to: config.super_admin.email as string,
-    subject: '📩 New Contact Form Submission – App',
+    subject: '📩 New Contact Form Submission – Rapid-Delivery',
     html: `
 <body style="margin:0; padding:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0"
@@ -287,8 +287,8 @@ const adminContactNotificationEmail = (payload: {
     <!-- Header -->
     <tr>
       <td align="center" 
-          style="background:linear-gradient(135deg,#F5FAFF,#E6F0FF); padding:35px 20px; border-bottom:1px solid #0096FF33;">
-        <img src="https://i.ibb.co.com/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" alt="App"
+          style="background:linear-gradient(135deg,#FEF5F0,#FFE6D9); padding:35px 20px; border-bottom:1px solid #FF4A0033;">
+        <img src="https://i.ibb.co.com/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" alt="Rapid-Delivery"
              style="width:220px; height:75px; filter:drop-shadow(0 0 6px rgba(0,0,0,0.25));">
       </td>
     </tr>
@@ -296,47 +296,47 @@ const adminContactNotificationEmail = (payload: {
     <!-- Body -->
     <tr>
       <td style="padding:45px;">
-        <h1 style="color:#0096FF; font-size:26px; font-weight:700; margin-bottom:20px; text-align:center;">
+        <h1 style="color:#FF4A00; font-size:26px; font-weight:700; margin-bottom:20px; text-align:center;">
           📬 New Contact Submission
         </h1>
 
-        <p style="color:#003060; font-size:16px; text-align:center; margin-bottom:30px;">
-          A new contact message has been submitted on <strong>App</strong>.
+        <p style="color:#4D1600; font-size:16px; text-align:center; margin-bottom:30px;">
+          A new contact message has been submitted on <strong>Rapid-Delivery</strong>.
         </p>
 
         <!-- Contact Details -->
         <table style="width:100%; border-collapse:collapse; margin:20px 0;">
           <tr>
-            <td style="padding:12px 0; font-size:15px; color:#003060;">👤 <strong>Name:</strong></td>
-            <td style="padding:12px 0; font-size:15px; color:#003060; text-align:right;">
+            <td style="padding:12px 0; font-size:15px; color:#4D1600;">👤 <strong>Name:</strong></td>
+            <td style="padding:12px 0; font-size:15px; color:#4D1600; text-align:right;">
               ${payload.name}
             </td>
           </tr>
 
-          <tr style="border-top:1px solid #0096FF22;">
-            <td style="padding:12px 0; font-size:15px; color:#003060;">📧 <strong>Email:</strong></td>
-            <td style="padding:12px 0; font-size:15px; color:#003060; text-align:right;">
+          <tr style="border-top:1px solid #FF4A0022;">
+            <td style="padding:12px 0; font-size:15px; color:#4D1600;">📧 <strong>Email:</strong></td>
+            <td style="padding:12px 0; font-size:15px; color:#4D1600; text-align:right;">
               ${payload.email}
             </td>
           </tr>
 
-          <tr style="border-top:1px solid #0096FF22;">
-            <td style="padding:12px 0; font-size:15px; color:#003060;">📞 <strong>Phone:</strong></td>
-            <td style="padding:12px 0; font-size:15px; color:#003060; text-align:right;">
+          <tr style="border-top:1px solid #FF4A0022;">
+            <td style="padding:12px 0; font-size:15px; color:#4D1600;">📞 <strong>Phone:</strong></td>
+            <td style="padding:12px 0; font-size:15px; color:#4D1600; text-align:right;">
               ${payload.phone || 'N/A'}
             </td>
           </tr>
         </table>
 
         <!-- Message Box -->
-        <div style="background:linear-gradient(145deg,#EAF4FF,#D7E9FF); border:2px solid #0096FF;
+        <div style="background:linear-gradient(145deg,#FFEBE0,#FFD6C2); border:2px solid #FF4A00;
                     border-radius:12px; padding:20px; margin-top:30px;">
-          <p style="margin:0; font-size:15px; color:#003060; line-height:1.6;">
+          <p style="margin:0; font-size:15px; color:#4D1600; line-height:1.6;">
             “${payload.message}”
           </p>
         </div>
 
-        <p style="color:#003060; font-size:14px; margin-top:30px; text-align:center;">
+        <p style="color:#4D1600; font-size:14px; margin-top:30px; text-align:center;">
           You can respond directly to <strong>${payload.email}</strong>.
         </p>
       </td>
@@ -345,12 +345,12 @@ const adminContactNotificationEmail = (payload: {
     <!-- Footer -->
     <tr>
       <td align="center" 
-          style="background:linear-gradient(135deg,#F5FAFF,#E6F0FF); padding:25px 20px; border-top:1px solid #0096FF33;">
-        <p style="margin:0; color:#003060; font-size:13px;">
-          © ${new Date().getFullYear()} <strong>App</strong>. All rights reserved.
+          style="background:linear-gradient(135deg,#FEF5F0,#FFE6D9); padding:25px 20px; border-top:1px solid #FF4A0033;">
+        <p style="margin:0; color:#4D1600; font-size:13px;">
+          © ${new Date().getFullYear()} <strong>Rapid-Delivery</strong>. All rights reserved.
         </p>
-        <p style="margin:6px 0 0; color:#003060; font-size:13px;">
-          Powered by <strong style="color:#0096FF;">App API</strong> 
+        <p style="margin:6px 0 0; color:#4D1600; font-size:13px;">
+          Powered by <strong style="color:#FF4A00;">Rapid-Delivery API</strong> 
         </p>
       </td>
     </tr>
@@ -369,7 +369,7 @@ const userContactConfirmationEmail = (payload: {
 }) => {
   return {
     to: payload.email,
-    subject: '💬 Thank You for Contacting App',
+    subject: '💬 Thank You for Contacting Rapid-Delivery',
     html: `
 <body style="margin:0; padding:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0"
@@ -379,8 +379,8 @@ const userContactConfirmationEmail = (payload: {
     <!-- Header -->
     <tr>
       <td align="center" 
-          style="background:linear-gradient(135deg,#F5FAFF,#E6F0FF); padding:35px 20px; border-bottom:1px solid #0096FF33;">
-        <img src="https://i.ibb.co.com/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" alt="App"
+          style="background:linear-gradient(135deg,#FEF5F0,#FFE6D9); padding:35px 20px; border-bottom:1px solid #FF4A0033;">
+        <img src="https://i.ibb.co.com/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" alt="Rapid-Delivery"
              style="width:220px; height:75px; filter:drop-shadow(0 0 6px rgba(0,0,0,0.25));">
       </td>
     </tr>
@@ -388,35 +388,35 @@ const userContactConfirmationEmail = (payload: {
     <!-- Body -->
     <tr>
       <td style="padding:45px;">
-        <h1 style="color:#0096FF; font-size:26px; font-weight:700; margin-bottom:20px; text-align:center;">
+        <h1 style="color:#FF4A00; font-size:26px; font-weight:700; margin-bottom:20px; text-align:center;">
           Thank You for Contacting Us 💙
         </h1>
 
-        <p style="color:#003060; font-size:16px; line-height:1.6; text-align:center;">
+        <p style="color:#4D1600; font-size:16px; line-height:1.6; text-align:center;">
           Dear <strong>${payload.name}</strong>,<br>
           We’ve received your message! Our support team will reach out to you shortly.
         </p>
 
         <!-- User Message -->
-        <div style="background:linear-gradient(145deg,#EAF4FF,#D7E9FF); border:2px solid #0096FF; 
+        <div style="background:linear-gradient(145deg,#FFEBE0,#FFD6C2); border:2px solid #FF4A00; 
                     border-radius:12px; padding:25px 20px; text-align:center; margin:30px auto; max-width:500px;">
-          <p style="font-size:15px; color:#003060; line-height:1.6; margin:0;">
+          <p style="font-size:15px; color:#4D1600; line-height:1.6; margin:0;">
             <em>“${payload.message}”</em>
           </p>
         </div>
 
-        <p style="color:#003060; font-size:15px; line-height:1.6; text-align:center;">
-          Thanks for reaching out to <strong>App</strong>.<br>
+        <p style="color:#4D1600; font-size:15px; line-height:1.6; text-align:center;">
+          Thanks for reaching out to <strong>Rapid-Delivery</strong>.<br>
           We truly appreciate your message 💙
         </p>
 
         <!-- Button -->
         <div style="text-align:center; margin-top:40px;">
           <a href="${config.frontend_url}"
-             style="background-color:#0096FF; color:#ffffff; padding:14px 32px; font-size:16px; 
+             style="background-color:#FF4A00; color:#ffffff; padding:14px 32px; font-size:16px; 
                     font-weight:600; border-radius:10px; text-decoration:none; display:inline-block; 
-                    box-shadow:0 4px 12px rgba(0,150,255,0.3); transition:all 0.3s;">
-            Open App 
+                    box-shadow:0 4px 12px rgba(255,74,0,0.3); transition:all 0.3s;">
+            Open Rapid-Delivery 
           </a>
         </div>
       </td>
@@ -425,12 +425,12 @@ const userContactConfirmationEmail = (payload: {
     <!-- Footer -->
     <tr>
       <td align="center" 
-          style="background:linear-gradient(135deg,#F5FAFF,#E6F0FF); padding:25px 20px; border-top:1px solid #0096FF33;">
-        <p style="margin:0; color:#003060; font-size:13px;">
-          © ${new Date().getFullYear()} <strong>Template</strong>. All rights reserved.
+          style="background:linear-gradient(135deg,#FEF5F0,#FFE6D9); padding:25px 20px; border-top:1px solid #FF4A0033;">
+        <p style="margin:0; color:#4D1600; font-size:13px;">
+          © ${new Date().getFullYear()} <strong>Rapid-Delivery</strong>. All rights reserved.
         </p>
-        <p style="margin:6px 0 0; color:#003060; font-size:13px;">
-          Powered by <strong style="color:#0096FF;">Template API</strong> ✨
+        <p style="margin:6px 0 0; color:#4D1600; font-size:13px;">
+          Powered by <strong style="color:#FF4A00;">Rapid-Delivery API</strong> ✨
         </p>
       </td>
     </tr>
@@ -458,16 +458,16 @@ const sendPaymentConfirmationEmail = (data: any) => {
 
   return {
     to: data.address_to.email,
-    subject: `✅ Payment Completed – App Order`,
+    subject: `✅ Payment Completed – Rapid-Delivery Order`,
     html: `
 <body style="margin:0; padding:0; font-family:'Inter','Segoe UI',sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; margin:40px auto; background:#ffffff; border-radius:14px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
 
     <!-- Header -->
     <tr>
-      <td align="center" style="background:linear-gradient(135deg, #F5FAFF, #E6F0FF); padding:30px 20px;">
-        <img src="https://i.ibb.co/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" alt="App Logo" style="height:70px; width:auto; margin-bottom:10px;" />
-        <h1 style="color:#0096FF; font-size:22px; margin:0;">Payment Successful ✅</h1>
+      <td align="center" style="background:linear-gradient(135deg, #FEF5F0, #FFE6D9); padding:30px 20px;">
+        <img src="https://i.ibb.co/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" alt="Rapid-Delivery Logo" style="height:70px; width:auto; margin-bottom:10px;" />
+        <h1 style="color:#FF4A00; font-size:22px; margin:0;">Payment Successful ✅</h1>
       </td>
     </tr>
 
@@ -475,36 +475,36 @@ const sendPaymentConfirmationEmail = (data: any) => {
     <tr>
       <td style="padding:30px 25px;">
         <p style="color:#000; font-size:15px; line-height:1.6; text-align:center;">
-          Hello <strong style="color:#0096FF;">${data.address_from.name}</strong>, your payment for your shipping order has been successfully completed.
+          Hello <strong style="color:#FF4A00;">${data.address_from.name}</strong>, your payment for your shipping order has been successfully completed.
         </p>
 
         <!-- Sender & Receiver -->
-        <h2 style="color:#0096FF; font-size:17px; margin-top:25px;">📨 Sender & Receiver</h2>
+        <h2 style="color:#FF4A00; font-size:17px; margin-top:25px;">📨 Sender & Receiver</h2>
         <p style="font-size:14px; margin:3px 0;"><strong>From:</strong> ${data.address_from.name}, ${data.address_from.city}, ${data.address_from.country}</p>
         <p style="font-size:14px; margin:3px 0;"><strong>To:</strong> ${data.address_to.name}, ${data.address_to.city}, ${data.address_to.country}</p>
 
         <!-- Shipping Summary -->
-        <h3 style="color:#0096FF; font-size:16px; margin-top:20px;">📦 Shipping Details</h3>
+        <h3 style="color:#FF4A00; font-size:16px; margin-top:20px;">📦 Shipping Details</h3>
         <p style="font-size:14px; margin:3px 0;">Type: <strong>${data.shipping_type}</strong></p>
         <p style="font-size:14px; margin:3px 0;">Status: <strong>${data.status}</strong></p>
 
         <!-- Parcel Details -->
-        <h3 style="color:#0096FF; font-size:16px; margin-top:20px;">🛍 Parcels</h3>
+        <h3 style="color:#FF4A00; font-size:16px; margin-top:20px;">🛍 Parcels</h3>
         <table style="width:100%; border-collapse:collapse;">${parcelsHtml}</table>
 
         <!-- Insurance -->
-        <h3 style="color:#0096FF; font-size:16px; margin-top:20px;">🛡 Insurance</h3>
+        <h3 style="color:#FF4A00; font-size:16px; margin-top:20px;">🛡 Insurance</h3>
         <p style="font-size:14px; margin:3px 0;">Insured: <strong>${data.insurance.isInsured ? 'Yes' : 'No'}</strong></p>
         <p style="font-size:14px; margin:3px 0;">Product Value: £${data.insurance.productValue}</p>
-        <p style="font-size:14px; margin:3px 0; color:#0096FF; font-weight:700;">Insurance Cost: £${data.insurance.insuranceCost}</p>
+        <p style="font-size:14px; margin:3px 0; color:#FF4A00; font-weight:700;">Insurance Cost: £${data.insurance.insuranceCost}</p>
 
         <!-- Payment Summary -->
-        <h3 style="color:#0096FF; font-size:16px; margin-top:20px;">💰 Payment</h3>
+        <h3 style="color:#FF4A00; font-size:16px; margin-top:20px;">💰 Payment</h3>
         <p style="font-size:14px; margin:3px 0;">Shipping Cost: £${data.shipping_cost}</p>
-        <p style="font-size:14px; margin:3px 0; color:#0096FF; font-weight:700;">Total Paid: £${data.total_cost}</p>
+        <p style="font-size:14px; margin:3px 0; color:#FF4A00; font-weight:700;">Total Paid: £${data.total_cost}</p>
 
         <!-- Notes -->
-        <div style="background:#0096FF22; padding:12px 15px; border-radius:10px; margin-top:15px;">
+        <div style="background:#FF4A0022; padding:12px 15px; border-radius:10px; margin-top:15px;">
           <p style="margin:0; font-size:13px; color:#000;">💬 Notes: ${data.notes || 'None'}</p>
         </div>
       </td>
@@ -513,7 +513,7 @@ const sendPaymentConfirmationEmail = (data: any) => {
     <!-- Footer -->
     <tr>
       <td align="center" style="background:#f5f5f5; padding:15px; font-size:12px; color:#777;">
-        © ${new Date().getFullYear()} — App Services. Built with 💙 for your comfort
+        © ${new Date().getFullYear()} — Rapid-Delivery Services. Built with 💙 for your comfort
       </td>
     </tr>
 
@@ -531,24 +531,24 @@ const sendAdminPaymentNotificationEmail = (data: any) => {
 <body style="margin:0; padding:0; font-family:'Inter','Segoe UI',Tahoma,Geneva,Verdana,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0"
     style="max-width:640px; margin:40px auto; background:#ffffff; border-radius:16px;
-           overflow:hidden; border:1px solid #0096FF55; box-shadow:0 4px 20px #00000011;">
+           overflow:hidden; border:1px solid #FF4A0055; box-shadow:0 4px 20px #00000011;">
 
     <!-- Header -->
    <td align="center" 
   style="
-    background: linear-gradient(135deg, #F5FAFF, #E6F0FF);
+    background: linear-gradient(135deg, #FEF5F0, #FFE6D9);
     padding: 35px 20px; 
-    border-bottom: 1px solid #0096FF33;
+    border-bottom: 1px solid #FF4A0033;
   "
 >
   <img 
     src="https://i.ibb.co.com/Hf7XccNJ/Send-you-back-Final-logo-02-3.png"
-    alt="App Logo"
+    alt="Rapid-Delivery Logo"
     style="height:85px; width:auto; margin-bottom:10px;" 
   />
   
   <h1 style="
-    color:#0096FF;  
+    color:#FF4A00;  
     font-size:24px; 
     font-weight:700; 
     margin:0;
@@ -562,12 +562,12 @@ const sendAdminPaymentNotificationEmail = (data: any) => {
     <tr>
       <td style="padding:40px;">
         <p style="color:#00000099; font-size:15px; line-height:1.7; text-align:center;">
-          <strong style="color:#0096FF;">${data.address_from.name}</strong> has successfully completed the payment for
+          <strong style="color:#FF4A00;">${data.address_from.name}</strong> has successfully completed the payment for
           <strong>${data.shipping_type}</strong>.
         </p>
 
         <!-- Service Summary -->
-        <h2 style="color:#0096FF; font-size:19px; margin-bottom:15px; margin-top:30px;">
+        <h2 style="color:#FF4A00; font-size:19px; margin-bottom:15px; margin-top:30px;">
           🧾 Shipping Details
         </h2>
 
@@ -580,28 +580,28 @@ const sendAdminPaymentNotificationEmail = (data: any) => {
             </td>
           </tr>
 
-          <tr style="border-top:1px solid #0096FF22;">
+          <tr style="border-top:1px solid #FF4A0022;">
             <td style="padding:8px 0; color:#00000099;">Email:</td>
             <td style="padding:8px 0; color:#000000; text-align:right;">
               ${data.address_from.email}
             </td>
           </tr>
 
-          <tr style="border-top:1px solid #0096FF22;">
+          <tr style="border-top:1px solid #FF4A0022;">
             <td style="padding:8px 0; color:#00000099;">Phone:</td>
             <td style="padding:8px 0; color:#000000; text-align:right;">
               ${data.address_from.phone}
             </td>
           </tr>
 
-          <tr style="border-top:1px solid #0096FF22;">
+          <tr style="border-top:1px solid #FF4A0022;">
             <td style="padding:8px 0; color:#00000099;">Shipping Type:</td>
             <td style="padding:8px 0; color:#000000; text-align:right;">
               ${data.shipping_type}
             </td>
           </tr>
 
-          <tr style="border-top:1px solid #0096FF22;">
+          <tr style="border-top:1px solid #FF4A0022;">
             <td style="padding:8px 0; color:#00000099;">Address:</td>
             <td style="padding:8px 0; color:#000000; text-align:right;">
               ${data.address_from.street1}, ${data.address_from.city}, 
@@ -609,9 +609,9 @@ const sendAdminPaymentNotificationEmail = (data: any) => {
             </td>
           </tr>
 
-          <tr style="border-top:1px solid #0096FF22;">
+          <tr style="border-top:1px solid #FF4A0022;">
             <td style="padding:8px 0; color:#00000099;">Total Paid:</td>
-            <td style="padding:8px 0; color:#0096FF; font-weight:700; text-align:right;">
+            <td style="padding:8px 0; color:#FF4A00; font-weight:700; text-align:right;">
               £${data.total_cost}
             </td>
           </tr>
@@ -619,8 +619,8 @@ const sendAdminPaymentNotificationEmail = (data: any) => {
         </table>
 
         <!-- Notes -->
-        <div style="background:#0096FF22; padding:15px 18px; border-radius:12px;
-                    border-left:4px solid #0096FF; margin-top:25px;">
+        <div style="background:#FF4A0022; padding:15px 18px; border-radius:12px;
+                    border-left:4px solid #FF4A00; margin-top:25px;">
           <p style="margin:0; color:#000000; font-size:14px;">
             💬 <strong>Notes:</strong> ${data.notes || 'No additional notes'}
           </p>
@@ -631,9 +631,9 @@ const sendAdminPaymentNotificationEmail = (data: any) => {
 
     <!-- Footer -->
     <tr>
-      <td align="center" style="background:#f9f9f9; padding:22px; border-top:1px solid #0096FF22;">
+      <td align="center" style="background:#f9f9f9; padding:22px; border-top:1px solid #FF4A0022;">
         <p style="margin:0; color:#00000099; font-size:12px;">
-          © ${new Date().getFullYear()} — App Services
+          © ${new Date().getFullYear()} — Rapid-Delivery Services
         </p>
         <p style="margin:5px 0 0; color:#00000099; font-size:12px;">
           Built with 💙 for your comfort
@@ -668,9 +668,9 @@ const businessUserShipmentInfoEmail = (data: any) => {
     
     <!-- Header -->
     <tr>
-      <td align="center" style="background:#EAF4FF;padding:25px 20px;">
+      <td align="center" style="background:#FFEBE0;padding:25px 20px;">
         <img src="https://i.ibb.co/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" style="height:70px;margin-bottom:8px;" />
-        <h2 style="margin:0;color:#0077DD;font-size:20px;">Your Lost Item Has Been Booked!</h2>
+        <h2 style="margin:0;color:#FF4A00;font-size:20px;">Your Lost Item Has Been Booked!</h2>
         <p style="margin:4px 0 0;color:#555;font-size:13px;">Booking ID: <strong>${data._id}</strong></p>
       </td>
     </tr>
@@ -679,21 +679,21 @@ const businessUserShipmentInfoEmail = (data: any) => {
     <tr>
       <td style="padding:25px 20px;">
         <p style="font-size:14px;color:#000;line-height:1.5;">
-          Hello <strong style="color:#0077DD;">${data.address_from.name}</strong>,<br>
+          Hello <strong style="color:#FF4A00;">${data.address_from.name}</strong>,<br>
           Your added lost item has been successfully booked for shipment. ✅
         </p>
 
         <!-- Shipment Summary -->
-        <h3 style="color:#0077DD;font-size:15px;margin:15px 0 6px;">📦 Shipment Summary</h3>
+        <h3 style="color:#FF4A00;font-size:15px;margin:15px 0 6px;">📦 Shipment Summary</h3>
         <p style="font-size:13px;margin:2px 0;"><strong>Type:</strong> ${data.shipping_type}</p>
         <p style="font-size:13px;margin:2px 0;"><strong>To:</strong> ${data.address_to.name}, ${data.address_to.city}, ${data.address_to.country}</p>
 
         <!-- Parcels -->
-        <h3 style="color:#0077DD;font-size:15px;margin:15px 0 6px;">🛍 Parcels</h3>
+        <h3 style="color:#FF4A00;font-size:15px;margin:15px 0 6px;">🛍 Parcels</h3>
         <table width="100%" style="margin-top:6px;">${parcels}</table>
 
         <!-- Notes & Insurance -->
-        <div style="background:#E8F6FF;padding:10px;border-radius:8px;margin-top:15px;">
+        <div style="background:#FFEBE0;padding:10px;border-radius:8px;margin-top:15px;">
           <p style="margin:2px 0;font-size:13px;"><strong>Notes:</strong> ${data.notes || 'None'}</p>
           ${data.insurance ? `<p style="margin:2px 0;font-size:13px;"><strong>Insurance:</strong> Yes — ${data.insurance.amount}</p>` : ''}
         </div>
@@ -701,7 +701,7 @@ const businessUserShipmentInfoEmail = (data: any) => {
         <!-- Dashboard Button -->
         <div style="text-align:center;margin-top:20px;">
           <a href="${config.frontend_url}/dashboard"
-             style="background:#0077DD;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;display:inline-block;">
+             style="background:#FF4A00;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;display:inline-block;">
             Go to Dashboard & Check Shipment
           </a>
         </div>
@@ -711,7 +711,7 @@ const businessUserShipmentInfoEmail = (data: any) => {
     <!-- Footer -->
     <tr>
       <td align="center" style="background:#f0f0f0;padding:12px;font-size:12px;color:#555;">
-        © ${new Date().getFullYear()} App • Business Services
+        © ${new Date().getFullYear()} Rapid-Delivery • Business Services
       </td>
     </tr>
   </table>
@@ -735,7 +735,7 @@ const businessUserRegistrationInviteEmail = (data: any) => {
 
   return {
     to: data.address_from.email,
-    subject: `📦 Action Required – Create Your App Account`,
+    subject: `📦 Action Required – Create Your Rapid-Delivery Account`,
     html: `
 <body style="margin:0;padding:0;font-family:Inter,Segoe UI,sans-serif;background:#f7f9fc;">
   <table width="100%" cellpadding="0" cellspacing="0"
@@ -744,10 +744,10 @@ const businessUserRegistrationInviteEmail = (data: any) => {
 
     <!-- Header -->
     <tr>
-      <td align="center" style="background:#EAF4FF;padding:25px 20px;">
+      <td align="center" style="background:#FFEBE0;padding:25px 20px;">
         <img src="https://i.ibb.co/Hf7XccNJ/Send-you-back-Final-logo-02-3.png"
              style="height:70px;margin-bottom:8px;" />
-        <h2 style="margin:0;color:#0077DD;font-size:20px;">A Lost Item Shipment Was Created</h2>
+        <h2 style="margin:0;color:#FF4A00;font-size:20px;">A Lost Item Shipment Was Created</h2>
         <p style="margin:4px 0 0;color:#555;font-size:13px;">Booking ID: <strong>${data._id}</strong></p>
       </td>
     </tr>
@@ -756,22 +756,22 @@ const businessUserRegistrationInviteEmail = (data: any) => {
     <tr>
       <td style="padding:25px 20px;">
         <p style="font-size:14px;color:#000;line-height:1.5;">
-          Hello <strong style="color:#0077DD;">${data.address_from.name}</strong>,<br>
+          Hello <strong style="color:#FF4A00;">${data.address_from.name}</strong>,<br>
           A customer has booked a shipment for the lost item you found.  
           To continue and provide shipping information, you must register a business account.
         </p>
 
         <!-- Summary -->
-        <h3 style="color:#0077DD;font-size:15px;margin:15px 0 6px;">📦 Shipment Summary</h3>
+        <h3 style="color:#FF4A00;font-size:15px;margin:15px 0 6px;">📦 Shipment Summary</h3>
         <p style="font-size:13px;margin:2px 0;"><strong>Type:</strong> ${data.shipping_type}</p>
         <p style="font-size:13px;margin:2px 0;"><strong>To:</strong> ${data.address_to.name}, ${data.address_to.city}, ${data.address_to.country}</p>
 
         <!-- Parcels -->
-        <h3 style="color:#0077DD;font-size:15px;margin:15px 0 6px;">🛍 Parcels</h3>
+        <h3 style="color:#FF4A00;font-size:15px;margin:15px 0 6px;">🛍 Parcels</h3>
         <table width="100%" style="margin-top:6px;">${parcels}</table>
 
         <!-- Notes -->
-        <div style="background:#E8F6FF;padding:10px;border-radius:8px;margin-top:15px;">
+        <div style="background:#FFEBE0;padding:10px;border-radius:8px;margin-top:15px;">
           <p style="margin:2px 0;font-size:13px;">
             <strong>Notes:</strong> ${data.notes || 'None'}
           </p>
@@ -780,9 +780,9 @@ const businessUserRegistrationInviteEmail = (data: any) => {
         <!-- Register Button -->
         <div style="text-align:center;margin-top:20px;">
           <a href="${config.frontend_url}/register"
-             style="background:#0077DD;color:#fff;padding:12px 28px;border-radius:8px;
+             style="background:#FF4A00;color:#fff;padding:12px 28px;border-radius:8px;
              text-decoration:none;font-size:14px;display:inline-block;">
-            Create Your App Account
+            Create Your Rapid-Delivery Account
           </a>
         </div>
 
@@ -795,7 +795,7 @@ const businessUserRegistrationInviteEmail = (data: any) => {
     <!-- Footer -->
     <tr>
       <td align="center" style="background:#f0f0f0;padding:12px;font-size:12px;color:#555;">
-        © ${new Date().getFullYear()} App • Business Services
+        © ${new Date().getFullYear()} Rapid-Delivery • Business Services
       </td>
     </tr>
 
@@ -806,12 +806,12 @@ const businessUserRegistrationInviteEmail = (data: any) => {
 
 const guestLostItemNotificationEmail = (data: any) => {
   const businessDetails = data?.user?.BusinessDetails;
-  const BASE_URL = "https://api.App.com";
+  const BASE_URL = "https://api.Rapid-Delivery.com";
 
   const imagesHtml =
     Array.isArray(data?.images) && data.images.length > 0
       ? `
-        <h3 style="color:#0077DD;font-size:15px;margin:15px 0 8px;">
+        <h3 style="color:#FF4A00;font-size:15px;margin:15px 0 8px;">
           📷 Item Images
         </h3>
         <table width="100%" cellpadding="0" cellspacing="0">
@@ -845,11 +845,11 @@ const guestLostItemNotificationEmail = (data: any) => {
 
     <!-- Header -->
     <tr>
-      <td align="center" style="background:#EAF4FF;padding:25px 20px;">
+      <td align="center" style="background:#FFEBE0;padding:25px 20px;">
         <img src="https://i.ibb.co/Hf7XccNJ/Send-you-back-Final-logo-02-3.png"
           style="height:70px;margin-bottom:8px;" />
 
-        <h2 style="margin:0;color:#0077DD;font-size:20px;">
+        <h2 style="margin:0;color:#FF4A00;font-size:20px;">
           Good News! We Found Your Item
         </h2>
 
@@ -871,7 +871,7 @@ const guestLostItemNotificationEmail = (data: any) => {
       <td style="padding:25px 20px;">
 
         <p style="font-size:14px;color:#000;line-height:1.6;">
-          Hello <strong style="color:#0077DD;">${data.guestName}</strong>,<br>
+          Hello <strong style="color:#FF4A00;">${data.guestName}</strong>,<br>
           We hope you're doing well. Our team has located an item that matches your belongings.
           Please review the details below.
         </p>
@@ -879,7 +879,7 @@ const guestLostItemNotificationEmail = (data: any) => {
         ${imagesHtml}
 
         <!-- Item Details -->
-        <h3 style="color:#0077DD;font-size:15px;margin:15px 0 6px;">
+        <h3 style="color:#FF4A00;font-size:15px;margin:15px 0 6px;">
           🟦 Lost Item Details
         </h3>
         <p style="font-size:13px;margin:2px 0;"><strong>Item Name:</strong> ${data.itemName}</p>
@@ -892,7 +892,7 @@ const guestLostItemNotificationEmail = (data: any) => {
         </p>
 
         <!-- Guest Info -->
-        <h3 style="color:#0077DD;font-size:15px;margin:15px 0 6px;">
+        <h3 style="color:#FF4A00;font-size:15px;margin:15px 0 6px;">
           🏨 Your Stay Information
         </h3>
         <p style="font-size:13px;margin:2px 0;">
@@ -906,7 +906,7 @@ const guestLostItemNotificationEmail = (data: any) => {
         </p>
 
         <!-- Action -->
-        <div style="background:#E8F6FF;padding:12px;border-radius:8px;margin-top:16px;">
+        <div style="background:#FFEBE0;padding:12px;border-radius:8px;margin-top:16px;">
           <p style="margin:0;font-size:13px;color:#000;">
             To have your item safely shipped to your address, please complete your shipping details below.
           </p>
@@ -914,7 +914,7 @@ const guestLostItemNotificationEmail = (data: any) => {
 
         <div style="text-align:center;margin-top:22px;">
           <a href="${config.frontend_url}/orders/${data._id}"
-            style="background:#0077DD;color:#fff;padding:12px 30px;
+            style="background:#FF4A00;color:#fff;padding:12px 30px;
             border-radius:8px;text-decoration:none;font-size:14px;display:inline-block;">
             Book Shipping for Your Item
           </a>
@@ -929,7 +929,7 @@ const guestLostItemNotificationEmail = (data: any) => {
     <!-- Footer -->
     <tr>
       <td align="center" style="background:#f0f0f0;padding:12px;font-size:12px;color:#555;">
-        © ${new Date().getFullYear()} App • Lost & Found Services
+        © ${new Date().getFullYear()} Rapid-Delivery • Lost & Found Services
       </td>
     </tr>
 
@@ -953,10 +953,10 @@ const businessShippingDetailsUpdateEmail = (data: any) => {
 
     <!-- Header -->
     <tr>
-      <td align="center" style="background:#EAF4FF;padding:25px 20px;">
+      <td align="center" style="background:#FFEBE0;padding:25px 20px;">
         <img src="https://i.ibb.co/Hf7XccNJ/Send-you-back-Final-logo-02-3.png"
              style="height:70px;margin-bottom:8px;" />
-        <h2 style="margin:0;color:#0077DD;font-size:20px;">Shipping Details Updated</h2>
+        <h2 style="margin:0;color:#FF4A00;font-size:20px;">Shipping Details Updated</h2>
         <p style="margin:4px 0 0;color:#555;font-size:13px;">Shipment ID: <strong>${data._id}</strong></p>
       </td>
     </tr>
@@ -966,28 +966,28 @@ const businessShippingDetailsUpdateEmail = (data: any) => {
       <td style="padding:25px 20px;">
 
         <p style="font-size:14px;color:#000;line-height:1.6;">
-          Hello <strong style="color:#0077DD;">${data.address_from.name}</strong>,<br>
-          The shipping for this lost-item shipment has now been <strong>booked with <span style="color:#0077DD;">${data.carrier || 'the carrier'}</span></strong>.
+          Hello <strong style="color:#FF4A00;">${data.address_from.name}</strong>,<br>
+          The shipping for this lost-item shipment has now been <strong>booked with <span style="color:#FF4A00;">${data.carrier || 'the carrier'}</span></strong>.
         </p>
 
-        <div style="background:#E8F6FF;padding:12px;border-radius:8px;margin:14px 0;">
-          <p style="margin:0;font-size:13px;color:#005999;line-height:1.5;">
+        <div style="background:#FFEBE0;padding:12px;border-radius:8px;margin:14px 0;">
+          <p style="margin:0;font-size:13px;color:#CC3B00;line-height:1.5;">
             This shipment is scheduled for delivery to the item owner. Please <strong>collect the required recipient information</strong> (Shipping Label, Tracking Number) and <strong>prepare the parcel for dispatch</strong> so it's ready for carrier pickup.
           </p>
         </div>
 
         <!-- Shipping Info -->
-        <h3 style="color:#0077DD;font-size:15px;margin:12px 0 6px;">🚚 Current Shipping Details</h3>
+        <h3 style="color:#FF4A00;font-size:15px;margin:12px 0 6px;">🚚 Current Shipping Details</h3>
         <p style="font-size:13px;margin:2px 0;"><strong>Carrier:</strong> ${data.carrier || 'N/A'}</p>
         <p style="font-size:13px;margin:2px 0;"><strong>Tracking Number:</strong> ${data.tracking_id || 'N/A'}</p>
-        ${data.tracking_url ? `<p style="font-size:13px;margin:2px 0;"><strong>Tracking URL:</strong> <a href="${data.tracking_url}" style="color:#0077DD;">Track Package</a></p>` : ''}
+        ${data.tracking_url ? `<p style="font-size:13px;margin:2px 0;"><strong>Tracking URL:</strong> <a href="${data.tracking_url}" style="color:#FF4A00;">Track Package</a></p>` : ''}
 
         ${data.shippingLabel
         ? `
         <div style="margin-top:12px;">
       <a href="${config.backend_url}/${data.shippingLabel}"
    download
-   style="background:#0077DD;color:#fff;padding:10px 26px;border-radius:8px;
+   style="background:#FF4A00;color:#fff;padding:10px 26px;border-radius:8px;
    text-decoration:none;font-size:14px;display:inline-block;">
   Download Shipping Label
 </a>
@@ -999,7 +999,7 @@ const businessShippingDetailsUpdateEmail = (data: any) => {
         <!-- Action -->
         <div style="text-align:center;margin-top:18px;">
           <a href="${config.frontend_url}/dashboard"
-             style="background:#0077DD;color:#fff;padding:10px 26px;border-radius:8px;
+             style="background:#FF4A00;color:#fff;padding:10px 26px;border-radius:8px;
              text-decoration:none;font-size:14px;display:inline-block;">
             Open Shipment in Dashboard
           </a>
@@ -1015,7 +1015,7 @@ const businessShippingDetailsUpdateEmail = (data: any) => {
     <!-- Footer -->
     <tr>
       <td align="center" style="background:#f0f0f0;padding:12px;font-size:12px;color:#555;">
-        © ${new Date().getFullYear()} App • Business Portal
+        © ${new Date().getFullYear()} Rapid-Delivery • Business Portal
       </td>
     </tr>
 
@@ -1037,10 +1037,10 @@ const customerShippingDetailsUpdateEmail = (data: any) => {
 
     <!-- Header -->
     <tr>
-      <td align="center" style="background:#EAF4FF;padding:25px 20px;">
+      <td align="center" style="background:#FFEBE0;padding:25px 20px;">
         <img src="https://i.ibb.co/Hf7XccNJ/Send-you-back-Final-logo-02-3.png"
              style="height:70px;margin-bottom:8px;" />
-        <h2 style="margin:0;color:#0077DD;font-size:20px;">Your Shipment Is Now Trackable</h2>
+        <h2 style="margin:0;color:#FF4A00;font-size:20px;">Your Shipment Is Now Trackable</h2>
         <p style="margin:4px 0 0;color:#555;font-size:13px;">Shipment ID: <strong>${data._id}</strong></p>
       </td>
     </tr>
@@ -1050,13 +1050,13 @@ const customerShippingDetailsUpdateEmail = (data: any) => {
       <td style="padding:25px 20px;">
 
         <p style="font-size:14px;color:#000;line-height:1.6;">
-          Hello <strong style="color:#0077DD;">${data.address_to.name}</strong>,<br>
+          Hello <strong style="color:#FF4A00;">${data.address_to.name}</strong>,<br>
           Your shipment has now been <strong>booked with the carrier</strong> and is ready for delivery.
           You can use the tracking details below to monitor your package.
         </p>
 
         <!-- Tracking Info -->
-        <h3 style="color:#0077DD;font-size:15px;margin:16px 0 6px;">🚚 Tracking Details</h3>
+        <h3 style="color:#FF4A00;font-size:15px;margin:16px 0 6px;">🚚 Tracking Details</h3>
         <p style="font-size:13px;margin:2px 0;"><strong>Carrier:</strong> ${data.carrier || 'N/A'}</p>
         <p style="font-size:13px;margin:2px 0;"><strong>Tracking Number:</strong> ${data.tracking_id || 'N/A'}</p>
 
@@ -1064,7 +1064,7 @@ const customerShippingDetailsUpdateEmail = (data: any) => {
         ? `
         <div style="margin-top:18px;text-align:center;">
           <a href="${data.tracking_url}"
-             style="background:#0077DD;color:#fff;padding:10px 28px;border-radius:8px;
+             style="background:#FF4A00;color:#fff;padding:10px 28px;border-radius:8px;
              text-decoration:none;font-size:14px;font-weight:500;display:inline-block;">
             🔍 Track Your Shipment
           </a>
@@ -1082,7 +1082,7 @@ const customerShippingDetailsUpdateEmail = (data: any) => {
     <!-- Footer -->
     <tr>
       <td align="center" style="background:#f0f0f0;padding:12px;font-size:12px;color:#555;">
-        © ${new Date().getFullYear()} App • Customer Services
+        © ${new Date().getFullYear()} Rapid-Delivery • Customer Services
       </td>
     </tr>
 
@@ -1095,13 +1095,13 @@ const customerShippingDetailsUpdateEmail = (data: any) => {
 const subscriptionActivatedEmail = (data: any) => {
   return {
     to: data.user.email,
-    subject: `✅ Subscription Activated – Welcome to App`,
+    subject: `✅ Subscription Activated – Welcome to Rapid-Delivery`,
     html: `
 <body style="margin:0;padding:0;font-family:Inter,Segoe UI,sans-serif;background:#f7f9fc;">
   <table width="100%" cellpadding="0" cellspacing="0" style="max-width:620px;margin:30px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,0.06);">
     <tr>
-      <td align="center" style="background:#EAF4FF;padding:25px 20px;">
-        <h2 style="margin:0;color:#0077DD;font-size:20px;">Subscription Activated!</h2>
+      <td align="center" style="background:#FFEBE0;padding:25px 20px;">
+        <h2 style="margin:0;color:#FF4A00;font-size:20px;">Subscription Activated!</h2>
       </td>
     </tr>
     <tr>
@@ -1113,7 +1113,7 @@ const subscriptionActivatedEmail = (data: any) => {
         <p style="font-size:13px;margin:2px 0;"><strong>Amount Paid:</strong> £${data.amountPaid}</p>
         <p style="font-size:13px;margin:2px 0;"><strong>Transaction ID:</strong> ${data.trxId}</p>
         <div style="text-align:center;margin-top:20px;">
-          <a href="${config.frontend_url}/dashboard" style="background:#0077DD;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;display:inline-block;">Go to Dashboard</a>
+          <a href="${config.frontend_url}/dashboard" style="background:#FF4A00;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;display:inline-block;">Go to Dashboard</a>
         </div>
       </td>
     </tr>

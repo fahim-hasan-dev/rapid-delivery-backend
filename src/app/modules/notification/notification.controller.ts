@@ -34,7 +34,7 @@ const sendTestPushNotification = catchAsync(async (req: Request, res: Response) 
     const result = await PushNotificationService.sendPushNotification(
         token || "c0UaCLXGSJ6JsC62K6NPq0:APA91bHzTTe3umtCk7TzNcOXN-aa3SPNQVOtgx6jwQvz1OiTDKLJEIPc-A-8Wn707pYzKnwDZA1nH2zDNvkxTPbpB7SUMAYO3odSW8PEFzCopYf930fNLHE",
         title || "Test Notification",
-        body || "This is a test notification from the Backend Template! 🚀",
+        body || "This is a test notification from Rapid-Delivery! 🚚",
         {
             screen: "HOME",
             type: "TEST"
