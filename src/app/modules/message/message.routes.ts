@@ -2,52 +2,51 @@ import express from 'express';
 import { USER_ROLES } from '../../../enum/user';
 import auth from '../../middleware/auth';
 import { MessageController } from './message.controller';
-import fileUploadHandler from '../../middleware/fileUploadHandler';
-import { getSingleFilePath } from '../../../shared/getFilePath';
 import { fileAndBodyProcessorUsingDiskStorage } from '../../middleware/processReqBody';
 
 const router = express.Router();
 
-// Send a message
+// Dispatch a new message within a chat session
 router.post('/',
-  auth(USER_ROLES.USER, USER_ROLES.ADMIN),
+  auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
   fileAndBodyProcessorUsingDiskStorage(),
   MessageController.sendMessage
 );
 
-// Get messages for a chat
+// Fetch message history for a specific chat ID
 router.get(
   '/:id',
-  auth(USER_ROLES.USER, USER_ROLES.ADMIN),
+  auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
   MessageController.getMessage
 );
 
-// Update a message
+// Modify the content of an existing message
 router.patch(
   '/:id',
-  auth(USER_ROLES.USER, USER_ROLES.ADMIN),
+  auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
   MessageController.updateMessage
 );
 
-// Get total unread count
+// Get the total number of unread messages for the current user
 router.get(
   '/unread/count',
-  auth(USER_ROLES.USER, USER_ROLES.ADMIN),
+  auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
   MessageController.getUnreadCount
 );
 
-// Update money request status (accept/reject)
+// Update status of specialized money request messages
 router.patch(
   '/:messageId/money-request',
-  auth(USER_ROLES.USER),
+  auth(USER_ROLES.SENDER, USER_ROLES.DRIVER),
   MessageController.updateMoneyRequestStatus
 );
 
-// Delete a message
+// Permanent removal of a message record
 router.delete(
   '/:id',
-  auth(USER_ROLES.USER, USER_ROLES.ADMIN),
+  auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
   MessageController.deleteMessage
 );
 
 export const MessageRoutes = router;
+

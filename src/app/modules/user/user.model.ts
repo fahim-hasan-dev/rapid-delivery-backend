@@ -5,43 +5,58 @@ import { StatusCodes } from "http-status-codes";
 import ApiError from "../../../errors/ApiError";
 import config from "../../../config";
 
+// Main schema defining the structure of all user accounts in the system
 const UserSchema = new Schema(
     {
+        fullName: {
+            type: String,
+            default: "",
+        },
         email: {
             type: String,
             required: true,
             unique: true,
         },
+        phone: {
+            type: String,
+            default: "",
+        },
         password: {
             type: String,
             required: true,
+            select: false,
         },
         image: {
             type: String,
             default: "",
         },
-        firstName: {
-            type: String,
-            required: true,
-        },
-        lastName: {
-            type: String,
-            required: true,
-        },
         status: {
             type: String,
-            enum: ["active", "restricted", "deleted"],
-            default: "active",
-        },
-        verified: {
-            type: Boolean,
-            default: false,
+            enum: Object.values(USER_STATUS),
+            default: USER_STATUS.ACTIVE,
         },
         role: {
             type: String,
-            enum: ["admin", "user"],
-            default: "user",
+            required: true
         },
+        address: {
+            type: String,
+            default: "",
+        },
+        // Geographical coordinates for delivery tracking
+        location: {
+            latitude: { type: Number },
+            longitude: { type: Number },
+        },
+        isEmailVerified: {
+            type: Boolean,
+            default: false,
+        },
+        isPhoneVerified: {
+            type: Boolean,
+            default: false,
+        },
+        // Authentication state for security and multi-factor flows
         authentication: {
             restrictionLeftAt: {
                 type: Date,
@@ -74,14 +89,22 @@ const UserSchema = new Schema(
                 enum: ['createAccount', 'resetPassword'],
             },
         },
-        deviceToken: {
+        // FCM tokens for push notification delivery
+        fcmToken: [{
             type: String,
-            default: "",
-        },
-        fcmToken: {
-            type: String,
-            default: "",
-        },
+            default: [],
+        }],
+        // Information specific to driver accounts
+        driverInfo: {
+            nid: [{ type: String }],
+            drivingLicense: [{ type: String }],
+            isVerified: { type: Boolean, default: false },
+            totalRating: { type: Number, default: 0 },
+            averageRating: { type: Number, default: 0 },
+            totalDelivery: { type: Number, default: 0 },
+            totalEarnings: { type: Number, default: 0 },
+            todayEarnings: { type: Number, default: 0 },
+        }
     },
     {
         timestamps: true,
@@ -94,10 +117,7 @@ const UserSchema = new Schema(
     }
 );
 
-UserSchema.virtual('fullName').get(function () {
-    return `${this.firstName} ${this.lastName}`;
-});
-
+// Helper method to verify passwords during login
 UserSchema.statics.isPasswordMatched = async function (
     givenPassword: string,
     savedPassword: string
@@ -105,6 +125,7 @@ UserSchema.statics.isPasswordMatched = async function (
     return bcrypt.compare(givenPassword, savedPassword);
 };
 
+// Handle password hashing and unique email validation before persistence
 UserSchema.pre("save", async function (next) {
     try {
         if (this.isModified("email")) {
@@ -137,3 +158,5 @@ UserSchema.pre("save", async function (next) {
 });
 
 export const User = mongoose.model<IUser, UserModel>("User", UserSchema);
+
+

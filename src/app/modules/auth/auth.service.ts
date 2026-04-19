@@ -20,6 +20,7 @@ import { Token } from '../token/token.model'
 import { IUser } from '../user/user.interface'
 import mongoose from 'mongoose'
 
+// Register a new user and initiate email verification
 export const createUser = async (payload: IUser) => {
   payload.email = payload.email?.toLowerCase().trim()
   const session = await mongoose.startSession()
@@ -27,14 +28,14 @@ export const createUser = async (payload: IUser) => {
   try {
     session.startTransaction()
 
-    if (payload.role === USER_ROLES.ADMIN) {
+    // Prevent direct creation of super admin accounts via this endpoint
+    if (payload.role === USER_ROLES.SUPER_ADMIN) {
       throw new ApiError(
         StatusCodes.BAD_REQUEST,
-        `Admin account creation is not allowed.`,
+        `Super Admin account creation is not allowed.`,
       )
     }
 
-    // 1. Check if user already exists
     const isUserExist = await User.findOne({
       email: payload.email,
       status: { $nin: [USER_STATUS.DELETED] },
@@ -47,10 +48,10 @@ export const createUser = async (payload: IUser) => {
       )
     }
 
-    // 2. Generate OTP
     const otp = generateOtp()
     const otpExpiresIn = new Date(Date.now() + 5 * 60 * 1000)
 
+    // Set initial authentication state with pending verification
     const authentication = {
       oneTimeCode: otp,
       expiresAt: otpExpiresIn,
@@ -62,24 +63,22 @@ export const createUser = async (payload: IUser) => {
       wrongLoginAttempts: 0,
     }
 
-    // 3. Send OTP email
+    // Send the verification email in the background
     setTimeout(() => {
       const createAccountEmail = emailTemplate.createAccount({
-        name: `${payload.firstName} ${payload.lastName}`,
+        name: payload.fullName || 'User',
         email: payload.email,
         otp,
       })
       emailHelper.sendEmail(createAccountEmail)
     }, 0)
 
-    // 4. Create User
     const user = await User.create(
       [
         {
           ...payload,
-          password: payload.password,
           authentication,
-          role: payload.role || USER_ROLES.USER,
+          role: payload.role || USER_ROLES.SENDER,
         },
       ],
       { session },
@@ -88,13 +87,9 @@ export const createUser = async (payload: IUser) => {
     if (!user[0])
       throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create user.')
 
-    const createdUser = user[0]
-
-    // 5. Commit Transaction
     await session.commitTransaction()
-    return createdUser._id
+    return user[0]._id
   } catch (error) {
-    // Rollback on error
     await session.abortTransaction()
     throw error
   } finally {
@@ -102,6 +97,7 @@ export const createUser = async (payload: IUser) => {
   }
 }
 
+// Authenticate a standard user via email or phone
 const login = async (payload: ILoginData): Promise<IAuthResponse> => {
   const { email, phone } = payload
   const query = email ? { email: email.toLowerCase().trim() } : { phone: phone }
@@ -120,10 +116,10 @@ const login = async (payload: ILoginData): Promise<IAuthResponse> => {
     )
   }
 
-  const result = await AuthCommonServices.handleLoginLogic(payload, isUserExist)
-  return result
+  return await AuthCommonServices.handleLoginLogic(payload, isUserExist)
 }
 
+// Specialized login for administrative roles
 const adminLogin = async (payload: ILoginData): Promise<IAuthResponse> => {
   const { email, phone } = payload
   const query = email ? { email: email.trim().toLowerCase() } : { phone: phone }
@@ -141,7 +137,8 @@ const adminLogin = async (payload: ILoginData): Promise<IAuthResponse> => {
     )
   }
 
-  if (isUserExist.role !== USER_ROLES.ADMIN) {
+  // Ensure the user has administrative privileges
+  if (isUserExist.role !== USER_ROLES.ADMIN && isUserExist.role !== USER_ROLES.SUPER_ADMIN) {
     throw new ApiError(
       StatusCodes.BAD_REQUEST,
       'You are not authorized to login as admin',
@@ -160,23 +157,23 @@ const adminLogin = async (payload: ILoginData): Promise<IAuthResponse> => {
     )
   }
 
-  // Create tokens
   const tokens = AuthHelper.createToken(
     isUserExist._id,
     isUserExist.role,
-    `${isUserExist.firstName} ${isUserExist.lastName}`,
+    isUserExist.fullName || 'Admin',
     isUserExist.email,
   )
 
   return authResponse(
     StatusCodes.OK,
-    `Welcome back ${isUserExist.firstName}`,
+    `Welcome back ${isUserExist.fullName || 'Admin'}`,
     isUserExist.role,
     tokens.accessToken,
     tokens.refreshToken,
   )
 }
 
+// Initiate password recovery by sending an OTP
 const forgetPassword = async (email?: string, phone?: string) => {
   const query = email
     ? { email: email.toLocaleLowerCase().trim() }
@@ -214,10 +211,9 @@ const forgetPassword = async (email?: string, phone?: string) => {
     { new: true },
   )
 
-  // Send OTP to user
   if (email) {
     const forgetPasswordEmailTemplate = emailTemplate.resetPassword({
-      name: `${isUserExist.firstName} ${isUserExist.lastName}`,
+      name: isUserExist.fullName || 'User',
       email: isUserExist.email,
       otp,
     })
@@ -230,6 +226,7 @@ const forgetPassword = async (email?: string, phone?: string) => {
   return 'OTP sent successfully.'
 }
 
+// Update password using a temporary reset token
 const resetPassword = async (resetToken: string, payload: IResetPassword) => {
   const { newPassword, confirmPassword } = payload
   if (newPassword !== confirmPassword) {
@@ -248,7 +245,6 @@ const resetPassword = async (resetToken: string, payload: IResetPassword) => {
   const isUserExist = await User.findById(isTokenExist.user)
     .select('+authentication')
     .lean()
-  console.log(isUserExist)
 
   if (!isUserExist) {
     throw new ApiError(
@@ -300,11 +296,11 @@ const resetPassword = async (resetToken: string, payload: IResetPassword) => {
   return { message: 'Password reset successfully' }
 }
 
+// Verify account using OTP for registration or password reset
 const verifyAccount = async (
   email: string,
   onetimeCode: string,
 ): Promise<IAuthResponse> => {
-  //verify fo new user
   if (!onetimeCode) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'OTP is required.')
   }
@@ -324,7 +320,6 @@ const verifyAccount = async (
 
   const { authentication } = isUserExist
 
-  //check the otp
   if (authentication?.oneTimeCode !== onetimeCode) {
     throw new ApiError(
       StatusCodes.BAD_REQUEST,
@@ -340,31 +335,31 @@ const verifyAccount = async (
     )
   }
 
-  //either newly created user or existing user
-  if (!isUserExist.verified) {
+  // Handle initial account verification
+  if (!isUserExist.isEmailVerified) {
     await User.findByIdAndUpdate(
       isUserExist._id,
-      { $set: { verified: true } },
+      { $set: { isEmailVerified: true } },
       { new: true },
     )
 
     const tokens = AuthHelper.createToken(
       isUserExist._id,
       isUserExist.role,
-      isUserExist.firstName + ' ' + isUserExist.lastName,
+      isUserExist.fullName || 'User',
       isUserExist.email,
     )
     const userInfo = {
       id: isUserExist._id,
       role: isUserExist.role,
-      name: `${isUserExist.firstName!} ${isUserExist.lastName!}`,
+      name: isUserExist.fullName || 'User',
       email: isUserExist.email!,
       image: isUserExist.image!,
     }
 
     return authResponse(
       StatusCodes.OK,
-      `Welcome ${isUserExist.firstName} ${isUserExist.lastName} to our platform.`,
+      `Welcome ${isUserExist.fullName || 'User'} to our platform.`,
       undefined,
       tokens.accessToken,
       tokens.refreshToken,
@@ -372,6 +367,7 @@ const verifyAccount = async (
       userInfo,
     )
   } else {
+    // Handle OTP verification for password reset
     await User.findByIdAndUpdate(
       isUserExist._id,
       {
@@ -392,9 +388,8 @@ const verifyAccount = async (
     const token = await Token.create({
       token: cryptoToken(),
       user: isUserExist._id,
-      expireAt: new Date(Date.now() + 5 * 60 * 1000), // 15 minutes
+      expireAt: new Date(Date.now() + 5 * 60 * 1000),
     })
-    console.log(token.token)
 
     if (!token) {
       throw new ApiError(
@@ -414,6 +409,7 @@ const verifyAccount = async (
   }
 }
 
+// Generate new access token using a valid refresh token
 const getAccessToken = async (token: string) => {
   if (!token) {
     throw new ApiError(StatusCodes.UNAUTHORIZED, 'Refresh Token is required')
@@ -445,8 +441,7 @@ const getAccessToken = async (token: string) => {
   }
 }
 
-
-
+// Core logic for re-sending OTP via email or phone
 const resendOtpToPhoneOrEmail = async (
   authType: 'resetPassword' | 'createAccount',
   email?: string,
@@ -465,7 +460,6 @@ const resendOtpToPhoneOrEmail = async (
     )
   }
 
-  // Check the request count
   const { authentication } = isUserExist
   if (authentication?.requestCount! >= 5) {
     throw new ApiError(
@@ -480,15 +474,14 @@ const resendOtpToPhoneOrEmail = async (
     oneTimeCode: otp,
     latestRequestAt: new Date(),
     requestCount: authentication?.requestCount! + 1,
-    expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes
+    expiresAt: new Date(Date.now() + 5 * 60 * 1000),
     authType: authType,
   }
 
-  // Send OTP to user
   if (email) {
     const forgetPasswordEmailTemplate = emailTemplate.resendOtp({
       email: isUserExist.email,
-      name: `${isUserExist.firstName} ${isUserExist.lastName}`,
+      name: isUserExist.fullName || 'User',
       otp,
       type: authType,
     })
@@ -505,7 +498,6 @@ const resendOtpToPhoneOrEmail = async (
   }
 
   if (phone) {
-    // Implement this feature using aws sns
     await User.findByIdAndUpdate(
       isUserExist._id,
       {
@@ -516,6 +508,7 @@ const resendOtpToPhoneOrEmail = async (
   }
 }
 
+// Handle secure account deletion with password verification
 const deleteAccount = async (user: JwtPayload, password: string) => {
   const { authId } = user
   const isUserExist = await User.findById(authId).select('+password')
@@ -554,6 +547,7 @@ const deleteAccount = async (user: JwtPayload, password: string) => {
   }
 }
 
+// Specialized OTP resend for specific web flows
 const resendOtp = async (
   email: string,
   authType: 'createAccount' | 'resetPassword',
@@ -578,7 +572,7 @@ const resendOtp = async (
     oneTimeCode: otp,
     latestRequestAt: new Date(),
     requestCount: authentication?.requestCount! + 1,
-    expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes
+    expiresAt: new Date(Date.now() + 5 * 60 * 1000),
   }
 
   if (authenticationPayload.requestCount! >= 5) {
@@ -596,11 +590,10 @@ const resendOtp = async (
     { new: true },
   )
 
-  // Send OTP to user
   if (email) {
     const forgetPasswordEmailTemplate = emailTemplate.resendOtp({
       email: email,
-      name: `${isUserExist.firstName} ${isUserExist.lastName}`,
+      name: isUserExist.fullName || 'User',
       otp,
       type: authType,
     })
@@ -613,12 +606,12 @@ const resendOtp = async (
   return 'OTP sent successfully.'
 }
 
+// Update the user's password securely
 const changePassword = async (
   user: JwtPayload,
   currentPassword: string,
   newPassword: string,
 ) => {
-  // Find the user with password field
   const isUserExist = await User.findById(user.authId)
     .select('+password')
     .lean()
@@ -627,7 +620,6 @@ const changePassword = async (
     throw new ApiError(StatusCodes.NOT_FOUND, 'User not found')
   }
 
-  // Check if current password matches
   const isPasswordMatch = await AuthHelper.isPasswordMatched(
     currentPassword,
     isUserExist.password as string,
@@ -637,13 +629,11 @@ const changePassword = async (
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Current password is incorrect')
   }
 
-  // Hash the new password
   const hashedPassword = await bcrypt.hash(
     newPassword,
     Number(config.bcrypt_salt_rounds),
   )
 
-  // Update the password
   await User.findByIdAndUpdate(
     user.authId,
     { password: hashedPassword },
@@ -659,7 +649,6 @@ export const AuthServices = {
   verifyAccount,
   login,
   getAccessToken,
-
   resendOtpToPhoneOrEmail,
   deleteAccount,
   resendOtp,
@@ -667,3 +656,5 @@ export const AuthServices = {
   createUser,
   adminLogin
 }
+
+

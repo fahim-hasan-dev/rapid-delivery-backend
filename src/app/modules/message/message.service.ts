@@ -10,12 +10,10 @@ import ApiError from '../../../errors/ApiError';
 import { StatusCodes } from 'http-status-codes';
 import { PushNotificationService } from '../notification/pushNotification.service';
 import { User } from '../user/user.model';
-import { ADMIN_ROLES } from '../../../enum/user';
 
+// Send a new message and notify chat participants
 const sendMessageToDB = async (payload: any): Promise<IMessage> => {
-  // Initialize readBy with sender's ID
   payload.readBy = [payload.sender];
-
 
   const isExistChat = await Chat.findById(payload.chatId);
   if (!isExistChat) {
@@ -26,10 +24,9 @@ const sendMessageToDB = async (payload: any): Promise<IMessage> => {
     throw new ApiError(StatusCodes.BAD_REQUEST, "You are not a participant!");
   }
 
-  // Save to DB
   const response = await Message.create(payload);
 
-  // Update chat's lastMessage and lastMessageAt
+  // Update the chat with latest message information
   await Chat.findByIdAndUpdate(payload.chatId, {
     lastMessage: response._id,
     lastMessageAt: new Date()
@@ -38,38 +35,34 @@ const sendMessageToDB = async (payload: any): Promise<IMessage> => {
   //@ts-ignore
   const io = global.io;
   if (io && payload.chatId) {
-    // Send message to specific Chat room
+    // Dispatch real-time gateway events
     io.emit(`getMessage::${payload?.chatId}`, response);
 
-    // Notify ALL participants to update their chat list (real-time sorting)
     isExistChat.participants.forEach((participantId: any) => {
       io.emit(`chatListUpdate::${participantId.toString()}`, {
         chatId: payload.chatId,
         lastMessage: response,
       });
     });
-
   }
 
-  // Send Push Notification
+  // Handle push notifications for participants
   try {
     const chatStatus = await Chat.findById(payload.chatId);
     if (chatStatus) {
-      // Fetch sender details for better title
       const sender = await User.findById(payload.sender).select('fullName role');
       const title = sender?.fullName || "New Message";
       const body = payload.text ?
         (payload.text.length > 50 ? payload.text.substring(0, 50) + "..." : payload.text) :
         "Sent an attachment";
 
-      // Normal Chat recipient
       const recipientId = chatStatus.participants.find(
         (p: any) => p.toString() !== payload.sender.toString()
       );
 
       if (recipientId) {
         const recipient = await User.findById(recipientId).select('fcmToken');
-        if (recipient?.fcmToken) {
+        if (recipient?.fcmToken && recipient.fcmToken.length > 0) {
           await PushNotificationService.sendPushNotification(
             recipient.fcmToken,
             title,
@@ -81,13 +74,12 @@ const sendMessageToDB = async (payload: any): Promise<IMessage> => {
     }
   } catch (error) {
     console.error("Failed to send push notification:", error);
-    // Don't block the response if notification fails
   }
 
   return response;
 };
 
-// Get Message from db
+// Retrieve paginated messages for a chat and mark as read
 const getMessageFromDB = async (
   id: string,
   user: JwtPayload,
@@ -104,7 +96,7 @@ const getMessageFromDB = async (
     throw new Error('You are not participant of this chat')
   }
 
-  // Mark messages as read for this user
+  // Mark all unread messages as read by current user
   await Message.updateMany(
     {
       chatId: new mongoose.Types.ObjectId(id),
@@ -138,20 +130,17 @@ const getMessageFromDB = async (
   return { messages, pagination, participant: participant?.participants[0] };
 };
 
-
-// Update a message
+// Update existing message content
 const updateMessageToDB = async (messageId: string, userId: string, payload: Partial<IMessage>): Promise<IMessage | null> => {
   const message = await Message.findById(messageId);
   if (!message) {
     throw new ApiError(StatusCodes.NOT_FOUND, "Message not found");
   }
 
-  // Check if the user is the sender
   if (message.sender.toString() !== userId) {
     throw new ApiError(StatusCodes.FORBIDDEN, "You can only update your own messages");
   }
 
-  // Update the message
   const updatedMessage = await Message.findByIdAndUpdate(
     messageId,
     payload,
@@ -167,44 +156,37 @@ const updateMessageToDB = async (messageId: string, userId: string, payload: Par
   return updatedMessage;
 };
 
-// Get unread message count for a specific chat
+// Get the count of unread messages in a specific chat
 const getUnreadCountForChat = async (chatId: string, userId: string): Promise<number> => {
-  const count = await Message.countDocuments({
+  return await Message.countDocuments({
     chatId: new mongoose.Types.ObjectId(chatId),
     sender: { $ne: new mongoose.Types.ObjectId(userId) },
     readBy: { $ne: new mongoose.Types.ObjectId(userId) }
   });
-
-  return count;
 };
 
-// Get total unread message count for a user
+// Get the collective unread message count for a user across all chats
 const getTotalUnreadCount = async (userId: string): Promise<number> => {
-  // Get all chats for this user
   const chats = await Chat.find({
     participants: new mongoose.Types.ObjectId(userId)
   }).select('_id');
 
   const chatIds = chats.map(chat => chat._id);
 
-  // Count unread messages across all chats
-  const count = await Message.countDocuments({
+  return await Message.countDocuments({
     chatId: { $in: chatIds },
     sender: { $ne: new mongoose.Types.ObjectId(userId) },
     readBy: { $ne: new mongoose.Types.ObjectId(userId) }
   });
-
-  return count;
 };
 
-// Delete message from DB
+// Permanently delete a message
 const deleteMessageFromDB = async (messageId: string, userId: string): Promise<IMessage | null> => {
   const message = await Message.findById(messageId);
   if (!message) {
     throw new ApiError(StatusCodes.NOT_FOUND, "Message not found");
   }
 
-  // Check if the user is the sender of the message
   if (message.sender.toString() !== userId) {
     throw new ApiError(StatusCodes.FORBIDDEN, "You can only delete your own messages");
   }
@@ -212,6 +194,7 @@ const deleteMessageFromDB = async (messageId: string, userId: string): Promise<I
   return await Message.findByIdAndDelete(messageId);
 };
 
+// Future feature: handle money request status updates
 const updateMoneyRequestStatusToDB = async (messageId: string, user: JwtPayload, status: 'accepted' | 'rejected') => {
   return null;
 };
@@ -224,4 +207,4 @@ export const MessageService = {
   getTotalUnreadCount,
   deleteMessageFromDB,
   updateMoneyRequestStatusToDB
-};
+};

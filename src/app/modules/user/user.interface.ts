@@ -1,7 +1,9 @@
 import { Model, Types } from "mongoose";
 import { USER_ROLES, USER_STATUS } from "../../../enum/user";
 
+export { USER_ROLES, USER_STATUS };
 
+// Authentication details for security and account management
 type IAuthentication = {
     restrictionLeftAt: Date | null
     resetPassword: boolean
@@ -14,6 +16,7 @@ type IAuthentication = {
     authType?: 'createAccount' | 'resetPassword'
 }
 
+// Main user structure for the rapid-delivery platform
 export type IUser = {
     _id: Types.ObjectId;
     fullName?: string;
@@ -32,6 +35,7 @@ export type IUser = {
     isPhoneVerified: boolean;
     authentication: IAuthentication;
     fcmToken?: string[];
+    // Information specifically for drivers including documents and ratings
     driverInfo?: {
         nid: string[];
         drivingLicense: string[];
@@ -44,6 +48,8 @@ export type IUser = {
     }
 };
 
+// Model type for mongoose with static methods
 export type UserModel = {
     isPasswordMatched: (givenPassword: string, savedPassword: string) => Promise<boolean>;
 } & Model<IUser>;
+

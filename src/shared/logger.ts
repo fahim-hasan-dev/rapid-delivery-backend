@@ -4,7 +4,7 @@ import DailyRotateFile from 'winston-daily-rotate-file'
 import fs from 'fs'
 import { TransformableInfo } from 'logform'
 
-// Function to create the necessary directories if they don't exist
+// Ensure log directories exist before attempting to write logs
 const createLogDirs = () => {
   const dirs = ['logs/winston/successes', 'logs/winston/errors']
   dirs.forEach(dir => {
@@ -14,9 +14,9 @@ const createLogDirs = () => {
   })
 }
 
-// Custom log format
 const { combine, timestamp, label, printf } = format
 
+// Define the structure and layout of the log messages
 const myFormat = printf((info: TransformableInfo) => {
   const { level, message, label, timestamp } = info
   const date = new Date(timestamp as string)
@@ -26,9 +26,9 @@ const myFormat = printf((info: TransformableInfo) => {
   return `{${date.toDateString()} ${hour}:${minutes}:${seconds}} [${label}] ${level}: ${message}`
 })
 
-createLogDirs() // Ensure directories exist
+createLogDirs()
 
-// Success logger
+// Standard info logger for general system events and successes
 const logger = createLogger({
   level: 'info',
   format: combine(label({ label: 'Rapid-Delivery 🚚' }), timestamp(), myFormat),
@@ -50,9 +50,9 @@ const logger = createLogger({
   ],
 })
 
-// Error logger
+// Specialized error logger for tracking exceptions and failures
 const errorLogger = createLogger({
-  level: 'error', // This ensures that only error-level messages are logged
+  level: 'error',
   format: combine(label({ label: 'Rapid-Delivery 🚨' }), timestamp(), myFormat),
   transports: [
     new transports.Console(),
@@ -73,3 +73,5 @@ const errorLogger = createLogger({
 })
 
 export { logger, errorLogger }
+
+

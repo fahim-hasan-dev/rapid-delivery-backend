@@ -5,10 +5,10 @@ import { USER_ROLES } from '../../../enum/user';
 
 const router = express.Router();
 
-// Create a regular chat between users
+// Initialize a new conversation between two users
 router.post(
   "/",
-  auth(USER_ROLES.USER, USER_ROLES.ADMIN),
+  auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
   async (req, res, next) => {
     try {
       req.body = {
@@ -23,20 +23,19 @@ router.post(
   ChatController.createChat
 );
 
-
-// Get all chats for current user
+// Fetch all active conversations for the authenticated user
 router.get(
   "/",
-  auth(USER_ROLES.USER, USER_ROLES.ADMIN),
+  auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
   ChatController.getChat
 );
 
-
-// Delete a chat
+// Remove a chat session from the user's active list
 router.delete(
   "/:id",
-  auth(USER_ROLES.USER, USER_ROLES.ADMIN),
+  auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
   ChatController.deleteChat
 );
 
 export const ChatRoutes = router;
+

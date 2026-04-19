@@ -4,16 +4,14 @@ import config from '../../../config'
 import { Types } from 'mongoose'
 import bcrypt from "bcrypt";
 
-
-
-const createToken = (authId: Types.ObjectId, role: string, name?: string, email?: string, deviceToken?: string) => {
+const createToken = (authId: Types.ObjectId, role: string, name?: string, email?: string) => {
   const accessToken = jwtHelper.createToken(
-    { authId, role, name, email, deviceToken },
+    { authId, role, name, email },
     config.jwt.jwt_secret as Secret,
     config.jwt.jwt_expire_in as string,
   )
   const refreshToken = jwtHelper.createToken(
-    { authId, role, name, email, deviceToken },
+    { authId, role, name, email },
     config.jwt.jwt_refresh_secret as Secret,
     config.jwt.jwt_refresh_expire_in as string,
   )
@@ -21,9 +19,9 @@ const createToken = (authId: Types.ObjectId, role: string, name?: string, email?
   return { accessToken, refreshToken }
 }
 
-const tempAccessToken = (authId: Types.ObjectId, role: string, name?: string, email?: string, deviceToken?: string) => {
+const tempAccessToken = (authId: Types.ObjectId, role: string, name?: string, email?: string) => {
   const accessToken = jwtHelper.createToken(
-    { authId, role, name, email, deviceToken },
+    { authId, role, name, email },
     'asjdhashd#$uaas98',
     config.jwt.jwt_expire_in as string,
   )
@@ -39,3 +37,4 @@ const isPasswordMatched = async (
 }
 
 export const AuthHelper = { createToken, isPasswordMatched }
+

@@ -3,12 +3,14 @@ export type IVerifyEmail = {
   oneTimeCode: number
 }
 
+// Login credentials for both email and phone based authentication
 export type ILoginData = {
   password: string
   email?: string
   phone?: string
-  deviceToken?: string
+  fcmToken?: string
 }
+
 
 export type IAuthResetPassword = {
   newPassword: string

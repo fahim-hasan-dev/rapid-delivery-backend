@@ -4,30 +4,38 @@ import { USER_ROLES, USER_STATUS } from "./user.interface";
 export const userSignupSchema = z.object({
   body: z.object({
     email: z.string().email("Invalid email address").toLowerCase().trim(),
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
+    fullName: z.string().min(1, "Full name is required"),
+    phone: z.string().optional(),
     password: z.string().min(6, "Password must be at least 6 characters"),
-    role: z.literal(USER_ROLES.USER),
+    role: z.nativeEnum(USER_ROLES).default(USER_ROLES.SENDER),
   })
 });
 
 export const userLoginSchema = z.object({
   body: z.object({
-    email: z.string().email("Invalid email address").toLowerCase().trim(),
+    email: z.string().email("Invalid email address").toLowerCase().trim().optional(),
+    phone: z.string().optional(),
     password: z.string().min(1, "Password is required"),
   })
+}).refine(data => data.body.email || data.body.phone, {
+  message: "Either email or phone is required",
+  path: ["body"]
 });
 
 export const userUpdateSchema = z.object({
   body: z.object({
-    email: z.string().email("Invalid email address").trim().toLowerCase().optional(),
-    firstName: z.string().min(1, "First name is required").optional(),
-    lastName: z.string().min(1, "Last name is required").optional(),
-    image: z.string().url("Invalid image URL").optional(),
-    password: z.string().min(6, "Password must be at least 6 characters").optional(),
+    fullName: z.string().optional(),
+    phone: z.string().optional(),
+    image: z.string().optional(),
     status: z.nativeEnum(USER_STATUS).optional(),
-    verified: z.boolean().optional(),
-    role: z.nativeEnum(USER_ROLES).optional(),
+    isEmailVerified: z.boolean().optional(),
+    isPhoneVerified: z.boolean().optional(),
+    address: z.string().optional(),
+    location: z.object({
+      latitude: z.number(),
+      longitude: z.number(),
+    }).optional(),
+    fcmToken: z.array(z.string()).optional(),
   })
 });
 
@@ -44,3 +52,4 @@ export const UserValidations = {
   userUpdateSchema,
   changePasswordSchema,
 };
+

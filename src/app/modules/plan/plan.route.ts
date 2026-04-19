@@ -4,8 +4,10 @@ import { createPlanZodValidationSchema, updatePlanZodValidationSchema } from "./
 import auth from "../../middleware/auth";
 import { USER_ROLES } from "../../../enum/user";
 import validateRequest from "../../middleware/validateRequest";
+
 const router = express.Router()
 
+// Plan management routes for super admins and senders
 router.route("/")
     .post(
         auth(USER_ROLES.ADMIN),
@@ -13,16 +15,18 @@ router.route("/")
         PlanController.createPlan
     )
     .get(
-        auth(USER_ROLES.ADMIN, USER_ROLES.USER),
+        auth(USER_ROLES.ADMIN, USER_ROLES.SENDER),
         PlanController.getPlan
     )
 
+// Payment checkout initiation for subscription plans
 router.post(
     "/create-checkout-session/:planId",
-    auth(USER_ROLES.USER),
+    auth(USER_ROLES.SENDER),
     PlanController.createCheckoutSession
 )
 
+// Individual plan management routes
 router
     .route("/:id")
     .patch(
@@ -32,4 +36,4 @@ router
     )
     .delete(auth(USER_ROLES.ADMIN), PlanController.deletePlan)
 
-export const PlanRoutes = router;
+export const PlanRoutes = router;

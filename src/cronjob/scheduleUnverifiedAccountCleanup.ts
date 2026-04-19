@@ -2,23 +2,30 @@ import cron from "node-cron";
 import { User } from "../app/modules/user/user.model";
 import { logger } from "../shared/logger";
 
+// Background job to periodically remove unverified accounts
 export const scheduleUnverifiedAccountCleanup = () => {
     const GRACE_PERIOD_MINUTES = 5;
 
-    cron.schedule("* * * * *", async () => { // Runs every minute
+    // Run the cleanup process every minute to keep the user database clean
+    cron.schedule("* * * * *", async () => {
         try {
             const cutoffDate = new Date(Date.now() - GRACE_PERIOD_MINUTES * 60 * 1000);
 
-            // Delete unverified accounts older than the grace period
+            // Find and delete accounts that failed to verify within the grace period
             const result = await User.deleteMany({
-                verified: false,
-                createdAt: { $lt: cutoffDate }, // Only delete accounts created before the cutoff date    
+                isEmailVerified: false,
+                createdAt: { $lt: cutoffDate },
             });
 
-            logger.info(`Deleted ${result.deletedCount} unverified accounts.`);    
+            if (result.deletedCount > 0) {
+                logger.info(`Deleted ${result.deletedCount} unverified accounts.`);
+            }
         } catch (error) {
-            logger.error("Error during unverified account cleanup:", error);    
+            logger.error("Error during unverified account cleanup:", error);
         }
     });
-    logger.info("Unverified account cleanup job scheduled to run every minute.");    
+
+    logger.info("Unverified account cleanup job scheduled.");
 };
+
+

@@ -3,14 +3,14 @@ import path from 'path';
 import config from '../../../config';
 import { logger } from '../../../shared/logger';
 
-// Initialize Firebase Admin
+// Flag to track initialization status
 let isFirebaseInitialized = false;
 
+// Set up firebase admin with service account credentials
 const initializeFirebase = () => {
     try {
         let serviceAccountPath = path.join(process.cwd(), 'serviceAccountKey.json');
 
-        // Check if file exists, if not, try one level up
         if (!require('fs').existsSync(serviceAccountPath)) {
             serviceAccountPath = path.join(process.cwd(), '..', 'serviceAccountKey.json');
         }
@@ -28,8 +28,9 @@ const initializeFirebase = () => {
     }
 };
 
+// Send push notifications to one or more devices via FCM
 const sendPushNotification = async (
-    fcmToken: string,
+    fcmTokens: string | string[],
     title: string,
     body: string,
     data?: Record<string, any>
@@ -43,7 +44,10 @@ const sendPushNotification = async (
         return;
     }
 
-    // Convert all data values to strings (FCM requirement)
+    // Format tokens into an array for consistent processing
+    const tokens = Array.isArray(fcmTokens) ? fcmTokens : [fcmTokens];
+    if (tokens.length === 0) return;
+
     const stringifiedData: Record<string, string> = {};
     if (data) {
         Object.entries(data).forEach(([key, value]) => {
@@ -51,24 +55,25 @@ const sendPushNotification = async (
         });
     }
 
-    const message: admin.messaging.Message = {
-        notification: {
-            title,
-            body,
-        },
-        data: stringifiedData,
-        token: fcmToken,
-    };
-
+    // Process notification sending for each token
     try {
-        const response = await admin.messaging().send(message);
-        logger.info('Push notification sent successfully:', response);
-        return response;
+        const results = await Promise.all(tokens.map(async (token) => {
+            const message: admin.messaging.Message = {
+                notification: { title, body },
+                data: stringifiedData,
+                token: token,
+            };
+            return admin.messaging().send(message);
+        }));
+        
+        logger.info(`Push notifications sent to ${results.length} tokens.`);
+        return results;
     } catch (error) {
-        logger.error('Error sending push notification:', error);
+        logger.error('Error sending push notifications:', error);
     }
 };
 
 export const PushNotificationService = {
     sendPushNotification,
 };
+

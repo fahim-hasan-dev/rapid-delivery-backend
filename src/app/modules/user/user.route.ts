@@ -6,31 +6,36 @@ import fileUploadHandler from '../../middleware/fileUploadHandler'
 
 const router = express.Router()
 
+// User profile retrieval for current session
 router.get(
   '/me',
-  auth(USER_ROLES.USER, USER_ROLES.ADMIN),
+  auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
   UserController.getProfile,
 )
-router.get('/', auth(USER_ROLES.ADMIN), UserController.getAllUser);
+
+// Admin access to all user records
+router.get('/', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), UserController.getAllUser);
+
+// Update profile details with optional image upload
 router.patch(
   '/profile',
-  auth(USER_ROLES.USER, USER_ROLES.ADMIN),
+  auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
   fileUploadHandler(),
   UserController.updateProfile,
 )
 
-// delete my account
+// Permanent account deletion by the user
 router.delete(
   '/me',
-  auth(USER_ROLES.USER, USER_ROLES.ADMIN),
+  auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
   UserController.deleteMyAccount,
 )
 
-// get single user
+// Retrieve public profile of a single user
 router.get('/:id', UserController.getSingleUser)
 
-
-// delete user
-router.delete('/:id', auth(USER_ROLES.ADMIN), UserController.deleteUser)
+// Administrative user deletion
+router.delete('/:id', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), UserController.deleteUser)
 
 export const UserRoutes = router
+

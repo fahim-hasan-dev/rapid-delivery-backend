@@ -5,8 +5,9 @@ import app from './app'
 import config from './config'
 import { errorLogger, logger } from './shared/logger'
 import { socketHelper } from './helpers/socketHelper'
-import { UserServices } from './app/modules/user/user.service'
+import { seedSuperAdmin } from './DB/seed'
 
+// Handle unexpected errors that weren't caught by any try-catch block
 process.on('uncaughtException', error => {
     errorLogger.error('UnhandledException Detected', error)
     process.exit(1)
@@ -14,29 +15,29 @@ process.on('uncaughtException', error => {
 
 export const onlineUsers = new Map()
 let server: any
+
+// Connect to the database and start the express server
 async function main() {
     try {
-        mongoose.connect(config.database_url as string)
+        await mongoose.connect(config.database_url as string)
         logger.info(colors.green('🚀 Database connected successfully'))
 
-        const port =
-            typeof config.port === 'number' ? config.port : Number(config.port)
+        // Initialize the super admin account if it doesn't already exist
+        await seedSuperAdmin()
+
+        const port = typeof config.port === 'number' ? config.port : Number(config.port)
 
         server = app.listen(port, config.ip_address as string, () => {
-            logger.info(
-                colors.yellow(`♻️  Application listening on port:${config.port}`),
-            )
-
+            logger.info(colors.yellow(`♻️  Application listening on port:${config.port}`))
         })
 
-        //socket
+        // Set up socket.io for real-time communication
         const io = new Server(server, {
             pingTimeout: 60000,
             cors: {
                 origin: '*',
             },
         })
-
 
         logger.info(colors.green('🍁 Server connected successfully'))
 
@@ -47,7 +48,8 @@ async function main() {
         errorLogger.error(colors.red('Server Failed to connect Database'))
         config.node_env === 'development' && console.log(error)
     }
-    //handle unhandleRejection
+
+    // Handle promise rejections that aren't caught locally
     process.on('unhandledRejection', error => {
         if (server) {
             server.close(() => {
@@ -59,12 +61,15 @@ async function main() {
         }
     })
 }
+
 main()
 
-//SIGTERM
+// Gracefully shut down the server when receiving a termination signal
 process.on('SIGTERM', async () => {
     logger.info('SIGTERM IS RECEIVE')
     if (server) {
         server.close()
     }
 })
+
+
