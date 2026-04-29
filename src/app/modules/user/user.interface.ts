@@ -3,7 +3,6 @@ import { USER_ROLES, USER_STATUS } from "../../../enum/user";
 
 export { USER_ROLES, USER_STATUS };
 
-// Authentication details for security and account management
 type IAuthentication = {
     restrictionLeftAt: Date | null
     resetPassword: boolean
@@ -16,7 +15,6 @@ type IAuthentication = {
     authType?: 'createAccount' | 'resetPassword'
 }
 
-// Main user structure for the rapid-delivery platform
 export type IUser = {
     _id: Types.ObjectId;
     fullName?: string;
@@ -27,15 +25,11 @@ export type IUser = {
     status: USER_STATUS;
     role: USER_ROLES;
     address?: string;
-    location?: {
-        latitude: number;
-        longitude: number;
-    }
+    location?: [number, number]
     isEmailVerified: boolean;
     isPhoneVerified: boolean;
     authentication: IAuthentication;
     fcmToken?: string[];
-    // Information specifically for drivers including documents and ratings
     driverInfo?: {
         nid: string[];
         drivingLicense: string[];
