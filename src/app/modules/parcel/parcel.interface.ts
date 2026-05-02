@@ -1,0 +1,31 @@
+import { Types } from "mongoose";
+import { PARCEL_STATUS, VEHICLE_TYPE } from "../../../enum/parcel";
+
+export type IParcel = {
+    _id: Types.ObjectId;
+    name: string;
+    itemValue: number;
+    pickupLocation: {
+        address: string;
+        coordinates: [number, number];
+    };
+    dropLocation: {
+        address: string;
+        coordinates: [number, number];
+    };
+    vehicleType: VEHICLE_TYPE;
+    distance: number;
+    baseFare: number;
+    totalPrice: number;
+    paymentId?: string;
+    sender: Types.ObjectId;
+    deliveryDate: Date;
+    receiverName: string;
+    receiverPhone: string;
+    isDriverAssigned: boolean;
+    driver?: Types.ObjectId;
+    status: PARCEL_STATUS;
+    note?: string;
+    pickupProof?: string[];
+    deliveryProof?: string[];
+};
