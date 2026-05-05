@@ -15,6 +15,12 @@ router.post(
 );
 
 router.get(
+    "/calculate-distance",
+    auth(USER_ROLES.SENDER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+    ParcelController.calculateDistance
+);
+
+router.get(
     "/my-parcels",
     auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
     ParcelController.getMyParcels

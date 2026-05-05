@@ -6,8 +6,32 @@ import { PARCEL_STATUS } from "../../../enum/parcel";
 import { notificationQueue } from "../../../queues";
 import QueryBuilder from "../../builder/QueryBuilder";
 import { trackingService } from "../../../helpers/trackingService";
+import { getDistanceAndDuration } from "../../../utils/googleMaps.util";
+import { SettingServices } from "../setting/setting.service";
+import { redisClient } from "../../../helpers/redis";
 
 const createParcel = async (payload: IParcel) => {
+    // Automatically calculate distance and price before creation
+    const calculation = await calculateParcelDistanceAndPrice(
+        payload.pickupLocation.coordinates[0],
+        payload.pickupLocation.coordinates[1],
+        payload.dropLocation.coordinates[0],
+        payload.dropLocation.coordinates[1]
+    );
+
+    // Get the specific vehicle's data from the calculation results
+    const vt = payload.vehicleType.toLowerCase() as keyof typeof calculation.vehicles;
+    const vehicleData = calculation.vehicles[vt];
+
+    if (!vehicleData) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, `Invalid vehicle type: ${payload.vehicleType}`);
+    }
+
+    // Override with server-side calculated values for security
+    payload.distance = calculation.distance;
+    payload.baseFare = vehicleData.baseFare;
+    payload.totalPrice = vehicleData.totalPrice;
+
     return await Parcel.create(payload);
 };
 
@@ -184,6 +208,71 @@ const getSingleParcel = async (id: string) => {
     return parcel;
 };
 
+const calculateParcelDistanceAndPrice = async (
+    fromLat: number,
+    fromLng: number,
+    toLat: number,
+    toLng: number
+) => {
+    // Round coordinates to 5 decimal places for consistent cache keys
+    const cacheKey = `dist_cache:${fromLat.toFixed(5)}:${fromLng.toFixed(5)}:${toLat.toFixed(5)}:${toLng.toFixed(5)}`;
+
+    // 1. Try to get from Redis Cache
+    const cachedData = await redisClient.get(cacheKey);
+    let distanceData;
+
+    if (cachedData) {
+        distanceData = JSON.parse(cachedData);
+    } else {
+        // 2. If not in cache, call Google Maps
+        distanceData = await getDistanceAndDuration(
+            { lat: fromLat, lng: fromLng },
+            { lat: toLat, lng: toLng }
+        );
+
+        if (!distanceData) {
+            throw new ApiError(
+                StatusCodes.BAD_REQUEST,
+                "Could not calculate distance. Please check your coordinates."
+            );
+        }
+
+        // 3. Store in Redis (1 hour TTL)
+        await redisClient.set(cacheKey, JSON.stringify(distanceData), "EX", 3600);
+    }
+
+    const settings = await SettingServices.getSettings();
+    if (!settings) {
+        throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, "Settings not found.");
+    }
+
+    const perKiloCost = settings.perKiloCost || 0;
+    const distance = distanceData.distanceKm;
+
+    // Calculate price for each vehicle type
+    const vehicles = {
+        motorcycle: {
+            baseFare: settings.vehicleBaseFares.motorcycle,
+            totalPrice: Math.ceil(settings.vehicleBaseFares.motorcycle + distance * perKiloCost),
+        },
+        tricycle: {
+            baseFare: settings.vehicleBaseFares.tricycle,
+            totalPrice: Math.ceil(settings.vehicleBaseFares.tricycle + distance * perKiloCost),
+        },
+        van: {
+            baseFare: settings.vehicleBaseFares.van,
+            totalPrice: Math.ceil(settings.vehicleBaseFares.van + distance * perKiloCost),
+        },
+    };
+
+    return {
+        distance,
+        duration: distanceData.durationText,
+        perKiloCost,
+        vehicles,
+    };
+};
+
 const updateParcel = async (id: string, payload: Partial<IParcel>) => {
     const parcel = await Parcel.findById(id);
     if (!parcel) {
@@ -214,6 +303,7 @@ export const ParcelServices = {
     getNearbyParcels,
     acceptParcel,
     getSingleParcel,
+    calculateParcelDistanceAndPrice,
     updateParcel,
     deleteParcel,
 };

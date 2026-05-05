@@ -13,8 +13,7 @@ import { ChatRoutes } from '../modules/chat/chat.routes';
 import { MessageRoutes } from '../modules/message/message.routes';
 import { NotificationRoutes } from '../modules/notification/notification.routes';
 import { ParcelRoutes } from '../modules/parcel/parcel.route';
-
-
+import { SettingRoutes } from '../modules/setting/setting.route';
 
 const router = express.Router();
 
@@ -31,7 +30,8 @@ const apiRoutes = [
     { path: "/message", route: MessageRoutes },
     { path: "/notification", route: NotificationRoutes },
     { path: "/parcel", route: ParcelRoutes },
-]
+    { path: "/settings", route: SettingRoutes },
+];
 
 router.post('/webhook', handleStripeWebhook);
 

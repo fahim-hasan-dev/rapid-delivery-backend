@@ -7,7 +7,7 @@ export enum PARCEL_STATUS {
 }
 
 export enum VEHICLE_TYPE {
-    MOTORCYCLE = 'Motorcycle',
-    TRICYCLE = 'Tricycle',
-    VAN = 'Van'
+    MOTORCYCLE = 'motorcycle',
+    TRICYCLE = 'tricycle',
+    VAN = 'van'
 }

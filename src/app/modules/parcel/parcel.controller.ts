@@ -102,6 +102,27 @@ const deleteParcel = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const calculateDistance = catchAsync(async (req: Request, res: Response) => {
+    const fromLat = Number(req.query.fromLat);
+    const fromLng = Number(req.query.fromLng);
+    const toLat = Number(req.query.toLat);
+    const toLng = Number(req.query.toLng);
+
+    const result = await ParcelServices.calculateParcelDistanceAndPrice(
+        fromLat,
+        fromLng,
+        toLat,
+        toLng
+    );
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Distance and price calculated successfully",
+        data: result,
+    });
+});
+
 export const ParcelController = {
     createParcel,
     getAllParcels,
@@ -109,6 +130,7 @@ export const ParcelController = {
     getNearbyParcels,
     acceptParcel,
     getSingleParcel,
+    calculateDistance,
     updateParcel,
     deleteParcel,
 };
