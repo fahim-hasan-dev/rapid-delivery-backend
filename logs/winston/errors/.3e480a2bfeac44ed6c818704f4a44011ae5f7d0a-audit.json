@@ -6,14 +6,34 @@
     "auditLog": "D:\\Fahim\\Projects\\Rapid-Delivery\\logs\\winston\\errors\\.3e480a2bfeac44ed6c818704f4a44011ae5f7d0a-audit.json",
     "files": [
         {
-            "date": 1776587246506,
-            "name": "D:\\Fahim\\Projects\\Rapid-Delivery\\logs\\winston\\errors\\sg-2026-04-19-14-error.log",
-            "hash": "349e0afb3c54253b3c9421088c274b545773278fa04d479603e01447604d6855"
+            "date": 1777718296855,
+            "name": "D:\\Fahim\\Projects\\Rapid-Delivery\\logs\\winston\\errors\\sg-2026-05-02-16-error.log",
+            "hash": "943c72691525c4affb0936a8352ad9c815a57a541fdf34f94bcf9a3276db40c2"
         },
         {
-            "date": 1776590249978,
-            "name": "D:\\Fahim\\Projects\\Rapid-Delivery\\logs\\winston\\errors\\sg-2026-04-19-15-error.log",
-            "hash": "ccfa039c4d10ead72ce0994e2e2c7aa80ca4b37f1a9476980814999a02109c25"
+            "date": 1777780120986,
+            "name": "D:\\Fahim\\Projects\\Rapid-Delivery\\logs\\winston\\errors\\sg-2026-05-03-09-error.log",
+            "hash": "b9948e835dad506e4684675da046661e94b7106bf771f33c13c2e238e25d4021"
+        },
+        {
+            "date": 1777948384711,
+            "name": "D:\\Fahim\\Projects\\Rapid-Delivery\\logs\\winston\\errors\\sg-2026-05-05-08-error.log",
+            "hash": "b16f4594fd94836c0a24484c86d64ec08e4e19e994042d6be6c8e4abe07744b1"
+        },
+        {
+            "date": 1777950850148,
+            "name": "D:\\Fahim\\Projects\\Rapid-Delivery\\logs\\winston\\errors\\sg-2026-05-05-09-error.log",
+            "hash": "1a2b0ecaf88c76ca9e3c3791601a1f38ab6ef18bb42773a3e1a59cb96cc8a60d"
+        },
+        {
+            "date": 1777954470976,
+            "name": "D:\\Fahim\\Projects\\Rapid-Delivery\\logs\\winston\\errors\\sg-2026-05-05-10-error.log",
+            "hash": "c9c442cc14a5f3d7cf9e9242ccc1242686a68c33e7d8f3ea14eca757e0b5ce66"
+        },
+        {
+            "date": 1777959250439,
+            "name": "D:\\Fahim\\Projects\\Rapid-Delivery\\logs\\winston\\errors\\sg-2026-05-05-11-error.log",
+            "hash": "7284dcf64f1d87436614cde347e8103ecc81a6a10776b92522f32864107b6552"
         }
     ],
     "hashType": "sha256"

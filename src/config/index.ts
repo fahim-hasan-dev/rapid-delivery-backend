@@ -47,5 +47,10 @@ export default {
         webhookSecret: process.env.WEBHOOK_SECRET,
         paymentSuccess: process.env.SUCCESS_URL,
         frontendUrl: process.env.FRONTEND_URL,
+    },
+    redis: {
+        host: process.env.REDIS_HOST || '127.0.0.1',
+        port: Number(process.env.REDIS_PORT) || 6379,
+        password: process.env.REDIS_PASSWORD || undefined,
     }
 }

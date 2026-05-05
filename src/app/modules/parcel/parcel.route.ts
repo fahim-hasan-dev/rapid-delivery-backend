@@ -15,6 +15,25 @@ router.post(
 );
 
 router.get(
+    "/my-parcels",
+    auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+    ParcelController.getMyParcels
+);
+
+router.get(
+    "/nearby",
+    auth(USER_ROLES.DRIVER),
+    validateRequest(ParcelValidation.getNearbyParcelsSchema),
+    ParcelController.getNearbyParcels
+);
+
+router.patch(
+    "/:id/accept",
+    auth(USER_ROLES.DRIVER),
+    ParcelController.acceptParcel
+);
+
+router.get(
     "/",
     auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
     ParcelController.getAllParcels

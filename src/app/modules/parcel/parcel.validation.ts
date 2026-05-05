@@ -7,11 +7,11 @@ const createParcelSchema = z.object({
         itemValue: z.number({ required_error: "Item value is required" }),
         pickupLocation: z.object({
             address: z.string({ required_error: "Pickup address is required" }),
-            coordinates: z.array(z.number()).length(2, "Coordinates must be [latitude, longitude]"),
+            coordinates: z.array(z.number()).length(2, "Coordinates must be [longitude, latitude]"),
         }),
         dropLocation: z.object({
             address: z.string({ required_error: "Drop address is required" }),
-            coordinates: z.array(z.number()).length(2, "Coordinates must be [latitude, longitude]"),
+            coordinates: z.array(z.number()).length(2, "Coordinates must be [longitude, latitude]"),
         }),
         vehicleType: z.nativeEnum(VEHICLE_TYPE),
         distance: z.number({ required_error: "Distance is required" }),
@@ -36,7 +36,18 @@ const updateParcelSchema = z.object({
     }),
 });
 
+const getNearbyParcelsSchema = z.object({
+    query: z.object({
+        lat: z.string({ required_error: "Latitude is required" }),
+        lng: z.string({ required_error: "Longitude is required" }),
+        maxDistance: z.string().optional(),
+        page: z.string().optional(),
+        limit: z.string().optional(),
+    }),
+});
+
 export const ParcelValidation = {
     createParcelSchema,
     updateParcelSchema,
+    getNearbyParcelsSchema,
 };

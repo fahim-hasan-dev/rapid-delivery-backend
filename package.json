@@ -30,9 +30,11 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@socket.io/redis-adapter": "^8.3.0",
     "axios": "^1.13.2",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.3",
+    "bullmq": "^5.76.4",
     "cloudinary": "^1.30.0",
     "colors": "^1.4.0",
     "compression": "^1.8.0",
@@ -43,6 +45,7 @@
     "firebase-admin": "^13.6.0",
     "google-libphonenumber": "^3.2.40",
     "http-status-codes": "^2.3.0",
+    "ioredis": "^5.10.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.2",
     "morgan": "^1.10.0",

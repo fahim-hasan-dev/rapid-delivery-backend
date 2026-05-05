@@ -31,6 +31,45 @@ const getAllParcels = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const getMyParcels = catchAsync(async (req: Request, res: Response) => {
+    const user = req.user as JwtPayload;
+    const result = await ParcelServices.getMyParcels(user.authId, user.role, req.query);
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Parcels fetched successfully",
+        data: result,
+    });
+});
+
+const getNearbyParcels = catchAsync(async (req: Request, res: Response) => {
+    const lat = Number(req.query.lat);
+    const lng = Number(req.query.lng);
+    const maxDistance = req.query.maxDistance ? Number(req.query.maxDistance) : 10;
+
+    const result = await ParcelServices.getNearbyParcels(lat, lng, maxDistance, req.query);
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Nearby parcels fetched successfully",
+        data: result,
+    });
+});
+
+const acceptParcel = catchAsync(async (req: Request, res: Response) => {
+    const user = req.user as JwtPayload;
+    const result = await ParcelServices.acceptParcel(req.params.id, user.authId);
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Parcel accepted successfully",
+        data: result,
+    });
+});
+
 const getSingleParcel = catchAsync(async (req: Request, res: Response) => {
     const result = await ParcelServices.getSingleParcel(req.params.id);
 
@@ -66,6 +105,9 @@ const deleteParcel = catchAsync(async (req: Request, res: Response) => {
 export const ParcelController = {
     createParcel,
     getAllParcels,
+    getMyParcels,
+    getNearbyParcels,
+    acceptParcel,
     getSingleParcel,
     updateParcel,
     deleteParcel,

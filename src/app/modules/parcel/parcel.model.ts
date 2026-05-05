@@ -14,10 +14,12 @@ const ParcelSchema = new Schema<IParcel>(
             required: true,
         },
         pickupLocation: {
+            type: { type: String, enum: ['Point'], default: 'Point' },
             address: { type: String, required: true },
             coordinates: { type: [Number], required: true },
         },
         dropLocation: {
+            type: { type: String, enum: ['Point'], default: 'Point' },
             address: { type: String, required: true },
             coordinates: { type: [Number], required: true },
         },
@@ -84,13 +86,18 @@ const ParcelSchema = new Schema<IParcel>(
             type: [String],
             default: [],
         },
+        estimatedArrival: { type: Date },
+        pickedUpAt: { type: Date },
+        deliveredAt: { type: Date },
     },
     {
         timestamps: true,
-        toJSON: {
-            virtuals: true,
-        },
+        toJSON: { virtuals: true },
     }
 );
+
+ParcelSchema.index({ "pickupLocation.coordinates": "2dsphere" });
+ParcelSchema.index({ sender: 1, status: 1 });
+ParcelSchema.index({ driver: 1, status: 1 });
 
 export const Parcel = mongoose.model<IParcel>("Parcel", ParcelSchema);

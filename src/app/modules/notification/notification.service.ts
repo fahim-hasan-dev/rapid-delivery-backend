@@ -3,38 +3,34 @@ import { INotification } from './notification.interface';
 import { Notification } from './notification.model';
 import { FilterQuery } from 'mongoose';
 import QueryBuilder from '../../builder/QueryBuilder';
-import { PushNotificationService } from './pushNotification.service';
-import { User } from '../user/user.model';
+import { notificationQueue } from '../../../queues';
+import { getIO } from '../../../helpers/socketManager';
+import { logger } from '../../../shared/logger';
 
-// Log and dispatch a new notification via push and socket
 const insertNotification = async (payload: Partial<INotification>): Promise<INotification> => {
     const result = await Notification.create(payload);
 
-    // Identify the receiver and dispatch push notifications if tokens exist
-    if (result.title && result.message) {
-        const receiverUser = await User.findById(result.receiver).select('fcmToken fullName');
-
-        if (receiverUser?.fcmToken && receiverUser.fcmToken.length > 0) {
-            await PushNotificationService.sendPushNotification(
-                receiverUser.fcmToken,
-                result.title,
-                result.message,
-                { referenceId: result.referenceId, screen: result.screen }
-            );
-        }
+    if (result.title && result.message && result.receiver) {
+        await notificationQueue.add('push-notification', {
+            userId: result.receiver.toString(),
+            title: result.title,
+            body: result.message,
+            data: { referenceId: result.referenceId, screen: result.screen },
+        });
     }
 
-    // Emit socket event for real-time in-app notification updates
-    //@ts-ignore
-    const io = global.io;
-    if (io && result.receiver) {
-        io.emit(`notification::${result.receiver.toString()}`, result);
+    try {
+        const io = getIO();
+        if (result.receiver) {
+            io.of('/notifications').emit(`notification::${result.receiver.toString()}`, result);
+        }
+    } catch {
+        logger.warn('Socket.io not initialized, skipping emit');
     }
 
     return result;
 };
 
-// Retrieve paginated notifications and mark them as read for the user
 const getNotificationFromDB = async (user: JwtPayload, query: FilterQuery<any>): Promise<Object> => {
     const result = new QueryBuilder(Notification.find({ receiver: user.id }), query).paginate();
     const notifications = await result.modelQuery;
@@ -45,7 +41,6 @@ const getNotificationFromDB = async (user: JwtPayload, query: FilterQuery<any>):
         read: false,
     });
 
-    // Automatically mark retrieved unread notifications as seen
     await Notification.updateMany(
         { receiver: user.id, read: false },
         { $set: { read: true } }
@@ -58,7 +53,6 @@ const getNotificationFromDB = async (user: JwtPayload, query: FilterQuery<any>):
     };
 };
 
-// Count only the notifications that haven't been read by the user
 const getUnreadCountFromDB = async (user: JwtPayload): Promise<number> => {
     return await Notification.countDocuments({
         receiver: user.id,
@@ -71,4 +65,3 @@ export const NotificationService = {
     getNotificationFromDB,
     getUnreadCountFromDB,
 };
-

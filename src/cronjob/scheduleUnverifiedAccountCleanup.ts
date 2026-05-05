@@ -1,17 +1,29 @@
-import cron from "node-cron";
-import { User } from "../app/modules/user/user.model";
-import { logger } from "../shared/logger";
+import { Queue, Worker } from 'bullmq';
+import { getRedisConnection } from '../helpers/redis';
+import { User } from '../app/modules/user/user.model';
+import { logger } from '../shared/logger';
 
-// Background job to periodically remove unverified accounts
-export const scheduleUnverifiedAccountCleanup = () => {
-    const GRACE_PERIOD_MINUTES = 5;
+const connection = getRedisConnection();
 
-    // Run the cleanup process every minute to keep the user database clean
-    cron.schedule("* * * * *", async () => {
-        try {
+const cleanupQueue = new Queue('account-cleanup', { connection });
+
+export const scheduleUnverifiedAccountCleanup = async () => {
+    await cleanupQueue.add(
+        'cleanup-unverified',
+        {},
+        {
+            repeat: { pattern: '* * * * *' },
+            removeOnComplete: true,
+            removeOnFail: 50,
+        }
+    );
+
+    new Worker(
+        'account-cleanup',
+        async () => {
+            const GRACE_PERIOD_MINUTES = 5;
             const cutoffDate = new Date(Date.now() - GRACE_PERIOD_MINUTES * 60 * 1000);
 
-            // Find and delete accounts that failed to verify within the grace period
             const result = await User.deleteMany({
                 isEmailVerified: false,
                 createdAt: { $lt: cutoffDate },
@@ -20,12 +32,9 @@ export const scheduleUnverifiedAccountCleanup = () => {
             if (result.deletedCount > 0) {
                 logger.info(`Deleted ${result.deletedCount} unverified accounts.`);
             }
-        } catch (error) {
-            logger.error("Error during unverified account cleanup:", error);
-        }
-    });
+        },
+        { connection, concurrency: 1 }
+    );
 
-    logger.info("Unverified account cleanup job scheduled.");
+    logger.info('Unverified account cleanup job scheduled via BullMQ.');
 };
-
-
