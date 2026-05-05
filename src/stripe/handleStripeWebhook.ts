@@ -6,6 +6,7 @@ import stripe from '../config/stripe'
 import ApiError from '../errors/ApiError'
 import { logger } from '../shared/logger'
 import { Payment } from '../app/modules/payment/payment.model'
+import { Parcel } from '../app/modules/parcel/parcel.model'
 
 const handleStripeWebhook = async (req: Request, res: Response) => {
     const signature = req.headers['stripe-signature'] as string
@@ -31,14 +32,31 @@ const handleStripeWebhook = async (req: Request, res: Response) => {
                 logger.info('✅ Checkout completed:', session.id)
 
                 if (session.mode === 'payment') {
+                    const referenceId = session.metadata?.referenceId;
+
                     await Payment.create({
                         email: session.customer_details?.email,
                         amount: (session.amount_total || 0) / 100,
                         transactionId: session.payment_intent as string || session.id,
                         dateTime: new Date(),
                         customerName: session.customer_details?.name,
-                        referenceId: session.metadata?.referenceId,
-                    })
+                        referenceId: referenceId,
+                    });
+
+                    // Update Parcel Status to PENDING
+                    if (referenceId) {
+                        const updatedParcel = await Parcel.findByIdAndUpdate(
+                            referenceId,
+                            { status: 'PENDING' },
+                            { new: true }
+                        );
+
+                        if (updatedParcel) {
+                            logger.info(`📦 Parcel ${referenceId} status updated to PENDING`);
+                        } else {
+                            logger.warn(`⚠️ Parcel ${referenceId} not found during webhook update`);
+                        }
+                    }
                 }
                 break
             }

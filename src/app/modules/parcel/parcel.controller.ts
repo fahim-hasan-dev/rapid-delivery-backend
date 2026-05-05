@@ -7,10 +7,7 @@ import { JwtPayload } from "jsonwebtoken";
 
 const createParcel = catchAsync(async (req: Request, res: Response) => {
     const user = req.user as JwtPayload;
-    const result = await ParcelServices.createParcel({
-        ...req.body,
-        sender: user.authId,
-    });
+    const result = await ParcelServices.createParcel(req.body, user);
 
     sendResponse(res, {
         statusCode: StatusCodes.CREATED,

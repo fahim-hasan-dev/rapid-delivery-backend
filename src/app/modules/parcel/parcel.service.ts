@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { StatusCodes } from "http-status-codes";
 import ApiError from "../../../errors/ApiError";
 import { IParcel } from "./parcel.interface";
@@ -10,7 +11,10 @@ import { getDistanceAndDuration } from "../../../utils/googleMaps.util";
 import { SettingServices } from "../setting/setting.service";
 import { redisClient } from "../../../helpers/redis";
 
-const createParcel = async (payload: IParcel) => {
+import { createPaymentSession } from "../../../stripe/createPaymentSession";
+import { JwtPayload } from "jsonwebtoken";
+
+const createParcel = async (payload: IParcel, user: JwtPayload) => {
     // Automatically calculate distance and price before creation
     const calculation = await calculateParcelDistanceAndPrice(
         payload.pickupLocation.coordinates[0],
@@ -31,8 +35,14 @@ const createParcel = async (payload: IParcel) => {
     payload.distance = calculation.distance;
     payload.baseFare = vehicleData.baseFare;
     payload.totalPrice = vehicleData.totalPrice;
+    payload.sender = new Types.ObjectId(user.authId);
 
-    return await Parcel.create(payload);
+    const parcel = await Parcel.create(payload);
+
+    // Create Stripe payment session
+    const paymentLink = await createPaymentSession(user, parcel.totalPrice, parcel._id.toString());
+
+    return { parcel, paymentLink };
 };
 
 const getAllParcels = async (query: Record<string, unknown>) => {
@@ -158,6 +168,13 @@ const acceptParcel = async (parcelId: string, driverId: string) => {
         throw new ApiError(StatusCodes.NOT_FOUND, "Parcel not found");
     }
 
+    if (parcel.status !== PARCEL_STATUS.PENDING) {
+        throw new ApiError(
+            StatusCodes.BAD_REQUEST,
+            "This parcel is not available for acceptance. It might not be paid for yet or already handled."
+        );
+    }
+
     if (parcel.isDriverAssigned) {
         throw new ApiError(
             StatusCodes.CONFLICT,
@@ -170,6 +187,7 @@ const acceptParcel = async (parcelId: string, driverId: string) => {
         {
             driver: driverId,
             isDriverAssigned: true,
+            status: PARCEL_STATUS.ACCEPTED,
         },
         { new: true }
     ).populate("sender driver");

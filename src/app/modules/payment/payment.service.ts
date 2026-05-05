@@ -5,12 +5,22 @@ import { createPaymentSession } from "../../../stripe/createPaymentSession";
 import config from "../../../config";
 import { JwtPayload } from "jsonwebtoken";
 
-// Create seassion
-const creatSession = async (user: JwtPayload, referenceId: string, amount: number) => {
-  const url = await createPaymentSession(user, amount, referenceId);
+import { Parcel } from "../parcel/parcel.model";
+import ApiError from "../../../errors/ApiError";
+import { StatusCodes } from "http-status-codes";
 
-  return { url }
-}
+// Create session
+const creatSession = async (user: JwtPayload, referenceId: string) => {
+  const parcel = await Parcel.findById(referenceId);
+
+  if (!parcel) {
+    throw new ApiError(StatusCodes.NOT_FOUND, "Parcel not found");
+  }
+
+  const url = await createPaymentSession(user, parcel.totalPrice, parcel._id.toString());
+
+  return { url };
+};
 
 // create payment
 const createPayment = async (payload: Partial<IPayment>) => {
@@ -36,7 +46,7 @@ const getPayments = async (query: Record<string, unknown>) => {
 
 // get payment by id
 const getPaymentById = async (id: string) => {
-  return await Payment.findById(id).populate('referenceId');
+  return await Payment.findById(id).populate("referenceId");
 };
 
 export const PaymentService = {
@@ -44,4 +54,4 @@ export const PaymentService = {
   createPayment,
   getPayments,
   getPaymentById,
-}
+};

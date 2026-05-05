@@ -6,16 +6,13 @@ import sendResponse from "../../../shared/sendResponse";
 import handleStripeWebhook from "../../../stripe/handleStripeWebhook";
 
 const createCheckoutSession = catchAsync(async (req: Request, res: Response) => {
-  const { amount } = req.body; // User should provide amount or it should be fetched based on referenceId
-  const result = await PaymentService.creatSession(req.user!, req.params.referenceId as string, amount);
+  const result = await PaymentService.creatSession(req.user!, req.params.referenceId as string);
 
-  res.status(StatusCodes.OK).json({ url: result.url })
-
-})
-
+  res.status(StatusCodes.OK).json({ url: result.url });
+});
 
 // create payment
-export const createPaymentController = catchAsync(async (req: Request, res: Response) => {
+const createPaymentController = catchAsync(async (req: Request, res: Response) => {
   const payload = req.body;
   const payment = await PaymentService.createPayment(payload);
   sendResponse(res, {
@@ -27,7 +24,7 @@ export const createPaymentController = catchAsync(async (req: Request, res: Resp
 });
 
 // get payments
-export const getPaymentsController = catchAsync(async (req: Request, res: Response) => {
+const getPaymentsController = catchAsync(async (req: Request, res: Response) => {
   const payments = await PaymentService.getPayments(req.query);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -39,7 +36,7 @@ export const getPaymentsController = catchAsync(async (req: Request, res: Respon
 });
 
 // get payment by id
-export const getPaymentByIdController = catchAsync(async (req: Request, res: Response) => {
+const getPaymentByIdController = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const payment = await PaymentService.getPaymentById(id);
   sendResponse(res, {
@@ -50,12 +47,10 @@ export const getPaymentByIdController = catchAsync(async (req: Request, res: Res
   });
 });
 
-
-
 export const PaymentController = {
   createCheckoutSession,
   createPaymentController,
   getPaymentsController,
   getPaymentByIdController,
   handleStripeWebhook,
-}
+};

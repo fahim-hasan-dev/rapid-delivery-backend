@@ -72,7 +72,7 @@ const ParcelSchema = new Schema<IParcel>(
         status: {
             type: String,
             enum: Object.values(PARCEL_STATUS),
-            default: PARCEL_STATUS.PENDING,
+            default: PARCEL_STATUS.CREATED,
         },
         note: {
             type: String,
