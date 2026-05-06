@@ -85,12 +85,32 @@ const getMyParcels = async (
 const getNearbyParcels = async (
     lat: number,
     lng: number,
-    maxDistanceKm: number = 10,
+    maxDistanceKm: number = 50,
     query: Record<string, unknown>
 ) => {
+    if (!lat || !lng) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, "Latitude and Longitude are required to find nearby parcels.");
+    }
+
     const page = Number(query.page) || 1;
     const limit = Number(query.limit) || 10;
     const skip = (page - 1) * limit;
+
+    // Calculate start and end of today for filtering deliveryDate
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999);
+
+    const matchQuery = {
+        status: PARCEL_STATUS.PENDING,
+        isDriverAssigned: false,
+        deliveryDate: {
+            $gte: todayStart,
+            $lte: todayEnd
+        }
+    };
 
     const parcels = await Parcel.aggregate([
         {
@@ -99,10 +119,7 @@ const getNearbyParcels = async (
                 distanceField: "distanceFromDriver",
                 maxDistance: maxDistanceKm * 1000,
                 spherical: true,
-                query: {
-                    status: PARCEL_STATUS.PENDING,
-                    isDriverAssigned: false,
-                },
+                query: matchQuery,
             },
         },
         { $skip: skip },
@@ -126,10 +143,7 @@ const getNearbyParcels = async (
                 distanceField: "distanceFromDriver",
                 maxDistance: maxDistanceKm * 1000,
                 spherical: true,
-                query: {
-                    status: PARCEL_STATUS.PENDING,
-                    isDriverAssigned: false,
-                },
+                query: matchQuery,
             },
         },
         { $count: "total" },

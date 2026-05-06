@@ -41,11 +41,14 @@ const getMyParcels = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getNearbyParcels = catchAsync(async (req: Request, res: Response) => {
-    const lat = Number(req.query.lat);
-    const lng = Number(req.query.lng);
-    const maxDistance = req.query.maxDistance ? Number(req.query.maxDistance) : 10;
+    const { lat, lng, distance } = req.query;
 
-    const result = await ParcelServices.getNearbyParcels(lat, lng, maxDistance, req.query);
+    const result = await ParcelServices.getNearbyParcels(
+        Number(lat),
+        Number(lng),
+        distance ? Number(distance) : undefined,
+        req.query
+    );
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,
