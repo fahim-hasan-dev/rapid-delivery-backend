@@ -4,6 +4,7 @@ import validateRequest from "../../middleware/validateRequest";
 import { USER_ROLES } from "../../../enum/user";
 import { ParcelController } from "./parcel.controller";
 import { ParcelValidation } from "./parcel.validation";
+import { fileAndBodyProcessorUsingDiskStorage } from "../../middleware/processReqBody";
 
 const router = express.Router();
 
@@ -54,6 +55,7 @@ router.get(
 router.patch(
     "/:id",
     auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+    fileAndBodyProcessorUsingDiskStorage(),
     validateRequest(ParcelValidation.updateParcelSchema),
     ParcelController.updateParcel
 );

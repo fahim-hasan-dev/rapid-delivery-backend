@@ -1,18 +1,16 @@
 import { Request, Response, NextFunction } from 'express'
 import multer, { FileFilterCallback } from 'multer'
+import multerS3 from 'multer-s3'
 import ApiError from '../../errors/ApiError'
 import { StatusCodes } from 'http-status-codes'
-import path from 'path'
-import fs from 'fs'
-import sharp from 'sharp'
+import * as path from 'path'
+import { r2Client } from '../../config/r2'
+import config from '../../config'
 
 type IFolderName =
   | 'image'
-  | 'media'
-  | 'documents'
-  | 'logo'
-  | 'lostImage'
-  | 'shippingLabel'
+  | 'pickupProof'
+  | 'deliveryProof'
 
 interface ProcessedFiles {
   [key: string]: string | string[] | undefined
@@ -20,85 +18,61 @@ interface ProcessedFiles {
 
 const uploadFields = [
   { name: 'image', maxCount: 1 },
-  { name: 'media', maxCount: 3 },
-  { name: 'documents', maxCount: 3 },
-  { name: 'logo', maxCount: 1 },
-  { name: 'lostImage', maxCount: 4 },
-  { name: 'shippingLabel', maxCount: 1 },
+  { name: 'pickupProof', maxCount: 5 },
+  { name: 'deliveryProof', maxCount: 5 },
 ] as const
 
 export const fileAndBodyProcessorUsingDiskStorage = () => {
-  const uploadsDir = path.join(process.cwd(), 'uploads');
-  if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-  }
+  const upload = multer({
+    storage: multerS3({
+      s3: r2Client,
+      bucket: config.cloudflare.bucketName as string,
+      contentType: (_req, file, cb) => {
+        cb(null, file.mimetype);
+      },
+      key: (req, file, cb) => {
+        const folder = file.fieldname;
+        const extension = path.extname(file.originalname) || `.${file.mimetype.split('/')[1]}`;
+        const filename = `${folder}/${Date.now()}-${Math.random().toString(36).substring(2, 15)}${extension}`;
+        cb(null, filename);
+      },
+    }),
+    fileFilter: (
+      req: Request,
+      file: Express.Multer.File,
+      cb: FileFilterCallback,
+    ) => {
+      try {
+        const allowedTypes: Record<string, string[]> = {
+          image: ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/heic', 'image/heif'],
+          pickupProof: ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/heic', 'image/heif'],
+          deliveryProof: ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/heic', 'image/heif'],
+        };
 
-  const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      const folderPath = path.join(uploadsDir, file.fieldname);
-      if (!fs.existsSync(folderPath)) {
-        fs.mkdirSync(folderPath, { recursive: true });
-      }
-      cb(null, folderPath);
-    },
-    filename: (req, file, cb) => {
-      const extension =
-        path.extname(file.originalname) || `.${file.mimetype.split('/')[1]}`;
-      const filename = `${Date.now()}-${Math.random()
-        .toString(36)
-        .slice(2, 8)}${extension}`;
-      cb(null, filename);
-    },
-  });
-
-  const fileFilter = (
-    req: Request,
-    file: Express.Multer.File,
-    cb: FileFilterCallback,
-  ) => {
-    try {
-      const allowedTypes = {
-        image: ['image/jpeg', 'image/png', 'image/jpg'],
-        media: ['video/mp4', 'audio/mpeg'],
-        documents: ['application/pdf'],
-        logo: ['image/jpeg', 'image/png', 'image/jpg'],
-        lostImage: ['image/jpeg', 'image/png', 'image/jpg'],
-        shippingLabel: [
-          'image/jpeg',
-          'image/png',
-          'image/jpg',
-          'application/pdf',
-        ],
-      };
-
-      const fieldType = file.fieldname as IFolderName;
-      if (!allowedTypes[fieldType]?.includes(file.mimetype)) {
-        return cb(
+        const fieldType = file.fieldname as IFolderName;
+        if (!allowedTypes[fieldType]?.includes(file.mimetype)) {
+          return cb(
+            new ApiError(
+              StatusCodes.BAD_REQUEST,
+              `Invalid file type for ${file.fieldname}. Supported: JPG, PNG, WEBP, HEIC (iPhone).`,
+            ) as any,
+          );
+        }
+        cb(null, true);
+      } catch (error) {
+        cb(
           new ApiError(
-            StatusCodes.BAD_REQUEST,
-            `Invalid file type for ${file.fieldname}`,
-          ),
+            StatusCodes.INTERNAL_SERVER_ERROR,
+            'File validation failed',
+          ) as any,
         );
       }
-      cb(null, true);
-    } catch (error) {
-      cb(
-        new ApiError(
-          StatusCodes.INTERNAL_SERVER_ERROR,
-          'File validation failed',
-        ),
-      );
-    }
-  };
-
-  const upload = multer({
-    storage,
-    fileFilter,
+    },
     limits: { fileSize: 10 * 1024 * 1024, files: 50 },
   }).fields(uploadFields);
 
   return (req: Request, res: Response, next: NextFunction) => {
-    upload(req, res, async (error) => {
+    upload(req, res, async (error: any) => {
       if (error) return next(error);
 
       try {
@@ -115,68 +89,17 @@ export const fileAndBodyProcessorUsingDiskStorage = () => {
           uploadFields.map((f) => [f.name, f.maxCount]),
         );
 
-        await Promise.all(
-          Object.entries(req.files).map(async ([fieldName, files]) => {
-            const fileArray = files as Express.Multer.File[];
-            const maxCount = fieldsConfig.get(fieldName as IFolderName) ?? 1;
-            const paths: string[] = [];
+        Object.entries(req.files).forEach(([fieldName, files]) => {
+          const fileArray = files as (Express.Multer.File & { key: string })[];
+          const maxCount = fieldsConfig.get(fieldName as any) ?? 1;
+          const paths = fileArray.map((file) => `${config.cloudflare.publicUrl}/${file.key}`);
 
-            await Promise.all(
-              fileArray.map(async (file) => {
-                const filePath = `/${fieldName}/${file.filename}`;
-                paths.push(filePath);
-
-                if (
-                  ['image', 'logo', 'lostImage', 'shippingLabel'].includes(
-                    fieldName,
-                  ) &&
-                  file.mimetype.startsWith('image/')
-                ) {
-                  const fullPath = path.join(
-                    uploadsDir,
-                    fieldName,
-                    file.filename,
-                  );
-                  const tempPath = fullPath + '.opt';
-
-                  try {
-                    let sharpInstance = sharp(fullPath)
-                      .rotate()
-                      .resize(800, null, { withoutEnlargement: true });
-
-                    if (file.mimetype === 'image/png') {
-                      sharpInstance = sharpInstance.png({ quality: 80 });
-                    } else {
-                      sharpInstance = sharpInstance.jpeg({
-                        quality: 80,
-                        mozjpeg: true,
-                      });
-                    }
-
-                    await sharpInstance.toFile(tempPath);
-                    fs.unlinkSync(fullPath);
-                    fs.renameSync(tempPath, fullPath);
-                  } catch (err) {
-                    console.error(`Failed to optimize ${filePath}:`, err);
-                  }
-                }
-              }),
-            );
-
-            processedFiles[fieldName] = maxCount > 1 ? paths : paths[0];
-          }),
-        );
+          processedFiles[fieldName] = maxCount > 1 ? paths : paths[0];
+        });
 
         req.body = {
           ...req.body,
-          ...(processedFiles.logo && { logo: processedFiles.logo }),
-          ...(processedFiles.image && { image: processedFiles.image }),
-          ...(processedFiles.shippingLabel && {
-            shippingLabel: processedFiles.shippingLabel,
-          }),
-          ...(processedFiles.lostImage && {
-            images: processedFiles.lostImage,
-          }),
+          ...processedFiles,
         };
 
         next();

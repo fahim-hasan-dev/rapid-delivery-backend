@@ -10,7 +10,6 @@ import { trackingService } from "../../../helpers/trackingService";
 import { getDistanceAndDuration } from "../../../utils/googleMaps.util";
 import { SettingServices } from "../setting/setting.service";
 import { redisClient } from "../../../helpers/redis";
-
 import { createPaymentSession } from "../../../stripe/createPaymentSession";
 import { JwtPayload } from "jsonwebtoken";
 
@@ -291,16 +290,67 @@ const calculateParcelDistanceAndPrice = async (
     };
 };
 
-const updateParcel = async (id: string, payload: Partial<IParcel>) => {
+const updateParcel = async (
+    id: string,
+    payload: Partial<IParcel>,
+    user: JwtPayload
+) => {
     const parcel = await Parcel.findById(id);
     if (!parcel) {
         throw new ApiError(StatusCodes.NOT_FOUND, "Parcel not found");
     }
 
+    // Role-based security check for drivers
+    if (user.role === "driver") {
+        if (parcel.driver?.toString() !== user.authId) {
+            throw new ApiError(StatusCodes.FORBIDDEN, "You are not assigned to this parcel");
+        }
+        
+        // Drivers can only update status and note
+        const allowedFields = ["status", "note", "pickupProof", "deliveryProof"];
+        const keys = Object.keys(payload);
+        const isAllowed = keys.every(key => allowedFields.includes(key));
+        if (!isAllowed) {
+            throw new ApiError(StatusCodes.FORBIDDEN, "Drivers can only update status, note, and proof images.");
+        }
+
+        // Enforce mandatory proofs for drivers
+        if (payload.status === PARCEL_STATUS.PICKED_UP && !payload.pickupProof) {
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Pickup proof is required to mark as picked up.");
+        }
+        if (payload.status === PARCEL_STATUS.DELIVERED && !payload.deliveryProof) {
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Delivery proof is required to mark as delivered.");
+        }
+    }
+
+    // Role-based security check for senders
+    if (user.role === "sender") {
+        if (parcel.sender.toString() !== user.authId) {
+            throw new ApiError(StatusCodes.FORBIDDEN, "You do not own this parcel");
+        }
+
+        // Senders can only update basic info
+        const forbiddenFields = ["status", "driver", "isDriverAssigned", "pickupProof", "deliveryProof", "pickedUpAt", "deliveredAt"];
+        const keys = Object.keys(payload);
+        const hasForbidden = keys.some(key => forbiddenFields.includes(key));
+        if (hasForbidden) {
+            throw new ApiError(StatusCodes.FORBIDDEN, "Senders cannot update status, driver, or proof images.");
+        }
+    }
+
+    // Handle status transitions and timestamps
+    if (payload.status === PARCEL_STATUS.PICKED_UP) {
+        payload.pickedUpAt = new Date();
+    } else if (payload.status === PARCEL_STATUS.DELIVERED) {
+        payload.deliveredAt = new Date();
+        // Stop tracking in Redis once delivered
+        await trackingService.removeDriverTracking(id, parcel.driver!.toString());
+    }
+
     const updatedParcel = await Parcel.findByIdAndUpdate(id, payload, {
         new: true,
         runValidators: true,
-    });
+    }).populate("sender driver");
 
     return updatedParcel;
 };

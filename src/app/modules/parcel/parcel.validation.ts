@@ -27,11 +27,16 @@ const createParcelSchema = z.object({
 
 const updateParcelSchema = z.object({
     body: z.object({
+        name: z.string().optional(),
+        itemValue: z.number().optional(),
+        deliveryDate: z.string().optional(),
+        receiverName: z.string().optional(),
+        receiverPhone: z.string().optional(),
         status: z.nativeEnum(PARCEL_STATUS).optional(),
+        pickupProof: z.union([z.string(), z.array(z.string())]).optional(),
+        deliveryProof: z.union([z.string(), z.array(z.string())]).optional(),
         isDriverAssigned: z.boolean().optional(),
         driver: z.string().optional(),
-        pickupProof: z.array(z.string()).optional(),
-        deliveryProof: z.array(z.string()).optional(),
         note: z.string().optional(),
     }),
 });

@@ -1,62 +1,15 @@
 import { Request } from 'express';
-import fs from 'fs';
 import { StatusCodes } from 'http-status-codes';
 import multer, { FileFilterCallback } from 'multer';
+import multerS3 from 'multer-s3';
 import path from 'path';
 import ApiError from '../../errors/ApiError';
+import { r2Client } from '../../config/r2';
+import config from '../../config';
 
 const fileUploadHandler = () => {
-
-    //create upload folder
-    const baseUploadDir = path.join(process.cwd(), 'uploads');
-    if (!fs.existsSync(baseUploadDir)) {
-        fs.mkdirSync(baseUploadDir);
-    }
-
-    //folder create for different file
-    const createDir = (dirPath: string) => {
-        if (!fs.existsSync(dirPath)) {
-            fs.mkdirSync(dirPath);
-        }
-    };
-
-    //create filename
-    const storage = multer.diskStorage({
-
-        destination: (req, file, cb) => {
-            let uploadDir;
-            switch (file.fieldname) {
-                case 'image':
-                    uploadDir = path.join(baseUploadDir, 'image');
-                    break;
-                case 'media':
-                    uploadDir = path.join(baseUploadDir, 'media');
-                    break;
-                default:
-                    throw new ApiError(StatusCodes.BAD_REQUEST, 'File is not supported');
-            }
-            createDir(uploadDir);
-            cb(null, uploadDir);
-        },
-
-        filename: (req, file, cb) => {
-            const fileExt = path.extname(file.originalname);
-            const fileName =
-                file.originalname
-                    .replace(fileExt, '')
-                    .toLowerCase()
-                    .split(' ')
-                    .join('-') +
-                '-' +
-                Date.now();
-            cb(null, fileName + fileExt);
-        },
-    });
-
     //file filter
     const filterFilter = (req: Request, file: any, cb: FileFilterCallback) => {
-
-        // console.log("file handler",file)
         if (file.fieldname === 'image') {
             if (
                 file.mimetype === 'image/jpeg' ||
@@ -77,20 +30,32 @@ const fileUploadHandler = () => {
             } else {
                 cb(new ApiError(StatusCodes.BAD_REQUEST, 'Only .png file supported'))
             }
-        }
-
-        else {
+        } else {
             cb(new ApiError(StatusCodes.BAD_REQUEST, 'This file is not supported'))
         }
     };
 
-    const upload = multer({ storage: storage, fileFilter: filterFilter })
-        .fields([
-            { name: 'image', maxCount: 3 },
-            { name: 'media', maxCount: 2 },
-        ]);
-    return upload;
+    const upload = multer({
+        storage: multerS3({
+            s3: r2Client,
+            bucket: config.cloudflare.bucketName as string,
+            contentType: (_req, file, cb) => {
+                cb(null, file.mimetype);
+            },
+            key: (req, file, cb) => {
+                const folder = file.fieldname;
+                const extension = path.extname(file.originalname);
+                const filename = `${folder}/${Date.now()}-${Math.random().toString(36).substring(2, 15)}${extension}`;
+                cb(null, filename);
+            },
+        }),
+        fileFilter: filterFilter
+    }).fields([
+        { name: 'image', maxCount: 3 },
+        { name: 'media', maxCount: 2 },
+    ]);
 
+    return upload;
 };
 
 export default fileUploadHandler;

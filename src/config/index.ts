@@ -30,16 +30,8 @@ export default {
         password: process.env.ADMIN_PASSWORD,
         name: process.env.ADMIN_NAME,
     },
-    twilio: {
-        accountSid: process.env.TWILIO_ACCOUNT_SID,
-        authToken: process.env.TWILIO_AUTH_TOKEN,
-        twilioNumber: process.env.TWILIO_NUMBER
-    },
-    cloudinary: {
-        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-        api_key: process.env.CLOUDINARY_API_KEY,
-        api_secret: process.env.CLOUDINARY_API_SECRET
-    },
+
+
     frontend_url: process.env.FRONTEND_URL,
     backend_url: process.env.BACKEND_URL,
     stripe: {
@@ -54,4 +46,11 @@ export default {
         password: process.env.REDIS_PASSWORD || undefined,
     },
     googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+    cloudflare: {
+        accountId: process.env.CLOUDFLARE_R2_ACCOUNT_ID,
+        accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID,
+        secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
+        bucketName: process.env.CLOUDFLARE_R2_BUCKET_NAME,
+        publicUrl: process.env.CLOUDFLARE_R2_PUBLIC_URL,
+    }
 }

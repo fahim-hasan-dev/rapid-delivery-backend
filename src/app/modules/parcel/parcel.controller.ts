@@ -79,7 +79,12 @@ const getSingleParcel = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateParcel = catchAsync(async (req: Request, res: Response) => {
-    const result = await ParcelServices.updateParcel(req.params.id, req.body);
+    const user = req.user as JwtPayload;
+    const result = await ParcelServices.updateParcel(
+        req.params.id,
+        req.body,
+        user
+    );
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,
