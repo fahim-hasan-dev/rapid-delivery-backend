@@ -11,6 +11,7 @@ type IFolderName =
   | 'image'
   | 'pickupProof'
   | 'deliveryProof'
+  | 'files'
 
 interface ProcessedFiles {
   [key: string]: string | string[] | undefined
@@ -20,6 +21,7 @@ const uploadFields = [
   { name: 'image', maxCount: 1 },
   { name: 'pickupProof', maxCount: 5 },
   { name: 'deliveryProof', maxCount: 5 },
+  { name: 'files', maxCount: 10 },
 ] as const
 
 export const fileAndBodyProcessorUsingDiskStorage = () => {
@@ -47,14 +49,19 @@ export const fileAndBodyProcessorUsingDiskStorage = () => {
           image: ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/heic', 'image/heif'],
           pickupProof: ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/heic', 'image/heif'],
           deliveryProof: ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/heic', 'image/heif'],
+          files: [
+            'image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/heic', 'image/heif',
+            'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'text/plain'
+          ],
         };
 
         const fieldType = file.fieldname as IFolderName;
-        if (!allowedTypes[fieldType]?.includes(file.mimetype)) {
+        if (allowedTypes[fieldType] && !allowedTypes[fieldType]?.includes(file.mimetype)) {
           return cb(
             new ApiError(
               StatusCodes.BAD_REQUEST,
-              `Invalid file type for ${file.fieldname}. Supported: JPG, PNG, WEBP, HEIC (iPhone).`,
+              `Invalid file type for ${file.fieldname}. Supported: JPG, PNG, WEBP, PDF, DOCX.`,
             ) as any,
           );
         }

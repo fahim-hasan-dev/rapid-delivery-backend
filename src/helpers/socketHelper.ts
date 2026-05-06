@@ -90,10 +90,37 @@ const setupNotificationNamespace = (io: Server) => {
     });
 };
 
+const setupChatNamespace = (io: Server) => {
+    const chat = io.of('/chat');
+    chat.use(authenticateSocket);
+
+    chat.on('connection', (socket) => {
+        const user = socket.data.user;
+        logger.info(`Chat: User ${user.authId} connected`);
+
+        // Join a specific chat room
+        socket.on('join-chat', (chatId: string) => {
+            socket.join(chatId);
+            logger.info(`User ${user.authId} joined chat: ${chatId}`);
+        });
+
+        // Leave a chat room
+        socket.on('leave-chat', (chatId: string) => {
+            socket.leave(chatId);
+            logger.info(`User ${user.authId} left chat: ${chatId}`);
+        });
+
+        socket.on('disconnect', () => {
+            logger.info(`Chat: User ${user.authId} disconnected`);
+        });
+    });
+};
+
 export const socketHelper = {
     socket: (io: Server) => {
         setupTrackingNamespace(io);
         setupNotificationNamespace(io);
-        logger.info('Socket.io namespaces initialized: /tracking, /notifications');
+        setupChatNamespace(io);
+        logger.info('Socket.io namespaces initialized: /tracking, /notifications, /chat');
     },
 };

@@ -1,23 +1,27 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import auth from '../../middleware/auth';
 import { ChatController } from './chat.controller';
 import { USER_ROLES } from '../../../enum/user';
+import { StatusCodes } from 'http-status-codes';
 
 const router = express.Router();
 
-// Initialize a new conversation between two users
 router.post(
   "/",
   auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
+      if (!req.body.participant) {
+        res.status(StatusCodes.BAD_REQUEST).json({ message: "Participant ID is required" });
+        return;
+      }
       req.body = {
-        participants: [req.user.id, req.body.participant],
-        isAdminSupport: false
+        participants: [(req as any).user.id, req.body.participant],
+        isAdminSupport: req.body.isAdminSupport || false
       };
       next();
     } catch (error) {
-      res.status(400).json({ message: "Failed to create chat" });
+      res.status(StatusCodes.BAD_REQUEST).json({ message: "Failed to process chat request" });
     }
   },
   ChatController.createChat
@@ -38,4 +42,3 @@ router.delete(
 );
 
 export const ChatRoutes = router;
-

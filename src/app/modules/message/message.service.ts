@@ -10,6 +10,7 @@ import ApiError from '../../../errors/ApiError';
 import { StatusCodes } from 'http-status-codes';
 import { PushNotificationService } from '../notification/pushNotification.service';
 import { User } from '../user/user.model';
+import { getIO } from '../../../helpers/socketManager';
 
 // Send a new message and notify chat participants
 const sendMessageToDB = async (payload: any): Promise<IMessage> => {
@@ -32,18 +33,24 @@ const sendMessageToDB = async (payload: any): Promise<IMessage> => {
     lastMessageAt: new Date()
   });
 
-  //@ts-ignore
-  const io = global.io;
-  if (io && payload.chatId) {
-    // Dispatch real-time gateway events
-    io.emit(`getMessage::${payload?.chatId}`, response);
+  try {
+    const io = getIO();
+    if (io && payload.chatId) {
+      const chatNamespace = io.of('/chat');
+      
+      // Dispatch real-time gateway events to the specific chat room
+      chatNamespace.to(payload.chatId.toString()).emit(`getMessage::${payload?.chatId}`, response);
 
-    isExistChat.participants.forEach((participantId: any) => {
-      io.emit(`chatListUpdate::${participantId.toString()}`, {
-        chatId: payload.chatId,
-        lastMessage: response,
+      // Notify participants to update their chat list
+      isExistChat.participants.forEach((participantId: any) => {
+        io.of('/notifications').to(`user:${participantId.toString()}`).emit(`chatListUpdate::${participantId.toString()}`, {
+          chatId: payload.chatId,
+          lastMessage: response,
+        });
       });
-    });
+    }
+  } catch (error) {
+    console.error("Socket error in sendMessageToDB:", error);
   }
 
   // Handle push notifications for participants
@@ -147,10 +154,13 @@ const updateMessageToDB = async (messageId: string, userId: string, payload: Par
     { new: true }
   );
 
-  //@ts-ignore
-  const io = global.io;
-  if (io && updatedMessage) {
-    io.emit(`getMessage::${updatedMessage.chatId}`, updatedMessage);
+  try {
+    const io = getIO();
+    if (io && updatedMessage) {
+      io.of('/chat').to(updatedMessage.chatId.toString()).emit(`getMessage::${updatedMessage.chatId}`, updatedMessage);
+    }
+  } catch (error) {
+    console.error("Socket error in updateMessageToDB:", error);
   }
 
   return updatedMessage;
@@ -207,4 +217,4 @@ export const MessageService = {
   getTotalUnreadCount,
   deleteMessageFromDB,
   updateMoneyRequestStatusToDB
-};
+};
