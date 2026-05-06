@@ -4,6 +4,9 @@ import { Secret } from 'jsonwebtoken'
 import config from '../../config'
 import { jwtHelper } from '../../helpers/jwtHelper'
 import ApiError from '../../errors/ApiError'
+import { User } from '../modules/user/user.model'
+import { USER_ROLES } from '../../enum/user'
+import { PROFILE_VERIFICATION_STATUS } from '../modules/user/user.interface'
 
 const auth =
     (...roles: string[]) =>
@@ -35,6 +38,22 @@ const auth =
                                 StatusCodes.FORBIDDEN,
                                 "You don't have permission to access this API",
                             )
+                        }
+
+                        // Driver specific profile verification guard
+                        if (verifyUser.role === USER_ROLES.DRIVER) {
+                            const isGetProfile = req.method === 'GET' && req.originalUrl.includes('/users/me');
+                            const isResubmitProfile = req.originalUrl.includes('/users/resubmit-profile');
+                            
+                            if (!isGetProfile && !isResubmitProfile) {
+                                const driver = await User.findById(verifyUser.authId).lean();
+                                if (driver?.driverInfo?.profileVerification !== PROFILE_VERIFICATION_STATUS.APPROVED) {
+                                    throw new ApiError(
+                                        StatusCodes.FORBIDDEN,
+                                        "Your profile is not approved yet. You can only access your profile and resubmit documents.",
+                                    )
+                                }
+                            }
                         }
 
                         next()

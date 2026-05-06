@@ -101,6 +101,11 @@ const UserSchema = new Schema(
                 type: String,
                 default: ""
             },
+            assignedVehicle: {
+                type: Schema.Types.ObjectId,
+                ref: "Vehicle",
+                default: null
+            },
             totalRating: { type: Number, default: 0 },
             averageRating: { type: Number, default: 0 },
             totalDelivery: { type: Number, default: 0 },

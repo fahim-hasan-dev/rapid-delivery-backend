@@ -14,6 +14,7 @@ import { MessageRoutes } from '../modules/message/message.routes';
 import { NotificationRoutes } from '../modules/notification/notification.routes';
 import { ParcelRoutes } from '../modules/parcel/parcel.route';
 import { SettingRoutes } from '../modules/setting/setting.route';
+import { VehicleRoutes } from '../modules/vehicle/vehicle.route';
 
 const router = express.Router();
 
@@ -31,6 +32,7 @@ const apiRoutes = [
     { path: "/notification", route: NotificationRoutes },
     { path: "/parcel", route: ParcelRoutes },
     { path: "/settings", route: SettingRoutes },
+    { path: "/vehicle", route: VehicleRoutes },
 ];
 
 router.post('/webhook', handleStripeWebhook);

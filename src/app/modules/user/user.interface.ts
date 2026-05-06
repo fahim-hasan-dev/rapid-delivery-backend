@@ -44,6 +44,7 @@ export type IUser = {
         drivingLicense: string[];
         profileVerification: PROFILE_VERIFICATION_STATUS;
         rejectReason?: string;
+        assignedVehicle?: Types.ObjectId;
         totalRating: number;
         averageRating: number;
         totalDelivery: number;
