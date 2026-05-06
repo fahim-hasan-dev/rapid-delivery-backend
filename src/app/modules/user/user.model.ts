@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
-import { IUser, USER_STATUS, UserModel } from "./user.interface";
+import { IUser, USER_STATUS, UserModel, PROFILE_VERIFICATION_STATUS } from "./user.interface";
 import { StatusCodes } from "http-status-codes";
 import ApiError from "../../../errors/ApiError";
 import config from "../../../config";
@@ -45,14 +45,10 @@ const UserSchema = new Schema(
         },
         // Geographical coordinates for delivery tracking
         location: {
-            latitude: { type: Number },
-            longitude: { type: Number },
+            type: [Number],
+            default: [0, 0]
         },
         isEmailVerified: {
-            type: Boolean,
-            default: false,
-        },
-        isPhoneVerified: {
             type: Boolean,
             default: false,
         },
@@ -89,16 +85,22 @@ const UserSchema = new Schema(
                 enum: ['createAccount', 'resetPassword'],
             },
         },
-        // FCM tokens for push notification delivery
         fcmToken: [{
             type: String,
-            default: [],
         }],
         // Information specific to driver accounts
         driverInfo: {
             nid: [{ type: String }],
             drivingLicense: [{ type: String }],
-            isVerified: { type: Boolean, default: false },
+            profileVerification: {
+                type: String,
+                enum: Object.values(PROFILE_VERIFICATION_STATUS),
+                default: PROFILE_VERIFICATION_STATUS.PENDING,
+            },
+            rejectReason: {
+                type: String,
+                default: ""
+            },
             totalRating: { type: Number, default: 0 },
             averageRating: { type: Number, default: 0 },
             totalDelivery: { type: Number, default: 0 },
@@ -108,12 +110,8 @@ const UserSchema = new Schema(
     },
     {
         timestamps: true,
-        toJSON: {
-            virtuals: true,
-        },
-        toObject: {
-            virtuals: true,
-        },
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true },
     }
 );
 
@@ -129,7 +127,7 @@ UserSchema.statics.isPasswordMatched = async function (
 UserSchema.pre("save", async function (next) {
     try {
         if (this.isModified("email")) {
-            const isExist = await User.findOne({
+            const isExist = await mongoose.models.User.findOne({
                 email: this.email,
                 status: { $in: [USER_STATUS.ACTIVE, USER_STATUS.RESTRICTED] },
                 _id: { $ne: this._id },
@@ -158,5 +156,3 @@ UserSchema.pre("save", async function (next) {
 });
 
 export const User = mongoose.model<IUser, UserModel>("User", UserSchema);
-
-

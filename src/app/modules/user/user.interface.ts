@@ -1,14 +1,24 @@
-import { Model, Types } from "mongoose";
-import { USER_ROLES, USER_STATUS } from "../../../enum/user";
+import { Model, Types } from 'mongoose';
+import { USER_ROLES } from '../../../enum/user';
 
-export { USER_ROLES, USER_STATUS };
+export enum USER_STATUS {
+    ACTIVE = 'active',
+    RESTRICTED = 'restricted',
+}
 
-type IAuthentication = {
+export enum PROFILE_VERIFICATION_STATUS {
+    PENDING = 'pending',
+    APPROVED = 'approved',
+    REJECTED = 'rejected',
+    RESUBMITTED = 'resubmitted',
+}
+
+export interface IAuthentication {
     restrictionLeftAt: Date | null
     resetPassword: boolean
     wrongLoginAttempts: number
     passwordChangedAt?: Date
-    oneTimeCode: string
+    oneTimeCode: string | null
     latestRequestAt: Date
     expiresAt?: Date
     requestCount?: number
@@ -25,15 +35,15 @@ export type IUser = {
     status: USER_STATUS;
     role: USER_ROLES;
     address?: string;
-    location?: [number, number]
+    location?: [number, number];
     isEmailVerified: boolean;
-    isPhoneVerified: boolean;
     authentication: IAuthentication;
     fcmToken?: string[];
     driverInfo?: {
         nid: string[];
         drivingLicense: string[];
-        isVerified: boolean;
+        profileVerification: PROFILE_VERIFICATION_STATUS;
+        rejectReason?: string;
         totalRating: number;
         averageRating: number;
         totalDelivery: number;
@@ -42,8 +52,6 @@ export type IUser = {
     }
 };
 
-// Model type for mongoose with static methods
 export type UserModel = {
     isPasswordMatched: (givenPassword: string, savedPassword: string) => Promise<boolean>;
 } & Model<IUser>;
-

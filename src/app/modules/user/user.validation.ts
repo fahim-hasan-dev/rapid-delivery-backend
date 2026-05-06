@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { USER_ROLES, USER_STATUS } from "./user.interface";
+import { USER_ROLES } from "../../../enum/user";
+import { USER_STATUS } from "./user.interface";
 
 export const userSignupSchema = z.object({
   body: z.object({
@@ -29,12 +30,8 @@ export const userUpdateSchema = z.object({
     image: z.string().optional(),
     status: z.nativeEnum(USER_STATUS).optional(),
     isEmailVerified: z.boolean().optional(),
-    isPhoneVerified: z.boolean().optional(),
     address: z.string().optional(),
-    location: z.object({
-      latitude: z.number(),
-      longitude: z.number(),
-    }).optional(),
+    location: z.array(z.number()).length(2).optional(),
     fcmToken: z.array(z.string()).optional(),
   })
 });
@@ -52,4 +49,3 @@ export const UserValidations = {
   userUpdateSchema,
   changePasswordSchema,
 };
-

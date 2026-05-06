@@ -12,6 +12,8 @@ type IFolderName =
   | 'pickupProof'
   | 'deliveryProof'
   | 'files'
+  | 'nid'
+  | 'drivingLicense'
 
 interface ProcessedFiles {
   [key: string]: string | string[] | undefined
@@ -22,6 +24,8 @@ const uploadFields = [
   { name: 'pickupProof', maxCount: 5 },
   { name: 'deliveryProof', maxCount: 5 },
   { name: 'files', maxCount: 10 },
+  { name: 'nid', maxCount: 2 },
+  { name: 'drivingLicense', maxCount: 2 },
 ] as const
 
 export const fileAndBodyProcessorUsingDiskStorage = () => {
@@ -49,6 +53,8 @@ export const fileAndBodyProcessorUsingDiskStorage = () => {
           image: ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/heic', 'image/heif'],
           pickupProof: ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/heic', 'image/heif'],
           deliveryProof: ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/heic', 'image/heif'],
+          nid: ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/heic', 'image/heif', 'application/pdf'],
+          drivingLicense: ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/heic', 'image/heif', 'application/pdf'],
           files: [
             'image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/heic', 'image/heif',
             'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -61,7 +67,7 @@ export const fileAndBodyProcessorUsingDiskStorage = () => {
           return cb(
             new ApiError(
               StatusCodes.BAD_REQUEST,
-              `Invalid file type for ${file.fieldname}. Supported: JPG, PNG, WEBP, PDF, DOCX.`,
+              `Invalid file type for ${file.fieldname}. Supported formats include: JPG, PNG, WEBP, and PDF.`,
             ) as any,
           );
         }
