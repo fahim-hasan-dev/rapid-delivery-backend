@@ -4,8 +4,6 @@ import { jwtHelper } from './jwtHelper';
 import { trackingService } from './trackingService';
 import { logger } from '../shared/logger';
 import config from '../config';
-import { PARCEL_STATUS } from '../enum/parcel';
-import { Parcel } from '../app/modules/parcel/parcel.model';
 
 const authenticateSocket = (socket: Socket, next: (err?: Error) => void) => {
     const token = socket.handshake.auth?.token;
@@ -30,20 +28,7 @@ const setupTrackingNamespace = (io: Server) => {
         const user = socket.data.user;
         logger.info(`Tracking: ${user.role} ${user.authId} connected`);
 
-        socket.on('driver:start-trip', async (data: { parcelId: string }) => {
-            const { parcelId } = data;
-            socket.join(`parcel:${parcelId}`);
-
-            await Parcel.findByIdAndUpdate(parcelId, {
-                status: PARCEL_STATUS.IN_TRANSIT,
-            });
-
-            socket.to(`parcel:${parcelId}`).emit('parcel:status-changed', {
-                parcelId,
-                status: PARCEL_STATUS.IN_TRANSIT,
-            });
-        });
-
+        // 1. Driver sends location updates 
         socket.on('driver:location-update', async (data: {
             parcelId: string;
             lat: number;
@@ -53,13 +38,18 @@ const setupTrackingNamespace = (io: Server) => {
         }) => {
             const { parcelId, lat, lng, heading, speed } = data;
 
+            // Ensure driver is in the specific parcel room for broadcasting
+            socket.join(`parcel:${parcelId}`);
+
+            // Save location to Redis for persistence/initial user load
             await trackingService.updateDriverLocation(
                 parcelId,
                 user.authId,
                 [lat, lng]
             );
 
-            socket.to(`parcel:${parcelId}`).emit('location:updated', {
+            // Broadcast movement to all users (including the driver) tracking this parcel
+            tracking.to(`parcel:${parcelId}`).emit('location:updated', {
                 lat,
                 lng,
                 heading: heading || 0,
@@ -68,36 +58,16 @@ const setupTrackingNamespace = (io: Server) => {
             });
         });
 
-        socket.on('driver:end-trip', async (data: { parcelId: string }) => {
-            const { parcelId } = data;
-
-            await trackingService.removeDriverTracking(parcelId, user.authId);
-
-            await Parcel.findByIdAndUpdate(parcelId, {
-                status: PARCEL_STATUS.DELIVERED,
-                deliveredAt: new Date(),
-            });
-
-            socket.to(`parcel:${parcelId}`).emit('parcel:status-changed', {
-                parcelId,
-                status: PARCEL_STATUS.DELIVERED,
-            });
-
-            socket.leave(`parcel:${parcelId}`);
-        });
-
+        // 2. User starts tracking a parcel
         socket.on('user:track-parcel', async (data: { parcelId: string }) => {
             const { parcelId } = data;
             socket.join(`parcel:${parcelId}`);
 
+            // Send last known location immediately ot user
             const location = await trackingService.getDriverLocation(parcelId);
             if (location) {
                 socket.emit('location:updated', location);
             }
-        });
-
-        socket.on('user:stop-tracking', (data: { parcelId: string }) => {
-            socket.leave(`parcel:${data.parcelId}`);
         });
 
         socket.on('disconnect', () => {
