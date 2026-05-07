@@ -5,8 +5,7 @@ import config from '../../config'
 import { jwtHelper } from '../../helpers/jwtHelper'
 import ApiError from '../../errors/ApiError'
 import { User } from '../modules/user/user.model'
-import { USER_ROLES } from '../../enum/user'
-import { PROFILE_VERIFICATION_STATUS } from '../modules/user/user.interface'
+import { USER_ROLES, PROFILE_VERIFICATION_STATUS } from '../../enum/user'
 
 const auth =
     (...roles: string[]) =>

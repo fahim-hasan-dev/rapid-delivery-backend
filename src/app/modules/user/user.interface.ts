@@ -1,17 +1,5 @@
 import { Model, Types } from 'mongoose';
-import { USER_ROLES } from '../../../enum/user';
-
-export enum USER_STATUS {
-    ACTIVE = 'active',
-    RESTRICTED = 'restricted',
-}
-
-export enum PROFILE_VERIFICATION_STATUS {
-    PENDING = 'pending',
-    APPROVED = 'approved',
-    REJECTED = 'rejected',
-    RESUBMITTED = 'resubmitted',
-}
+import { USER_ROLES, USER_STATUS, PROFILE_VERIFICATION_STATUS } from '../../../enum/user';
 
 export interface IAuthentication {
     restrictionLeftAt: Date | null

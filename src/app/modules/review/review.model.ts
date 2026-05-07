@@ -1,14 +1,22 @@
-import mongoose from "mongoose"
+import mongoose, { Schema } from "mongoose"
 import { IReview } from "./review.interface"
 
 const ReviewSchema = new mongoose.Schema<IReview>({
+  driver: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  sender: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
   name: {
     type: String,
-    required: true,
   },
   email: {
     type: String,
-    required: true,
   },
   rating: {
     type: Number,

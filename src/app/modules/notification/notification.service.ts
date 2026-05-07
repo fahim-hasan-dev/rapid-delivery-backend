@@ -15,7 +15,7 @@ const insertNotification = async (payload: Partial<INotification>): Promise<INot
             userId: result.receiver.toString(),
             title: result.title,
             body: result.message,
-            data: { referenceId: result.referenceId, screen: result.screen },
+            data: { screen: result.screen },
         });
     }
 

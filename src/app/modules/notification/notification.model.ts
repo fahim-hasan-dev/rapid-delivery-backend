@@ -1,5 +1,6 @@
 import { model, Schema } from 'mongoose';
 import { INotification, NotificationModel } from './notification.interface';
+import { USER_ROLES } from '../../../enum/user';
 
 const notificationSchema = new Schema<INotification, NotificationModel>(
     {
@@ -16,10 +17,6 @@ const notificationSchema = new Schema<INotification, NotificationModel>(
             ref: 'User',
             required: true
         },
-        referenceId: {
-            type: Schema.Types.ObjectId,
-            required: false
-        },
         screen: {
             type: String,
             required: false
@@ -30,8 +27,8 @@ const notificationSchema = new Schema<INotification, NotificationModel>(
         },
         type: {
             type: String,
-            enum: ['USER', 'ADMIN'],
-            default: 'USER'
+            enum: Object.values(USER_ROLES),
+            default: USER_ROLES.SENDER
         }
     },
     {

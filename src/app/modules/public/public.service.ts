@@ -3,7 +3,7 @@ import ApiError from '../../../errors/ApiError'
 import { IContact, IFaq, IPublic } from './public.interface'
 import { Contact, Faq, Public } from './public.model'
 import { User } from '../../../app/modules/user/user.model'
-import { emailHelper } from '../../../helpers/emailHelper'
+import { emailQueue } from '../../../queues'
 import QueryBuilder from '../../builder/QueryBuilder'
 import { emailTemplate } from '../../../shared/emailTemplate'
 
@@ -59,14 +59,11 @@ const createContact = async (payload: IContact) => {
     const result = await Contact.create(payload)
     if (!result)
       throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create Contact')
-    setTimeout(() => {
-      // send admin email
-      emailHelper.sendEmail(
-        emailTemplate.adminContactNotificationEmail(payload),
-      )
-      // send user email
-      emailHelper.sendEmail(emailTemplate.userContactConfirmationEmail(payload))
-    }, 0)
+    
+    // send admin email
+    await emailQueue.add('send-email', emailTemplate.adminContactNotificationEmail(payload))
+    // send user email
+    await emailQueue.add('send-email', emailTemplate.userContactConfirmationEmail(payload))
 
     return {
       message: 'Contact form submitted successfully',

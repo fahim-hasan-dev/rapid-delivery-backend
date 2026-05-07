@@ -4,3 +4,4 @@ import { getRedisConnection } from '../helpers/redis';
 const connection = getRedisConnection();
 
 export const notificationQueue = new Queue('notification', { connection });
+export const emailQueue = new Queue('email', { connection });

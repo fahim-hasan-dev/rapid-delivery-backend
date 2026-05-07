@@ -51,10 +51,21 @@ const deleteReview = catchAsync(async (req, res) => {
   })
 })
 
+const getReviewsByDriver = catchAsync(async (req, res) => {
+  const driverId = req.params.driverId
+  const result = await ReviewService.getReviewsByDriver(driverId, req.query)
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Driver reviews retrieved successfully',
+    data: result,
+  })
+})
 
 export const ReviewController = {
   createReview,
   getAllReviews,
   getSingleReview,
   deleteReview,
+  getReviewsByDriver,
 }

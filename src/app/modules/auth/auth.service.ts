@@ -10,8 +10,8 @@ import {
 } from './common'
 import { ILoginData } from '../../../interfaces/auth'
 import { emailTemplate } from '../../../shared/emailTemplate'
-import { emailHelper } from '../../../helpers/emailHelper'
 import { JwtPayload } from 'jsonwebtoken'
+import { emailQueue } from '../../../queues'
 import { jwtHelper } from '../../../helpers/jwtHelper'
 import config from '../../../config'
 import bcrypt from 'bcrypt'
@@ -63,15 +63,13 @@ export const createUser = async (payload: IUser) => {
       wrongLoginAttempts: 0,
     }
 
-    // Send the verification email in the background
-    setTimeout(() => {
-      const createAccountEmail = emailTemplate.createAccount({
-        name: payload.fullName || 'User',
-        email: payload.email,
-        otp,
-      })
-      emailHelper.sendEmail(createAccountEmail)
-    }, 0)
+    // Send the verification email via queue
+    const createAccountEmail = emailTemplate.createAccount({
+      name: payload.fullName || 'User',
+      email: payload.email,
+      otp,
+    })
+    await emailQueue.add('send-email', createAccountEmail)
 
     const user = await User.create(
       [
@@ -218,9 +216,7 @@ const forgetPassword = async (email?: string, phone?: string) => {
       otp,
     })
 
-    setTimeout(() => {
-      emailHelper.sendEmail(forgetPasswordEmailTemplate)
-    }, 0)
+    await emailQueue.add('send-email', forgetPasswordEmailTemplate)
   }
 
   return 'OTP sent successfully.'
@@ -421,10 +417,10 @@ const getAccessToken = async (token: string) => {
       config.jwt.jwt_refresh_secret as string,
     )
 
-    const { userId, role } = decodedToken
+    const { authId, role } = decodedToken
 
     const tokens = AuthHelper.createToken(
-      userId,
+      authId,
       role,
       decodedToken.name,
       decodedToken.email,
@@ -494,7 +490,7 @@ const resendOtpToPhoneOrEmail = async (
       { new: true },
     )
 
-    await emailHelper.sendEmail(forgetPasswordEmailTemplate)
+    await emailQueue.add('send-email', forgetPasswordEmailTemplate)
   }
 
   if (phone) {
@@ -598,9 +594,7 @@ const resendOtp = async (
       type: authType,
     })
 
-    setTimeout(() => {
-      emailHelper.sendEmail(forgetPasswordEmailTemplate)
-    }, 0)
+    await emailQueue.add('send-email', forgetPasswordEmailTemplate)
   }
 
   return 'OTP sent successfully.'

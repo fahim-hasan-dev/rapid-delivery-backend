@@ -8,9 +8,9 @@ import { MESSAGE } from '../../../enum/message';
 import { JwtPayload } from 'jsonwebtoken';
 import ApiError from '../../../errors/ApiError';
 import { StatusCodes } from 'http-status-codes';
-import { PushNotificationService } from '../notification/pushNotification.service';
 import { User } from '../user/user.model';
 import { getIO } from '../../../helpers/socketManager';
+import { notificationQueue } from '../../../queues';
 
 // Send a new message and notify chat participants
 const sendMessageToDB = async (payload: any): Promise<IMessage> => {
@@ -68,19 +68,16 @@ const sendMessageToDB = async (payload: any): Promise<IMessage> => {
       );
 
       if (recipientId) {
-        const recipient = await User.findById(recipientId).select('fcmToken');
-        if (recipient?.fcmToken && recipient.fcmToken.length > 0) {
-          await PushNotificationService.sendPushNotification(
-            recipient.fcmToken,
-            title,
-            body,
-            { screen: "CHAT", chatId: payload.chatId?.toString() }
-          );
-        }
+        await notificationQueue.add('push-notification', {
+          userId: recipientId.toString(),
+          title,
+          body,
+          data: { screen: "CHAT", chatId: payload.chatId?.toString() }
+        });
       }
     }
   } catch (error) {
-    console.error("Failed to send push notification:", error);
+    console.error("Failed to add push notification to queue:", error);
   }
 
   return response;

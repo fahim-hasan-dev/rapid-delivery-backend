@@ -1,8 +1,8 @@
 import { StatusCodes } from 'http-status-codes'
 import ApiError from '../../../errors/ApiError'
-import { IUser, PROFILE_VERIFICATION_STATUS, USER_STATUS } from './user.interface'
+import { IUser } from './user.interface'
 import { User } from './user.model'
-import { USER_ROLES } from '../../../enum/user'
+import { USER_ROLES, USER_STATUS, PROFILE_VERIFICATION_STATUS } from '../../../enum/user'
 import { JwtPayload } from 'jsonwebtoken'
 import QueryBuilder from '../../builder/QueryBuilder'
 import { NotificationService } from '../notification/notification.service'
@@ -115,8 +115,7 @@ const resubmitProfile = async (user: JwtPayload, payload: { nid: string[], drivi
             title: 'Profile Resubmitted',
             message: `${isExistUser.fullName || 'A driver'} has resubmitted documents for verification.`,
             screen: 'DRIVER_VERIFICATION',
-            referenceId: updatedUser?._id as any,
-            type: 'ADMIN' // Added missing mandatory type
+            type: USER_ROLES.ADMIN
         });
     }
 
@@ -153,8 +152,7 @@ const verifyProfileByAdmin = async (id: string, payload: { status: PROFILE_VERIF
         title,
         message,
         screen: 'PROFILE',
-        referenceId: id as any,
-        type: 'USER' // Added missing mandatory type
+        type: USER_ROLES.DRIVER
     });
 
     return updatedUser;

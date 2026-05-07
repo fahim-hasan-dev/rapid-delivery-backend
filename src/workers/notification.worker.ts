@@ -13,14 +13,6 @@ const notificationWorker = new Worker(
     async (job) => {
         const { userId, title, body, data } = job.data;
 
-        const result = await Notification.create({
-            receiver: userId,
-            title,
-            message: body,
-            referenceId: data?.referenceId || '',
-            screen: data?.screen || '',
-        });
-
         const user = await User.findById(userId).select('fcmToken').lean();
 
         if (user?.fcmToken && user.fcmToken.length > 0) {
@@ -34,7 +26,12 @@ const notificationWorker = new Worker(
 
         try {
             const io = getIO();
-            io.of('/notifications').emit(`notification::${userId}`, result);
+            // Emit a generic notification event to trigger a refetch or update on the frontend
+            io.of('/notifications').emit(`notification::${userId}`, {
+                title,
+                message: body,
+                ...data
+            });
         } catch {
             logger.warn('Socket.io not initialized yet, skipping socket emit');
         }

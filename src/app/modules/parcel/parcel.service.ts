@@ -210,7 +210,6 @@ const acceptParcel = async (parcelId: string, driverId: string) => {
         title: "Driver Assigned",
         body: "A driver has accepted your parcel and will pick it up soon!",
         data: {
-            referenceId: parcelId,
             screen: "PARCEL_TRACKING",
             type: "DRIVER_ASSIGNED",
         },

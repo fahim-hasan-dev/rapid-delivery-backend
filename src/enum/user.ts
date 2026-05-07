@@ -11,3 +11,9 @@ export enum USER_STATUS {
     DELETED = 'deleted',
 }
 
+export enum PROFILE_VERIFICATION_STATUS {
+    PENDING = 'pending',
+    APPROVED = 'approved',
+    REJECTED = 'rejected',
+    RESUBMITTED = 'resubmitted',
+}
