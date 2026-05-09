@@ -144,6 +144,17 @@ const deleteAccount = catchAsync(async (req: Request, res: Response) => {
   })
 })
 
+const createAdmin = catchAsync(async (req: Request, res: Response) => {
+  const { ...adminData } = req.body
+  const result = await AuthServices.createAdmin(adminData)
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Admin account created successfully',
+    data: result,
+  })
+})
+
 const logOut = catchAsync(async (req: Request, res: Response) => {
   res.clearCookie('refreshToken', {
     secure: config.node_env === 'production',
@@ -167,6 +178,6 @@ export const AuthController = {
   createUser,
   deleteAccount,
   adminLogin,
-
-  logOut
+  logOut,
+  createAdmin
 }

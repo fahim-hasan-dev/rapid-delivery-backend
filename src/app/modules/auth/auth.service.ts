@@ -69,8 +69,6 @@ export const createUser = async (payload: IUser) => {
       email: payload.email,
       otp,
     })
-    await emailQueue.add('send-email', createAccountEmail)
-
     const user = await User.create(
       [
         {
@@ -86,12 +84,16 @@ export const createUser = async (payload: IUser) => {
       throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create user.')
 
     await session.commitTransaction()
+    session.endSession()
+
+    // Send the verification email via queue AFTER successful transaction
+    await emailQueue.add('send-email', createAccountEmail)
+
     return user[0]._id
   } catch (error) {
     await session.abortTransaction()
-    throw error
-  } finally {
     session.endSession()
+    throw error
   }
 }
 
@@ -634,7 +636,35 @@ const changePassword = async (
     { new: true },
   )
 
-  return { message: 'Password changed successfully' }
+}
+
+// Specialized creation of administrative accounts by Super Admin
+const createAdmin = async (payload: IUser) => {
+  const isUserExist = await User.findOne({
+    email: payload.email.toLowerCase().trim(),
+    status: { $nin: [USER_STATUS.DELETED] },
+  });
+
+  if (isUserExist) {
+    throw new ApiError(
+      StatusCodes.BAD_REQUEST,
+      `An account with this email already exists.`,
+    );
+  }
+
+
+  const adminData = {
+    ...payload,
+    role: USER_ROLES.ADMIN,
+    isEmailVerified: true,
+  };
+
+  const result = await User.create(adminData);
+  if (!result) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create admin account.');
+  }
+
+  return result;
 }
 
 export const AuthServices = {
@@ -648,7 +678,8 @@ export const AuthServices = {
   resendOtp,
   changePassword,
   createUser,
-  adminLogin
+  adminLogin,
+  createAdmin
 }
 
 

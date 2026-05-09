@@ -101,5 +101,13 @@ router.post('/access-token', AuthController.getAccessToken)
 // End the current user session
 router.post('/logout', AuthController.logOut)
 
+// Super Admin only: Create new administrative accounts
+router.post(
+  '/create-admin',
+  auth(USER_ROLES.SUPER_ADMIN),
+  validateRequest(UserValidations.userSignupSchema),
+  AuthController.createAdmin,
+)
+
 export const AuthRoutes = router
 
