@@ -1,0 +1,685 @@
+{
+	"info": {
+		"_postman_id": "rapid-delivery-definitive-collection",
+		"name": "Rapid-Delivery DEFINITIVE API Collection",
+		"description": "Exhaustive API collection including all Auth flows for every role, public content (Terms, FAQ, About), and detailed Admin Analytics.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Sender",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "Signup",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{ "key": "fullName", "value": "Sender User", "type": "text" },
+										{ "key": "email", "value": "sender@example.com", "type": "text" },
+										{ "key": "password", "value": "password123", "type": "text" },
+										{ "key": "phone", "value": "+1234567890", "type": "text" },
+										{ "key": "role", "value": "sender", "type": "text" },
+										{ "key": "image", "type": "file", "src": [] }
+									]
+								},
+								"url": { "raw": "{{baseUrl}}/auth/signup", "host": ["{{baseUrl}}"], "path": ["auth", "signup"] }
+							}
+						},
+						{
+							"name": "Login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"sender@example.com\",\n    \"password\": \"password123\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+							}
+						},
+						{
+							"name": "Verify Account (OTP)",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"sender@example.com\",\n    \"oneTimeCode\": \"123456\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/auth/verify-account", "host": ["{{baseUrl}}"], "path": ["auth", "verify-account"] }
+							}
+						},
+						{
+							"name": "Resend OTP",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"sender@example.com\",\n    \"authType\": \"createAccount\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/auth/resend-otp", "host": ["{{baseUrl}}"], "path": ["auth", "resend-otp"] }
+							}
+						},
+						{
+							"name": "Forget Password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"sender@example.com\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/auth/forget-password", "host": ["{{baseUrl}}"], "path": ["auth", "forget-password"] }
+							}
+						},
+						{
+							"name": "Reset Password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"password\": \"newpassword123\",\n    \"confirmPassword\": \"newpassword123\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/auth/reset-password?token={{resetToken}}", "host": ["{{baseUrl}}"], "path": ["auth", "reset-password"], "query": [ { "key": "token", "value": "{{resetToken}}" } ] }
+							}
+						},
+						{
+							"name": "Access Token (Refresh)",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": { "raw": "{{baseUrl}}/auth/access-token", "host": ["{{baseUrl}}"], "path": ["auth", "access-token"] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Profile & Settings",
+					"item": [
+						{
+							"name": "Get My Profile",
+							"request": {
+								"method": "GET",
+								"header": [ { "key": "Authorization", "value": "Bearer {{senderToken}}" } ],
+								"url": { "raw": "{{baseUrl}}/user/me", "host": ["{{baseUrl}}"], "path": ["user", "me"] }
+							}
+						},
+						{
+							"name": "Update Profile",
+							"request": {
+								"method": "PATCH",
+								"header": [ { "key": "Authorization", "value": "Bearer {{senderToken}}" } ],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{ "key": "fullName", "value": "Updated Sender", "type": "text" },
+										{ "key": "address", "value": "Dhaka, Bangladesh", "type": "text" },
+										{ "key": "image", "type": "file", "src": [] }
+									]
+								},
+								"url": { "raw": "{{baseUrl}}/user/profile", "host": ["{{baseUrl}}"], "path": ["user", "profile"] }
+							}
+						},
+						{
+							"name": "Change Password",
+							"request": {
+								"method": "POST",
+								"header": [ { "key": "Authorization", "value": "Bearer {{senderToken}}" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"currentPassword\": \"password123\",\n    \"newPassword\": \"newpassword123\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/auth/change-password", "host": ["{{baseUrl}}"], "path": ["auth", "change-password"] }
+							}
+						},
+						{
+							"name": "Delete Account",
+							"request": {
+								"method": "DELETE",
+								"header": [ { "key": "Authorization", "value": "Bearer {{senderToken}}" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"password\": \"password123\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/auth/delete-account", "host": ["{{baseUrl}}"], "path": ["auth", "delete-account"] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Parcel Operations",
+					"item": [
+						{
+							"name": "Calculate Distance",
+							"request": {
+								"method": "GET",
+								"header": [ { "key": "Authorization", "value": "Bearer {{senderToken}}" } ],
+								"url": { "raw": "{{baseUrl}}/parcel/calculate-distance?pickupLat=23.8103&pickupLng=90.4125&dropLat=23.7561&dropLng=90.3761", "host": ["{{baseUrl}}"], "path": ["parcel", "calculate-distance"], "query": [ { "key": "pickupLat", "value": "23.8103" }, { "key": "pickupLng", "value": "90.4125" }, { "key": "dropLat", "value": "23.7561" }, { "key": "dropLng", "value": "90.3761" } ] }
+							}
+						},
+						{
+							"name": "Create Parcel",
+							"request": {
+								"method": "POST",
+								"header": [ { "key": "Authorization", "value": "Bearer {{senderToken}}" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Gadget\",\n    \"itemValue\": 1200,\n    \"pickupLocation\": {\n        \"address\": \"Banani, Dhaka\",\n        \"coordinates\": [23.7937, 90.4066]\n    },\n    \"dropLocation\": {\n        \"address\": \"Mirpur, Dhaka\",\n        \"coordinates\": [23.8223, 90.3654]\n    },\n    \"vehicleType\": \"motorcycle\",\n    \"receiverName\": \"Alice\",\n    \"receiverPhone\": \"+8801800000000\",\n    \"deliveryDate\": \"2026-05-20\",\n    \"note\": \"Fragile item\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/parcel/create-parcel", "host": ["{{baseUrl}}"], "path": ["parcel", "create-parcel"] }
+							}
+						},
+						{
+							"name": "My Parcels",
+							"request": {
+								"method": "GET",
+								"header": [ { "key": "Authorization", "value": "Bearer {{senderToken}}" } ],
+								"url": { "raw": "{{baseUrl}}/parcel/my-parcels?page=1&limit=10&status=ACCEPTED", "host": ["{{baseUrl}}"], "path": ["parcel", "my-parcels"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" }, { "key": "status", "value": "ACCEPTED" } ] }
+							}
+						},
+						{
+							"name": "Parcel Details",
+							"request": {
+								"method": "GET",
+								"header": [ { "key": "Authorization", "value": "Bearer {{senderToken}}" } ],
+								"url": { "raw": "{{baseUrl}}/parcel/{{parcelId}}", "host": ["{{baseUrl}}"], "path": ["parcel", "{{parcelId}}"] }
+							}
+						},
+						{
+							"name": "Pay for Parcel (Stripe)",
+							"request": {
+								"method": "POST",
+								"header": [ { "key": "Authorization", "value": "Bearer {{senderToken}}" } ],
+								"url": { "raw": "{{baseUrl}}/payment/checkout-session/{{parcelId}}", "host": ["{{baseUrl}}"], "path": ["payment", "checkout-session", "{{parcelId}}"] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Feedback",
+					"item": [
+						{
+							"name": "Give Review",
+							"request": {
+								"method": "POST",
+								"header": [ { "key": "Authorization", "value": "Bearer {{senderToken}}" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"driver\": \"{{driverId}}\",\n    \"parcel\": \"{{parcelId}}\",\n    \"rating\": 4,\n    \"comment\": \"On time and professional.\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/review", "host": ["{{baseUrl}}"], "path": ["review"] }
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Driver",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "Signup",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{ "key": "fullName", "value": "Driver One", "type": "text" },
+										{ "key": "email", "value": "driver@example.com", "type": "text" },
+										{ "key": "password", "value": "password123", "type": "text" },
+										{ "key": "phone", "value": "+1234567895", "type": "text" },
+										{ "key": "role", "value": "driver", "type": "text" },
+										{ "key": "image", "type": "file", "src": [] }
+									]
+								},
+								"url": { "raw": "{{baseUrl}}/auth/signup", "host": ["{{baseUrl}}"], "path": ["auth", "signup"] }
+							}
+						},
+						{
+							"name": "Login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"driver@example.com\",\n    \"password\": \"password123\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+							}
+						},
+						{
+							"name": "Verify (OTP)",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"driver@example.com\",\n    \"oneTimeCode\": \"123456\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/auth/verify-account", "host": ["{{baseUrl}}"], "path": ["auth", "verify-account"] }
+							}
+						},
+						{
+							"name": "Forget Password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"driver@example.com\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/auth/forget-password", "host": ["{{baseUrl}}"], "path": ["auth", "forget-password"] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Verification & Profile",
+					"item": [
+						{
+							"name": "Resubmit KYC (NID/License)",
+							"request": {
+								"method": "PATCH",
+								"header": [ { "key": "Authorization", "value": "Bearer {{driverToken}}" } ],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{ "key": "nid", "type": "file", "src": [] },
+										{ "key": "drivingLicense", "type": "file", "src": [] }
+									]
+								},
+								"url": { "raw": "{{baseUrl}}/user/resubmit-profile", "host": ["{{baseUrl}}"], "path": ["user", "resubmit-profile"] }
+							}
+						},
+						{
+							"name": "Get My Profile",
+							"request": {
+								"method": "GET",
+								"header": [ { "key": "Authorization", "value": "Bearer {{driverToken}}" } ],
+								"url": { "raw": "{{baseUrl}}/user/me", "host": ["{{baseUrl}}"], "path": ["user", "me"] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Deliveries",
+					"item": [
+						{
+							"name": "Nearby Parcels",
+							"request": {
+								"method": "GET",
+								"header": [ { "key": "Authorization", "value": "Bearer {{driverToken}}" } ],
+								"url": { "raw": "{{baseUrl}}/parcel/nearby?latitude=23.8103&longitude=90.4125&radius=5", "host": ["{{baseUrl}}"], "path": ["parcel", "nearby"], "query": [ { "key": "latitude", "value": "23.8103" }, { "key": "longitude", "value": "90.4125" }, { "key": "radius", "value": "5" } ] }
+							}
+						},
+						{
+							"name": "Accept Delivery",
+							"request": {
+								"method": "PATCH",
+								"header": [ { "key": "Authorization", "value": "Bearer {{driverToken}}" } ],
+								"url": { "raw": "{{baseUrl}}/parcel/{{parcelId}}/accept", "host": ["{{baseUrl}}"], "path": ["parcel", "{{parcelId}}", "accept"] }
+							}
+						},
+						{
+							"name": "Update Status (PICKED_UP)",
+							"request": {
+								"method": "PATCH",
+								"header": [ { "key": "Authorization", "value": "Bearer {{driverToken}}" } ],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{ "key": "status", "value": "PICKED_UP", "type": "text" },
+										{ "key": "pickupProof", "type": "file", "src": [] }
+									]
+								},
+								"url": { "raw": "{{baseUrl}}/parcel/{{parcelId}}", "host": ["{{baseUrl}}"], "path": ["parcel", "{{parcelId}}"] }
+							}
+						},
+						{
+							"name": "Update Status (DELIVERED)",
+							"request": {
+								"method": "PATCH",
+								"header": [ { "key": "Authorization", "value": "Bearer {{driverToken}}" } ],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{ "key": "status", "value": "DELIVERED", "type": "text" },
+										{ "key": "deliveryProof", "type": "file", "src": [] }
+									]
+								},
+								"url": { "raw": "{{baseUrl}}/parcel/{{parcelId}}", "host": ["{{baseUrl}}"], "path": ["parcel", "{{parcelId}}"] }
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "Admin Login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"adminpass\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/auth/admin-login", "host": ["{{baseUrl}}"], "path": ["auth", "admin-login"] }
+							}
+						},
+						{
+							"name": "Create Admin Account (Super Admin)",
+							"request": {
+								"method": "POST",
+								"header": [ { "key": "Authorization", "value": "Bearer {{superAdminToken}}" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"fullName\": \"New Sub Admin\",\n    \"email\": \"sub@company.com\",\n    \"password\": \"password123\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/auth/create-admin", "host": ["{{baseUrl}}"], "path": ["auth", "create-admin"] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Analytics Dashboard",
+					"item": [
+						{
+							"name": "Performance Analytics Overview",
+							"request": {
+								"method": "GET",
+								"header": [ { "key": "Authorization", "value": "Bearer {{adminToken}}" } ],
+								"description": "Returns Revenue, Total Users, Total Drivers, Deliveries, Monthly Sales Chart, and User Distribution Pie Chart.",
+								"url": { "raw": "{{baseUrl}}/admin-stats/overview?year=2026", "host": ["{{baseUrl}}"], "path": ["admin-stats", "overview"], "query": [ { "key": "year", "value": "2026" } ] }
+							}
+						}
+					]
+				},
+				{
+					"name": "User & Driver Controls",
+					"item": [
+						{
+							"name": "Get All Users (Filters)",
+							"request": {
+								"method": "GET",
+								"header": [ { "key": "Authorization", "value": "Bearer {{adminToken}}" } ],
+								"url": { "raw": "{{baseUrl}}/user?role=driver&status=active&searchTerm=John", "host": ["{{baseUrl}}"], "path": ["user"], "query": [ { "key": "role", "value": "driver" }, { "key": "status", "value": "active" }, { "key": "searchTerm", "value": "John" } ] }
+							}
+						},
+						{
+							"name": "Approve/Verify Driver",
+							"request": {
+								"method": "PATCH",
+								"header": [ { "key": "Authorization", "value": "Bearer {{adminToken}}" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"driverInfo.profileVerification\": \"approved\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/user/verify-profile/{{driverId}}", "host": ["{{baseUrl}}"], "path": ["user", "verify-profile", "{{driverId}}"] }
+							}
+						},
+						{
+							"name": "Suspend/Delete User",
+							"request": {
+								"method": "DELETE",
+								"header": [ { "key": "Authorization", "value": "Bearer {{adminToken}}" } ],
+								"url": { "raw": "{{baseUrl}}/user/{{userId}}", "host": ["{{baseUrl}}"], "path": ["user", "{{userId}}"] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Vehicle Management",
+					"item": [
+						{
+							"name": "Add Vehicle",
+							"request": {
+								"method": "POST",
+								"header": [ { "key": "Authorization", "value": "Bearer {{adminToken}}" } ],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{ "key": "brand", "value": "Nissan", "type": "text" },
+										{ "key": "model", "value": "NV200", "type": "text" },
+										{ "key": "vehicleType", "value": "van", "type": "text" },
+										{ "key": "licensePlate", "value": "PLATE-888", "type": "text" },
+										{ "key": "image", "type": "file", "src": [] }
+									]
+								},
+								"url": { "raw": "{{baseUrl}}/vehicle", "host": ["{{baseUrl}}"], "path": ["vehicle"] }
+							}
+						},
+						{
+							"name": "Assign Vehicle to Driver",
+							"request": {
+								"method": "PATCH",
+								"header": [ { "key": "Authorization", "value": "Bearer {{adminToken}}" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"driverId\": \"{{driverId}}\",\n    \"vehicleId\": \"{{vehicleId}}\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/vehicle/assign-driver", "host": ["{{baseUrl}}"], "path": ["vehicle", "assign-driver"] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Policy & FAQ Management",
+					"item": [
+						{
+							"name": "Create/Update Policy (Terms, Refund, etc.)",
+							"request": {
+								"method": "POST",
+								"header": [ { "key": "Authorization", "value": "Bearer {{adminToken}}" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"type\": \"terms-and-condition\",\n    \"content\": \"<h1>Terms</h1><p>Our terms of service...</p>\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/public", "host": ["{{baseUrl}}"], "path": ["public"] }
+							}
+						},
+						{
+							"name": "Add FAQ",
+							"request": {
+								"method": "POST",
+								"header": [ { "key": "Authorization", "value": "Bearer {{adminToken}}" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"question\": \"How do I track my parcel?\",\n    \"answer\": \"Use the tracking ID in the mobile app.\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/public/faq", "host": ["{{baseUrl}}"], "path": ["public", "faq"] }
+							}
+						},
+						{
+							"name": "Update FAQ",
+							"request": {
+								"method": "PATCH",
+								"header": [ { "key": "Authorization", "value": "Bearer {{adminToken}}" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"answer\": \"Updated answer text.\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/public/faq/{{faqId}}", "host": ["{{baseUrl}}"], "path": ["public", "faq", "{{faqId}}"] }
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Public & General",
+			"item": [
+				{
+					"name": "Policies",
+					"item": [
+						{
+							"name": "Get Terms & Conditions",
+							"request": {
+								"method": "GET",
+								"url": { "raw": "{{baseUrl}}/public/terms-and-condition", "host": ["{{baseUrl}}"], "path": ["public", "terms-and-condition"] }
+							}
+						},
+						{
+							"name": "Get Refund Policy",
+							"request": {
+								"method": "GET",
+								"url": { "raw": "{{baseUrl}}/public/refund-policy", "host": ["{{baseUrl}}"], "path": ["public", "refund-policy"] }
+							}
+						},
+						{
+							"name": "Get About Us",
+							"request": {
+								"method": "GET",
+								"url": { "raw": "{{baseUrl}}/public/about", "host": ["{{baseUrl}}"], "path": ["public", "about"] }
+							}
+						}
+					]
+				},
+				{
+					"name": "FAQs",
+					"item": [
+						{
+							"name": "All FAQs",
+							"request": {
+								"method": "GET",
+								"url": { "raw": "{{baseUrl}}/public/faq/all", "host": ["{{baseUrl}}"], "path": ["public", "faq", "all"] }
+							}
+						},
+						{
+							"name": "Single FAQ",
+							"request": {
+								"method": "GET",
+								"url": { "raw": "{{baseUrl}}/public/faq/single/{{faqId}}", "host": ["{{baseUrl}}"], "path": ["public", "faq", "single", "{{faqId}}"] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Support",
+					"item": [
+						{
+							"name": "Contact Support (Form Submission)",
+							"request": {
+								"method": "POST",
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"John Guest\",\n    \"email\": \"john@guest.com\",\n    \"message\": \"I have a query about my delivery.\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/public/contact", "host": ["{{baseUrl}}"], "path": ["public", "contact"] }
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Social & Messaging (Shared)",
+			"item": [
+				{
+					"name": "Conversations",
+					"item": [
+						{
+							"name": "Start Chat",
+							"request": {
+								"method": "POST",
+								"header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"participant\": \"{{otherUserId}}\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{baseUrl}}/chat", "host": ["{{baseUrl}}"], "path": ["chat"] }
+							}
+						},
+						{
+							"name": "My Chats",
+							"request": {
+								"method": "GET",
+								"header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+								"url": { "raw": "{{baseUrl}}/chat", "host": ["{{baseUrl}}"], "path": ["chat"] }
+							}
+						}
+					]
+				},
+				{
+					"name": "Messages",
+					"item": [
+						{
+							"name": "Send Message (with Image)",
+							"request": {
+								"method": "POST",
+								"header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{ "key": "chat", "value": "{{chatId}}", "type": "text" },
+										{ "key": "text", "value": "Here is the item image.", "type": "text" },
+										{ "key": "image", "type": "file", "src": [] }
+									]
+								},
+								"url": { "raw": "{{baseUrl}}/message", "host": ["{{baseUrl}}"], "path": ["message"] }
+							}
+						},
+						{
+							"name": "History",
+							"request": {
+								"method": "GET",
+								"header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+								"url": { "raw": "{{baseUrl}}/message/{{chatId}}?page=1&limit=20", "host": ["{{baseUrl}}"], "path": ["message", "{{chatId}}"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "20" } ] }
+							}
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{ "key": "baseUrl", "value": "http://localhost:5000/api/v1", "type": "string" },
+		{ "key": "senderToken", "value": "jwt_token_here", "type": "string" },
+		{ "key": "driverToken", "value": "jwt_token_here", "type": "string" },
+		{ "key": "adminToken", "value": "jwt_token_here", "type": "string" },
+		{ "key": "superAdminToken", "value": "jwt_token_here", "type": "string" },
+		{ "key": "token", "value": "current_auth_token", "type": "string" },
+		{ "key": "parcelId", "value": "id", "type": "string" },
+		{ "key": "driverId", "value": "id", "type": "string" },
+		{ "key": "chatId", "value": "id", "type": "string" },
+		{ "key": "faqId", "value": "id", "type": "string" }
+	]
+}

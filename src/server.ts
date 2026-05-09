@@ -1,5 +1,7 @@
 import colors from 'colors'
 import mongoose from 'mongoose'
+import dns from 'node:dns'
+dns.setServers(['8.8.8.8', '8.8.4.4'])
 import { Server } from 'socket.io'
 import { createAdapter } from '@socket.io/redis-adapter'
 import app from './app'

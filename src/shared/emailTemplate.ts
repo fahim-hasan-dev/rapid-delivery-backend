@@ -15,8 +15,6 @@ const createAccount = (values: ICreateAccount) => {
     <!-- Header -->
     <tr>
       <td align="center" style="background:linear-gradient(135deg,#FEF5F0,#FFE6D9); padding:35px 20px; border-bottom:1px solid #FF4A0033;">
-        <img src="https://i.ibb.co.com/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" alt="Rapid-Delivery"
-             style="width:220px; height:auto; filter:drop-shadow(0 0 6px rgba(0,0,0,0.25));">
       </td>
     </tr>
 
@@ -53,15 +51,7 @@ const createAccount = (values: ICreateAccount) => {
           </p>
         </div>
 
-        <!-- Button -->
-        <div style="text-align:center; margin-top:45px;">
-          <a href="${config.frontend_url}/otp-verify" 
-             style="background-color:#FF4A00; color:#ffffff; padding:14px 32px; font-size:16px; 
-                    font-weight:600; border-radius:10px; text-decoration:none; display:inline-block; 
-                    box-shadow:0 4px 12px rgba(255,74,0,0.3); transition:all 0.3s;">
-            Open Rapid-Delivery 🚀
-          </a>
-        </div>
+        <!-- Button removed -->
       </td>
     </tr>
 
@@ -98,8 +88,6 @@ const resetPassword = (values: IResetPassword) => {
     <!-- Header -->
     <tr>
       <td align="center" style="background:linear-gradient(135deg,#FEF5F0,#FFE6D9); padding:35px 20px; border-bottom:1px solid #FF4A0033;">
-        <img src="https://i.ibb.co.com/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" alt="Rapid-Delivery"
-             style="width:220px; height:auto; filter:drop-shadow(0 0 6px rgba(0,0,0,0.25));">
       </td>
     </tr>
 
@@ -137,15 +125,7 @@ const resetPassword = (values: IResetPassword) => {
           </p>
         </div>
 
-        <!-- Button -->
-        <div style="text-align:center; margin-top:45px;">
-          <a href="${config.frontend_url}/otp-verify" target="_blank"
-             style="background-color:#FF4A00; color:#ffffff; padding:14px 32px; font-size:16px;
-                    font-weight:600; border-radius:10px; text-decoration:none; display:inline-block;
-                    box-shadow:0 4px 12px rgba(255,74,0,0.3); transition:all 0.3s;">
-            🔑 Reset Password
-          </a>
-        </div>
+        <!-- Button removed -->
       </td>
     </tr>
 
@@ -190,8 +170,6 @@ const resendOtp = (values: {
     <!-- Header -->
     <tr>
       <td align="center" style="background-color:#FEF5F0; padding:35px 20px; border-top:1px solid #FFE6D9;">
-        <img src="https://i.ibb.co.com/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" alt="Rapid-Delivery"
-             style="width:210px; height:auto; filter:drop-shadow(0 0 6px rgba(0,0,0,0.3));">
       </td>
     </tr>
 
@@ -236,16 +214,7 @@ const resendOtp = (values: {
           </p>
         </div>
 
-        <!-- Button -->
-        <div style="text-align:center; margin-top:45px;">
-          <a href="${config.frontend_url}/otp-verify"
-             style="background-color:#FF4A00; color:#ffffff; padding:14px 32px;
-                    font-size:16px; font-weight:600; border-radius:10px;
-                    text-decoration:none; display:inline-block;
-                    box-shadow:0 4px 12px rgba(255,74,0,0.3);">
-            ${isReset ? 'Reset Password' : 'Verify Account'}
-          </a>
-        </div>
+        <!-- Button removed -->
       </td>
     </tr>
 
@@ -288,8 +257,6 @@ const adminContactNotificationEmail = (payload: {
     <tr>
       <td align="center" 
           style="background:linear-gradient(135deg,#FEF5F0,#FFE6D9); padding:35px 20px; border-bottom:1px solid #FF4A0033;">
-        <img src="https://i.ibb.co.com/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" alt="Rapid-Delivery"
-             style="width:220px; height:75px; filter:drop-shadow(0 0 6px rgba(0,0,0,0.25));">
       </td>
     </tr>
 
@@ -380,8 +347,6 @@ const userContactConfirmationEmail = (payload: {
     <tr>
       <td align="center" 
           style="background:linear-gradient(135deg,#FEF5F0,#FFE6D9); padding:35px 20px; border-bottom:1px solid #FF4A0033;">
-        <img src="https://i.ibb.co.com/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" alt="Rapid-Delivery"
-             style="width:220px; height:75px; filter:drop-shadow(0 0 6px rgba(0,0,0,0.25));">
       </td>
     </tr>
 
@@ -410,15 +375,7 @@ const userContactConfirmationEmail = (payload: {
           We truly appreciate your message 💙
         </p>
 
-        <!-- Button -->
-        <div style="text-align:center; margin-top:40px;">
-          <a href="${config.frontend_url}"
-             style="background-color:#FF4A00; color:#ffffff; padding:14px 32px; font-size:16px; 
-                    font-weight:600; border-radius:10px; text-decoration:none; display:inline-block; 
-                    box-shadow:0 4px 12px rgba(255,74,0,0.3); transition:all 0.3s;">
-            Open Rapid-Delivery 
-          </a>
-        </div>
+        <!-- Button removed -->
       </td>
     </tr>
 
@@ -466,7 +423,6 @@ const sendPaymentConfirmationEmail = (data: any) => {
     <!-- Header -->
     <tr>
       <td align="center" style="background:linear-gradient(135deg, #FEF5F0, #FFE6D9); padding:30px 20px;">
-        <img src="https://i.ibb.co/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" alt="Rapid-Delivery Logo" style="height:70px; width:auto; margin-bottom:10px;" />
         <h1 style="color:#FF4A00; font-size:22px; margin:0;">Payment Successful ✅</h1>
       </td>
     </tr>
@@ -541,12 +497,6 @@ const sendAdminPaymentNotificationEmail = (data: any) => {
     border-bottom: 1px solid #FF4A0033;
   "
 >
-  <img 
-    src="https://i.ibb.co.com/Hf7XccNJ/Send-you-back-Final-logo-02-3.png"
-    alt="Rapid-Delivery Logo"
-    style="height:85px; width:auto; margin-bottom:10px;" 
-  />
-  
   <h1 style="
     color:#FF4A00;  
     font-size:24px; 
@@ -669,7 +619,7 @@ const businessUserShipmentInfoEmail = (data: any) => {
     <!-- Header -->
     <tr>
       <td align="center" style="background:#FFEBE0;padding:25px 20px;">
-        <img src="https://i.ibb.co/Hf7XccNJ/Send-you-back-Final-logo-02-3.png" style="height:70px;margin-bottom:8px;" />
+
         <h2 style="margin:0;color:#FF4A00;font-size:20px;">Your Lost Item Has Been Booked!</h2>
         <p style="margin:4px 0 0;color:#555;font-size:13px;">Booking ID: <strong>${data._id}</strong></p>
       </td>
@@ -698,13 +648,7 @@ const businessUserShipmentInfoEmail = (data: any) => {
           ${data.insurance ? `<p style="margin:2px 0;font-size:13px;"><strong>Insurance:</strong> Yes — ${data.insurance.amount}</p>` : ''}
         </div>
 
-        <!-- Dashboard Button -->
-        <div style="text-align:center;margin-top:20px;">
-          <a href="${config.frontend_url}/dashboard"
-             style="background:#FF4A00;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;display:inline-block;">
-            Go to Dashboard & Check Shipment
-          </a>
-        </div>
+        <!-- Button removed -->
       </td>
     </tr>
 
@@ -745,8 +689,7 @@ const businessUserRegistrationInviteEmail = (data: any) => {
     <!-- Header -->
     <tr>
       <td align="center" style="background:#FFEBE0;padding:25px 20px;">
-        <img src="https://i.ibb.co/Hf7XccNJ/Send-you-back-Final-logo-02-3.png"
-             style="height:70px;margin-bottom:8px;" />
+
         <h2 style="margin:0;color:#FF4A00;font-size:20px;">A Lost Item Shipment Was Created</h2>
         <p style="margin:4px 0 0;color:#555;font-size:13px;">Booking ID: <strong>${data._id}</strong></p>
       </td>
@@ -777,14 +720,7 @@ const businessUserRegistrationInviteEmail = (data: any) => {
           </p>
         </div>
 
-        <!-- Register Button -->
-        <div style="text-align:center;margin-top:20px;">
-          <a href="${config.frontend_url}/register"
-             style="background:#FF4A00;color:#fff;padding:12px 28px;border-radius:8px;
-             text-decoration:none;font-size:14px;display:inline-block;">
-            Create Your Rapid-Delivery Account
-          </a>
-        </div>
+        <!-- Button removed -->
 
         <p style="font-size:13px;color:#555;text-align:center;margin-top:10px;">
           Registration is required to collect shipping information and proceed with the delivery.
@@ -846,8 +782,7 @@ const guestLostItemNotificationEmail = (data: any) => {
     <!-- Header -->
     <tr>
       <td align="center" style="background:#FFEBE0;padding:25px 20px;">
-        <img src="https://i.ibb.co/Hf7XccNJ/Send-you-back-Final-logo-02-3.png"
-          style="height:70px;margin-bottom:8px;" />
+
 
         <h2 style="margin:0;color:#FF4A00;font-size:20px;">
           Good News! We Found Your Item
@@ -912,13 +847,7 @@ const guestLostItemNotificationEmail = (data: any) => {
           </p>
         </div>
 
-        <div style="text-align:center;margin-top:22px;">
-          <a href="${config.frontend_url}/orders/${data._id}"
-            style="background:#FF4A00;color:#fff;padding:12px 30px;
-            border-radius:8px;text-decoration:none;font-size:14px;display:inline-block;">
-            Book Shipping for Your Item
-          </a>
-        </div>
+        <!-- Button removed -->
 
         <p style="font-size:13px;color:#555;text-align:center;margin-top:12px;">
           If this item does not belong to you, please ignore this email.
@@ -954,8 +883,7 @@ const businessShippingDetailsUpdateEmail = (data: any) => {
     <!-- Header -->
     <tr>
       <td align="center" style="background:#FFEBE0;padding:25px 20px;">
-        <img src="https://i.ibb.co/Hf7XccNJ/Send-you-back-Final-logo-02-3.png"
-             style="height:70px;margin-bottom:8px;" />
+
         <h2 style="margin:0;color:#FF4A00;font-size:20px;">Shipping Details Updated</h2>
         <p style="margin:4px 0 0;color:#555;font-size:13px;">Shipment ID: <strong>${data._id}</strong></p>
       </td>
@@ -982,28 +910,9 @@ const businessShippingDetailsUpdateEmail = (data: any) => {
         <p style="font-size:13px;margin:2px 0;"><strong>Tracking Number:</strong> ${data.tracking_id || 'N/A'}</p>
         ${data.tracking_url ? `<p style="font-size:13px;margin:2px 0;"><strong>Tracking URL:</strong> <a href="${data.tracking_url}" style="color:#FF4A00;">Track Package</a></p>` : ''}
 
-        ${data.shippingLabel
-        ? `
-        <div style="margin-top:12px;">
-      <a href="${config.backend_url}/${data.shippingLabel}"
-   download
-   style="background:#FF4A00;color:#fff;padding:10px 26px;border-radius:8px;
-   text-decoration:none;font-size:14px;display:inline-block;">
-  Download Shipping Label
-</a>
 
-        </div>`
-        : ''
-      }
 
-        <!-- Action -->
-        <div style="text-align:center;margin-top:18px;">
-          <a href="${config.frontend_url}/dashboard"
-             style="background:#FF4A00;color:#fff;padding:10px 26px;border-radius:8px;
-             text-decoration:none;font-size:14px;display:inline-block;">
-            Open Shipment in Dashboard
-          </a>
-        </div>
+        <!-- Button removed -->
 
         <p style="font-size:12px;color:#666;text-align:center;margin-top:12px;">
           If you need assistance, contact support or check the shipment in your dashboard.
@@ -1060,17 +969,7 @@ const customerShippingDetailsUpdateEmail = (data: any) => {
         <p style="font-size:13px;margin:2px 0;"><strong>Carrier:</strong> ${data.carrier || 'N/A'}</p>
         <p style="font-size:13px;margin:2px 0;"><strong>Tracking Number:</strong> ${data.tracking_id || 'N/A'}</p>
 
-        ${data.tracking_url
-        ? `
-        <div style="margin-top:18px;text-align:center;">
-          <a href="${data.tracking_url}"
-             style="background:#FF4A00;color:#fff;padding:10px 28px;border-radius:8px;
-             text-decoration:none;font-size:14px;font-weight:500;display:inline-block;">
-            🔍 Track Your Shipment
-          </a>
-        </div>`
-        : ''
-      }
+        <!-- Button removed -->
 
         <p style="font-size:12px;color:#666;text-align:center;margin-top:16px;">
           If the tracking number is not active yet, please allow a few hours for the carrier to update their system.
@@ -1112,9 +1011,7 @@ const subscriptionActivatedEmail = (data: any) => {
         </p>
         <p style="font-size:13px;margin:2px 0;"><strong>Amount Paid:</strong> £${data.amountPaid}</p>
         <p style="font-size:13px;margin:2px 0;"><strong>Transaction ID:</strong> ${data.trxId}</p>
-        <div style="text-align:center;margin-top:20px;">
-          <a href="${config.frontend_url}/dashboard" style="background:#FF4A00;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;display:inline-block;">Go to Dashboard</a>
-        </div>
+        <!-- Button removed -->
       </td>
     </tr>
   </table>

@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import { IUser, UserModel } from "./user.interface";
-import { USER_STATUS, PROFILE_VERIFICATION_STATUS } from "../../../enum/user";
+import { USER_STATUS, PROFILE_VERIFICATION_STATUS, USER_ROLES } from "../../../enum/user";
 import { StatusCodes } from "http-status-codes";
 import ApiError from "../../../errors/ApiError";
 import config from "../../../config";
@@ -89,30 +89,33 @@ const UserSchema = new Schema(
         fcmToken: [{
             type: String,
         }],
-        // Information specific to driver accounts
+        // Information specific to driver accounts (only populated for DRIVER role)
         driverInfo: {
-            nid: [{ type: String }],
-            drivingLicense: [{ type: String }],
-            profileVerification: {
-                type: String,
-                enum: Object.values(PROFILE_VERIFICATION_STATUS),
-                default: PROFILE_VERIFICATION_STATUS.PENDING,
-            },
-            rejectReason: {
-                type: String,
-                default: ""
-            },
-            assignedVehicle: {
-                type: Schema.Types.ObjectId,
-                ref: "Vehicle",
-                default: null
-            },
-            totalRating: { type: Number, default: 0 },
-            averageRating: { type: Number, default: 0 },
-            totalDelivery: { type: Number, default: 0 },
-            totalEarnings: { type: Number, default: 0 },
-            todayEarnings: { type: Number, default: 0 },
-        }
+            type: new Schema({
+                nid: [{ type: String }],
+                drivingLicense: [{ type: String }],
+                profileVerification: {
+                    type: String,
+                    enum: Object.values(PROFILE_VERIFICATION_STATUS),
+                    default: PROFILE_VERIFICATION_STATUS.PENDING,
+                },
+                rejectReason: {
+                    type: String,
+                    default: ""
+                },
+                assignedVehicle: {
+                    type: Schema.Types.ObjectId,
+                    ref: "Vehicle",
+                    default: null
+                },
+                totalRating: { type: Number, default: 0 },
+                averageRating: { type: Number, default: 0 },
+                totalDelivery: { type: Number, default: 0 },
+                totalEarnings: { type: Number, default: 0 },
+                todayEarnings: { type: Number, default: 0 },
+            }, { _id: false }),
+            default: undefined
+        },
     },
     {
         timestamps: true,
@@ -155,10 +158,28 @@ UserSchema.pre("save", async function (next) {
             );
         }
 
+        if (this.role !== USER_ROLES.DRIVER) {
+            this.driverInfo = undefined;
+        }
+
         next();
     } catch (error) {
         next(error as Error);
     }
+});
+
+UserSchema.pre("findOneAndUpdate", async function (next) {
+    const update = this.getUpdate() as any;
+    const user = await this.model.findOne(this.getQuery());
+
+    if (user && user.role !== USER_ROLES.DRIVER) {
+        if (update.$set) {
+            delete update.$set.driverInfo;
+        } else {
+            delete update.driverInfo;
+        }
+    }
+    next();
 });
 
 export const User = mongoose.model<IUser, UserModel>("User", UserSchema);
