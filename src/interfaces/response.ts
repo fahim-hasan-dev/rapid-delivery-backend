@@ -1,5 +1,6 @@
 import { Types } from "mongoose"
-import { USER_ROLES } from "../app/modules/user/user.interface"
+import { USER_ROLES } from "../enum/user"
+
 
 export type IGenericResponse<T> = {
   meta: {

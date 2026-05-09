@@ -23,7 +23,7 @@ const getAllUser = catchAsync(async (req: Request, res: Response) => {
     statusCode: StatusCodes.OK,
     success: true,
     message: 'User fetched successfully',
-    data: {...result},
+    data: { ...result },
   })
 })
 
@@ -57,7 +57,7 @@ const getProfile = catchAsync(async (req: Request, res: Response) => {
 })
 
 const deleteMyAccount = catchAsync(async (req: Request, res: Response) => {
-  const result = await UserServices.deleteMyAccount(req.user! as JwtPayload, req.body)
+  const result = await UserServices.deleteMyAccount(req.user! as JwtPayload)
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,

@@ -1,28 +1,29 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.scheduleUnverifiedAccountCleanup = void 0;
-const node_cron_1 = __importDefault(require("node-cron"));
+const bullmq_1 = require("bullmq");
+const redis_1 = require("../helpers/redis");
 const user_model_1 = require("../app/modules/user/user.model");
 const logger_1 = require("../shared/logger");
-const scheduleUnverifiedAccountCleanup = () => {
-    const GRACE_PERIOD_MINUTES = 5;
-    node_cron_1.default.schedule("* * * * *", async () => {
-        try {
-            const cutoffDate = new Date(Date.now() - GRACE_PERIOD_MINUTES * 60 * 1000);
-            // Delete unverified accounts older than the grace period
-            const result = await user_model_1.User.deleteMany({
-                verified: false,
-                createdAt: { $lt: cutoffDate }, // Only delete accounts created before the cutoff date    
-            });
+const connection = (0, redis_1.getRedisConnection)();
+const cleanupQueue = new bullmq_1.Queue('account-cleanup', { connection });
+const scheduleUnverifiedAccountCleanup = async () => {
+    await cleanupQueue.add('cleanup-unverified', {}, {
+        repeat: { pattern: '* * * * *' },
+        removeOnComplete: true,
+        removeOnFail: 50,
+    });
+    new bullmq_1.Worker('account-cleanup', async () => {
+        const GRACE_PERIOD_MINUTES = 5;
+        const cutoffDate = new Date(Date.now() - GRACE_PERIOD_MINUTES * 60 * 1000);
+        const result = await user_model_1.User.deleteMany({
+            isEmailVerified: false,
+            createdAt: { $lt: cutoffDate },
+        });
+        if (result.deletedCount > 0) {
             logger_1.logger.info(`Deleted ${result.deletedCount} unverified accounts.`);
         }
-        catch (error) {
-            logger_1.logger.error("Error during unverified account cleanup:", error);
-        }
-    });
-    logger_1.logger.info("Unverified account cleanup job scheduled to run every minute.");
+    }, { connection, concurrency: 1 });
+    logger_1.logger.info('Unverified account cleanup job scheduled via BullMQ.');
 };
 exports.scheduleUnverifiedAccountCleanup = scheduleUnverifiedAccountCleanup;

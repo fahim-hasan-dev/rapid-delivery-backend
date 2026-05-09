@@ -7,14 +7,11 @@ const http_status_codes_1 = require("http-status-codes");
 const config_1 = __importDefault(require("../config"));
 const stripe_1 = __importDefault(require("../config/stripe"));
 const ApiError_1 = __importDefault(require("../errors/ApiError"));
-const handleSubscriptionCreated_1 = require("./handleSubscriptionCreated");
 const logger_1 = require("../shared/logger");
-const user_model_1 = require("../app/modules/user/user.model");
-const subscription_model_1 = require("../app/modules/subscription/subscription.model");
 const payment_model_1 = require("../app/modules/payment/payment.model");
+const parcel_model_1 = require("../app/modules/parcel/parcel.model");
 const handleStripeWebhook = async (req, res) => {
     var _a, _b, _c;
-    console.log('hit stripe webhook');
     const signature = req.headers['stripe-signature'];
     const webhookSecret = config_1.default.stripe.webhookSecret;
     let event;
@@ -31,45 +28,27 @@ const handleStripeWebhook = async (req, res) => {
             case 'checkout.session.completed': {
                 const session = data;
                 logger_1.logger.info('✅ Checkout completed:', session.id);
-                const mode = session.mode;
-                if (mode === 'payment') {
-                    // Handle one-time payment
+                if (session.mode === 'payment') {
+                    const referenceId = (_a = session.metadata) === null || _a === void 0 ? void 0 : _a.referenceId;
                     await payment_model_1.Payment.create({
-                        email: (_a = session.customer_details) === null || _a === void 0 ? void 0 : _a.email,
+                        email: (_b = session.customer_details) === null || _b === void 0 ? void 0 : _b.email,
                         amount: (session.amount_total || 0) / 100,
                         transactionId: session.payment_intent || session.id,
                         dateTime: new Date(),
-                        customerName: (_b = session.customer_details) === null || _b === void 0 ? void 0 : _b.name,
-                        referenceId: (_c = session.metadata) === null || _c === void 0 ? void 0 : _c.referenceId,
+                        customerName: (_c = session.customer_details) === null || _c === void 0 ? void 0 : _c.name,
+                        referenceId: referenceId,
                     });
+                    // Update Parcel Status to PENDING
+                    if (referenceId) {
+                        const updatedParcel = await parcel_model_1.Parcel.findByIdAndUpdate(referenceId, { status: 'PENDING' }, { new: true });
+                        if (updatedParcel) {
+                            logger_1.logger.info(`📦 Parcel ${referenceId} status updated to PENDING`);
+                        }
+                        else {
+                            logger_1.logger.warn(`⚠️ Parcel ${referenceId} not found during webhook update`);
+                        }
+                    }
                 }
-                // ✅ AUTO-RENEW OFF for subscriptions
-                if (session.subscription) {
-                    await stripe_1.default.subscriptions.update(session.subscription, { cancel_at_period_end: true });
-                }
-                break;
-            }
-            case 'customer.subscription.created':
-                await (0, handleSubscriptionCreated_1.handleSubscriptionCreated)(data);
-                break;
-            case 'customer.subscription.updated': {
-                const subscription = data;
-                if (subscription.cancel_at_period_end &&
-                    subscription.status === 'active') {
-                    logger_1.logger.info(`Subscription for user ${subscription.metadata.userId} will expire`);
-                    await user_model_1.User.findByIdAndUpdate(subscription.metadata.userId, {
-                        subscribe: false,
-                    });
-                    await subscription_model_1.Subscription.findOneAndUpdate({ user: subscription.metadata.userId }, { status: 'expired' });
-                }
-                break;
-            }
-            case 'customer.subscription.deleted': {
-                const deletedSub = data;
-                await user_model_1.User.findByIdAndUpdate(deletedSub.metadata.userId, {
-                    subscribe: false,
-                });
-                await subscription_model_1.Subscription.findOneAndUpdate({ user: deletedSub.metadata.userId }, { status: 'expired' });
                 break;
             }
             default:

@@ -8,7 +8,7 @@ const http_status_codes_1 = require("http-status-codes");
 const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const public_model_1 = require("./public.model");
 const user_model_1 = require("../../../app/modules/user/user.model");
-const emailHelper_1 = require("../../../helpers/emailHelper");
+const queues_1 = require("../../../queues");
 const QueryBuilder_1 = __importDefault(require("../../builder/QueryBuilder"));
 const emailTemplate_1 = require("../../../shared/emailTemplate");
 const createPublic = async (payload) => {
@@ -49,12 +49,10 @@ const createContact = async (payload) => {
         const result = await public_model_1.Contact.create(payload);
         if (!result)
             throw new ApiError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Failed to create Contact');
-        setTimeout(() => {
-            // send admin email
-            emailHelper_1.emailHelper.sendEmail(emailTemplate_1.emailTemplate.adminContactNotificationEmail(payload));
-            // send user email
-            emailHelper_1.emailHelper.sendEmail(emailTemplate_1.emailTemplate.userContactConfirmationEmail(payload));
-        }, 0);
+        // send admin email
+        await queues_1.emailQueue.add('send-email', emailTemplate_1.emailTemplate.adminContactNotificationEmail(payload));
+        // send user email
+        await queues_1.emailQueue.add('send-email', emailTemplate_1.emailTemplate.userContactConfirmationEmail(payload));
         return {
             message: 'Contact form submitted successfully',
         };

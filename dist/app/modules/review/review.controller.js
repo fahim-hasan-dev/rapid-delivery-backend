@@ -50,9 +50,20 @@ const deleteReview = (0, catchAsync_1.default)(async (req, res) => {
         message: 'Review deleted successfully',
     });
 });
+const getReviewsByDriver = (0, catchAsync_1.default)(async (req, res) => {
+    const driverId = req.params.driverId;
+    const result = await review_service_1.ReviewService.getReviewsByDriver(driverId, req.query);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_codes_1.StatusCodes.OK,
+        success: true,
+        message: 'Driver reviews retrieved successfully',
+        data: result,
+    });
+});
 exports.ReviewController = {
     createReview,
     getAllReviews,
     getSingleReview,
     deleteReview,
+    getReviewsByDriver,
 };

@@ -7,9 +7,16 @@ exports.PaymentService = void 0;
 const QueryBuilder_1 = __importDefault(require("../../builder/QueryBuilder"));
 const payment_model_1 = require("./payment.model");
 const createPaymentSession_1 = require("../../../stripe/createPaymentSession");
-// Create seassion
-const creatSession = async (user, referenceId, amount) => {
-    const url = await (0, createPaymentSession_1.createPaymentSession)(user, amount, referenceId);
+const parcel_model_1 = require("../parcel/parcel.model");
+const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
+const http_status_codes_1 = require("http-status-codes");
+// Create session
+const creatSession = async (user, referenceId) => {
+    const parcel = await parcel_model_1.Parcel.findById(referenceId);
+    if (!parcel) {
+        throw new ApiError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, "Parcel not found");
+    }
+    const url = await (0, createPaymentSession_1.createPaymentSession)(user, parcel.totalPrice, parcel._id.toString());
     return { url };
 };
 // create payment
@@ -32,7 +39,7 @@ const getPayments = async (query) => {
 };
 // get payment by id
 const getPaymentById = async (id) => {
-    return await payment_model_1.Payment.findById(id).populate('referenceId');
+    return await payment_model_1.Payment.findById(id).populate("referenceId");
 };
 exports.PaymentService = {
     creatSession,

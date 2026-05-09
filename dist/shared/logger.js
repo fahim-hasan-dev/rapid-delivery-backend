@@ -8,7 +8,7 @@ const path_1 = __importDefault(require("path"));
 const winston_1 = require("winston");
 const winston_daily_rotate_file_1 = __importDefault(require("winston-daily-rotate-file"));
 const fs_1 = __importDefault(require("fs"));
-// Function to create the necessary directories if they don't exist
+// Ensure log directories exist before attempting to write logs
 const createLogDirs = () => {
     const dirs = ['logs/winston/successes', 'logs/winston/errors'];
     dirs.forEach(dir => {
@@ -17,8 +17,8 @@ const createLogDirs = () => {
         }
     });
 };
-// Custom log format
 const { combine, timestamp, label, printf } = winston_1.format;
+// Define the structure and layout of the log messages
 const myFormat = printf((info) => {
     const { level, message, label, timestamp } = info;
     const date = new Date(timestamp);
@@ -27,11 +27,11 @@ const myFormat = printf((info) => {
     const seconds = date.getSeconds().toString().padStart(2, '0');
     return `{${date.toDateString()} ${hour}:${minutes}:${seconds}} [${label}] ${level}: ${message}`;
 });
-createLogDirs(); // Ensure directories exist
-// Success logger
+createLogDirs();
+// Standard info logger for general system events and successes
 const logger = (0, winston_1.createLogger)({
     level: 'info',
-    format: combine(label({ label: 'APP 🚀' }), timestamp(), myFormat),
+    format: combine(label({ label: 'Rapid-Delivery 🚚' }), timestamp(), myFormat),
     transports: [
         new winston_1.transports.Console(),
         new winston_daily_rotate_file_1.default({
@@ -44,10 +44,10 @@ const logger = (0, winston_1.createLogger)({
     ],
 });
 exports.logger = logger;
-// Error logger
+// Specialized error logger for tracking exceptions and failures
 const errorLogger = (0, winston_1.createLogger)({
-    level: 'error', // This ensures that only error-level messages are logged
-    format: combine(label({ label: 'APP 🐞' }), timestamp(), myFormat),
+    level: 'error',
+    format: combine(label({ label: 'Rapid-Delivery 🚨' }), timestamp(), myFormat),
     transports: [
         new winston_1.transports.Console(),
         new winston_daily_rotate_file_1.default({

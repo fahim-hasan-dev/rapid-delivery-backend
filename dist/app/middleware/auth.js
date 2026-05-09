@@ -8,7 +8,10 @@ const http_status_codes_1 = require("http-status-codes");
 const config_1 = __importDefault(require("../../config"));
 const jwtHelper_1 = require("../../helpers/jwtHelper");
 const ApiError_1 = __importDefault(require("../../errors/ApiError"));
+const user_model_1 = require("../modules/user/user.model");
+const user_1 = require("../../enum/user");
 const auth = (...roles) => async (req, res, next) => {
+    var _a;
     try {
         const tokenWithBearer = req.headers.authorization;
         if (!tokenWithBearer) {
@@ -24,6 +27,17 @@ const auth = (...roles) => async (req, res, next) => {
                 // Guard user
                 if (roles.length && !roles.includes(verifyUser.role)) {
                     throw new ApiError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, "You don't have permission to access this API");
+                }
+                // Driver specific profile verification guard
+                if (verifyUser.role === user_1.USER_ROLES.DRIVER) {
+                    const isGetProfile = req.method === 'GET' && req.originalUrl.includes('/users/me');
+                    const isResubmitProfile = req.originalUrl.includes('/users/resubmit-profile');
+                    if (!isGetProfile && !isResubmitProfile) {
+                        const driver = await user_model_1.User.findById(verifyUser.authId).lean();
+                        if (((_a = driver === null || driver === void 0 ? void 0 : driver.driverInfo) === null || _a === void 0 ? void 0 : _a.profileVerification) !== user_1.PROFILE_VERIFICATION_STATUS.APPROVED) {
+                            throw new ApiError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, "Your profile is not approved yet. You can only access your profile and resubmit documents.");
+                        }
+                    }
                 }
                 next();
             }

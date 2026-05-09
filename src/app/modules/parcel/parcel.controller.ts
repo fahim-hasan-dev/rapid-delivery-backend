@@ -108,17 +108,7 @@ const deleteParcel = catchAsync(async (req: Request, res: Response) => {
 });
 
 const calculateDistance = catchAsync(async (req: Request, res: Response) => {
-    const fromLat = Number(req.query.fromLat);
-    const fromLng = Number(req.query.fromLng);
-    const toLat = Number(req.query.toLat);
-    const toLng = Number(req.query.toLng);
-
-    const result = await ParcelServices.calculateParcelDistanceAndPrice(
-        fromLat,
-        fromLng,
-        toLat,
-        toLng
-    );
+    const result = await ParcelServices.calculateParcelDistanceAndPrice(req.query);
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,

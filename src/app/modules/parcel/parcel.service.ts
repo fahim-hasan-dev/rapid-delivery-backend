@@ -15,11 +15,11 @@ import { JwtPayload } from "jsonwebtoken";
 
 const createParcel = async (payload: IParcel, user: JwtPayload) => {
     // Automatically calculate distance and price before creation
-    const calculation = await calculateParcelDistanceAndPrice(
-        payload.pickupLocation.coordinates[0],
+    const calculation = await computeDistanceAndPrice(
         payload.pickupLocation.coordinates[1],
-        payload.dropLocation.coordinates[0],
-        payload.dropLocation.coordinates[1]
+        payload.pickupLocation.coordinates[0],
+        payload.dropLocation.coordinates[1],
+        payload.dropLocation.coordinates[0]
     );
 
     // Get the specific vehicle's data from the calculation results
@@ -31,7 +31,7 @@ const createParcel = async (payload: IParcel, user: JwtPayload) => {
     }
 
     // Override with server-side calculated values for security
-    payload.distance = calculation.distance;
+    payload.distance = calculation.distanceKm;
     payload.baseFare = vehicleData.baseFare;
     payload.totalPrice = vehicleData.totalPrice;
     payload.sender = new Types.ObjectId(user.authId);
@@ -99,7 +99,7 @@ const getNearbyParcels = async (
     // Calculate start and end of today for filtering deliveryDate
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
-    
+
     const todayEnd = new Date();
     todayEnd.setHours(23, 59, 59, 999);
 
@@ -238,69 +238,84 @@ const getSingleParcel = async (id: string) => {
     return parcel;
 };
 
-const calculateParcelDistanceAndPrice = async (
+// Internal helper: accepts raw numbers, used within service (e.g. createParcel)
+const computeDistanceAndPrice = async (
     fromLat: number,
     fromLng: number,
     toLat: number,
     toLng: number
 ) => {
-    // Round coordinates to 5 decimal places for consistent cache keys
     const cacheKey = `dist_cache:${fromLat.toFixed(5)}:${fromLng.toFixed(5)}:${toLat.toFixed(5)}:${toLng.toFixed(5)}`;
 
-    // 1. Try to get from Redis Cache
     const cachedData = await redisClient.get(cacheKey);
     let distanceData;
 
     if (cachedData) {
         distanceData = JSON.parse(cachedData);
     } else {
-        // 2. If not in cache, call Google Maps
         distanceData = await getDistanceAndDuration(
             { lat: fromLat, lng: fromLng },
             { lat: toLat, lng: toLng }
         );
-
-        if (!distanceData) {
-            throw new ApiError(
-                StatusCodes.BAD_REQUEST,
-                "Could not calculate distance. Please check your coordinates."
-            );
-        }
-
-        // 3. Store in Redis (1 hour TTL)
         await redisClient.set(cacheKey, JSON.stringify(distanceData), "EX", 3600);
     }
 
     const settings = await SettingServices.getSettings();
     if (!settings) {
-        throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, "Settings not found.");
+        throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, "Pricing settings are not configured yet. Please contact support.");
     }
 
     const perKiloCost = settings.perKiloCost || 0;
-    const distance = distanceData.distanceKm;
+    const distanceKm = distanceData.distanceKm;
 
-    // Calculate price for each vehicle type
     const vehicles = {
         motorcycle: {
             baseFare: settings.vehicleBaseFares.motorcycle,
-            totalPrice: Math.ceil(settings.vehicleBaseFares.motorcycle + distance * perKiloCost),
+            totalPrice: Math.ceil(settings.vehicleBaseFares.motorcycle + distanceKm * perKiloCost),
         },
         tricycle: {
             baseFare: settings.vehicleBaseFares.tricycle,
-            totalPrice: Math.ceil(settings.vehicleBaseFares.tricycle + distance * perKiloCost),
+            totalPrice: Math.ceil(settings.vehicleBaseFares.tricycle + distanceKm * perKiloCost),
         },
         van: {
             baseFare: settings.vehicleBaseFares.van,
-            totalPrice: Math.ceil(settings.vehicleBaseFares.van + distance * perKiloCost),
+            totalPrice: Math.ceil(settings.vehicleBaseFares.van + distanceKm * perKiloCost),
         },
     };
 
     return {
-        distance,
+        distanceKm,
         duration: distanceData.durationText,
+        distanceSource: distanceData.source,
         perKiloCost,
         vehicles,
     };
+};
+
+// Public API-facing function: accepts query params with validation
+const calculateParcelDistanceAndPrice = async (query: Record<string, any>) => {
+    const { pickupLat, pickupLng, dropLat, dropLng } = query;
+
+    if (!pickupLat || !pickupLng || !dropLat || !dropLng) {
+        throw new ApiError(
+            StatusCodes.BAD_REQUEST,
+            "Please provide all four coordinates: pickupLat, pickupLng, dropLat, and dropLng."
+        );
+    }
+
+    const fromLat = Number(pickupLat);
+    const fromLng = Number(pickupLng);
+    const toLat = Number(dropLat);
+    const toLng = Number(dropLng);
+
+    if (fromLat < -90 || fromLat > 90 || toLat < -90 || toLat > 90) {
+        throw new ApiError(
+            StatusCodes.BAD_REQUEST,
+            "Invalid latitude value. Latitude must be between -90 and 90. It looks like your coordinates might be swapped — make sure you're passing latitude first, then longitude (e.g. pickupLat=23.74, pickupLng=90.37)."
+        );
+    }
+
+    return computeDistanceAndPrice(fromLat, fromLng, toLat, toLng);
 };
 
 const updateParcel = async (
@@ -318,7 +333,7 @@ const updateParcel = async (
         if (parcel.driver?.toString() !== user.authId) {
             throw new ApiError(StatusCodes.FORBIDDEN, "You are not assigned to this parcel");
         }
-        
+
         // Drivers can only update status and note
         const allowedFields = ["status", "note", "pickupProof", "deliveryProof"];
         const keys = Object.keys(payload);

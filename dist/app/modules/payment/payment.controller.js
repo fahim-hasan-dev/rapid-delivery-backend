@@ -3,19 +3,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PaymentController = exports.getPaymentByIdController = exports.getPaymentsController = exports.createPaymentController = void 0;
+exports.PaymentController = void 0;
 const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
 const payment_service_1 = require("./payment.service");
 const http_status_codes_1 = require("http-status-codes");
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const handleStripeWebhook_1 = __importDefault(require("../../../stripe/handleStripeWebhook"));
 const createCheckoutSession = (0, catchAsync_1.default)(async (req, res) => {
-    const { amount } = req.body; // User should provide amount or it should be fetched based on referenceId
-    const result = await payment_service_1.PaymentService.creatSession(req.user, req.params.referenceId, amount);
+    const result = await payment_service_1.PaymentService.creatSession(req.user, req.params.referenceId);
     res.status(http_status_codes_1.StatusCodes.OK).json({ url: result.url });
 });
 // create payment
-exports.createPaymentController = (0, catchAsync_1.default)(async (req, res) => {
+const createPaymentController = (0, catchAsync_1.default)(async (req, res) => {
     const payload = req.body;
     const payment = await payment_service_1.PaymentService.createPayment(payload);
     (0, sendResponse_1.default)(res, {
@@ -26,7 +25,7 @@ exports.createPaymentController = (0, catchAsync_1.default)(async (req, res) => 
     });
 });
 // get payments
-exports.getPaymentsController = (0, catchAsync_1.default)(async (req, res) => {
+const getPaymentsController = (0, catchAsync_1.default)(async (req, res) => {
     const payments = await payment_service_1.PaymentService.getPayments(req.query);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_codes_1.StatusCodes.OK,
@@ -37,7 +36,7 @@ exports.getPaymentsController = (0, catchAsync_1.default)(async (req, res) => {
     });
 });
 // get payment by id
-exports.getPaymentByIdController = (0, catchAsync_1.default)(async (req, res) => {
+const getPaymentByIdController = (0, catchAsync_1.default)(async (req, res) => {
     const id = req.params.id;
     const payment = await payment_service_1.PaymentService.getPaymentById(id);
     (0, sendResponse_1.default)(res, {
@@ -49,8 +48,8 @@ exports.getPaymentByIdController = (0, catchAsync_1.default)(async (req, res) =>
 });
 exports.PaymentController = {
     createCheckoutSession,
-    createPaymentController: exports.createPaymentController,
-    getPaymentsController: exports.getPaymentsController,
-    getPaymentByIdController: exports.getPaymentByIdController,
+    createPaymentController,
+    getPaymentsController,
+    getPaymentByIdController,
     handleStripeWebhook: handleStripeWebhook_1.default,
 };

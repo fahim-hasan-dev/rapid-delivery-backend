@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { USER_ROLES } from "../../../enum/user";
-import { USER_STATUS } from "./user.interface";
+import { USER_ROLES, USER_STATUS } from "../../../enum/user";
+
 
 export const userSignupSchema = z.object({
   body: z.object({

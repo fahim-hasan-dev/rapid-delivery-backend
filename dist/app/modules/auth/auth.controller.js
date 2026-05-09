@@ -125,6 +125,16 @@ const deleteAccount = (0, catchAsync_1.default)(async (req, res) => {
         data: result,
     });
 });
+const createAdmin = (0, catchAsync_1.default)(async (req, res) => {
+    const { ...adminData } = req.body;
+    const result = await auth_service_1.AuthServices.createAdmin(adminData);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_codes_1.StatusCodes.OK,
+        success: true,
+        message: 'Admin account created successfully',
+        data: result,
+    });
+});
 const logOut = (0, catchAsync_1.default)(async (req, res) => {
     res.clearCookie('refreshToken', {
         secure: config_1.default.node_env === 'production',
@@ -147,5 +157,6 @@ exports.AuthController = {
     createUser,
     deleteAccount,
     adminLogin,
-    logOut
+    logOut,
+    createAdmin
 };

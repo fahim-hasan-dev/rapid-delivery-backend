@@ -2,3 +2,6 @@
 {Sat May 09 2026 11:04:09} [Rapid-Delivery 🚨] error: [31mServer Failed to connect Database[39m
 {Sat May 09 2026 11:05:43} [Rapid-Delivery 🚨] error: [31mServer Failed to connect Database[39m
 {Sat May 09 2026 11:22:37} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - POST /api/v1/auth/reset-password?token=258ccc25486e6ade8027113ecc77e86a7089a19e74bb927d2d504937b36073fc 400 - 7.591 ms
+{Sat May 09 2026 11:55:38} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - GET /api/v1/parcel/calculate-distance?pickupLat=23.7937&pickupLng=90.4066&dropLat=90.4000&dropLng=23.8759 400 - 14.078 ms
+{Sat May 09 2026 11:56:29} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - GET /api/v1/parcel/calculate-distance?pickupLat=23.7937&pickupLng=90.4066&dropLat=90.4000&dropLng=23.8759 400 - 13.576 ms
+{Sat May 09 2026 11:57:16} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - GET /api/v1/parcel/calculate-distance?pickupLat=23.7937&pickupLng=90.4066&dropLat=90.4000&dropLng=23.8759 400 - 8.061 ms

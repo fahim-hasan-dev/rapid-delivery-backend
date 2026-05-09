@@ -9,7 +9,7 @@ const createReview = async (payload: IReview) => {
   const result = await Review.create(payload)
 
   // Recalculate average and total rating for the driver
-  const driverId = new mongoose.Types.ObjectId(payload.driver as string)
+  const driverId = new mongoose.Types.ObjectId(String(payload.driver))
   
   const stats = await Review.aggregate([
     { $match: { driver: driverId } },

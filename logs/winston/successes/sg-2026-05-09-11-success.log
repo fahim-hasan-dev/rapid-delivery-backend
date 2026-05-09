@@ -272,3 +272,138 @@
 {Sat May 09 2026 11:44:24} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
 {Sat May 09 2026 11:44:24} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
 {Sat May 09 2026 11:44:24} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:49:01} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.94 - GET /api/v1/parcel/calculate-distance?pickupLat=23.7937&pickupLng=90.4066&dropLat=23.8223&dropLng=90.3654 200 - 1110.363 ms
+{Sat May 09 2026 11:50:51} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.94 - GET /api/v1/parcel/calculate-distance?pickupLat=90.3742&pickupLng=23.7465&dropLat=90.4000&dropLng=23.8759 200 - 322.488 ms
+{Sat May 09 2026 11:50:54} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.94 - GET /api/v1/parcel/calculate-distance?pickupLat=90.3742&pickupLng=23.7465&dropLat=90.4000&dropLng=23.8759 200 - 321.335 ms
+{Sat May 09 2026 11:51:23} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.94 - GET /api/v1/parcel/calculate-distance?pickupLat=23.7937&pickupLng=90.4066&dropLat=90.4000&dropLng=23.8759 200 - 322.149 ms
+{Sat May 09 2026 11:51:29} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.94 - GET /api/v1/parcel/calculate-distance?pickupLat=23.7937&pickupLng=90.4066&dropLat=90.4000&dropLng=23.8759 200 - 321.378 ms
+{Sat May 09 2026 11:54:48} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:54:48} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:54:48} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:54:48} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:54:48} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:54:51} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:54:51} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:54:51} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:54:51} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:54:51} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:54:53} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:54:53} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:54:53} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:54:53} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:54:53} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:54:53} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:54:53} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:54:53} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:54:53} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:54:53} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:54:53} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:54:53} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:54:53} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:54:53} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:54:53} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:55:29} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:55:29} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:55:29} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:55:29} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:55:29} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:55:32} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:55:32} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:55:32} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:55:33} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:55:33} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:55:35} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:55:35} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:55:35} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:55:35} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:55:36} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:55:38} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:55:38} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:55:38} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:55:38} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:55:38} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:55:38} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:55:38} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:55:38} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:55:38} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:55:38} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:55:38} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:55:38} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:55:38} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:55:38} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:55:38} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:56:18} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:56:18} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:56:18} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:56:18} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:56:18} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:56:20} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:56:20} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:56:20} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:56:20} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:56:20} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:56:23} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:56:23} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:56:23} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:56:23} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:56:23} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:56:26} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:56:26} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:56:26} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:56:26} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:56:26} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:56:28} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:56:28} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:56:28} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:56:28} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:56:28} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:56:28} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:56:28} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:56:28} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:56:28} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:56:29} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:56:29} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:56:29} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:56:29} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:56:29} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:56:29} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:57:02} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:57:02} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:57:02} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:57:02} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:57:02} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:57:05} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:57:05} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:57:05} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:57:05} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:57:05} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:57:07} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:57:07} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:57:07} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:57:07} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:57:07} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:57:10} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:57:10} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:57:10} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:57:10} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:57:10} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sat May 09 2026 11:57:13} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:57:13} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:57:13} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:57:13} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:57:13} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sat May 09 2026 11:57:15} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:57:15} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:57:15} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:57:15} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:57:15} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:57:15} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:57:15} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:57:15} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:57:15} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:57:15} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:57:15} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:57:15} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
+{Sat May 09 2026 11:57:15} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sat May 09 2026 11:57:15} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sat May 09 2026 11:57:15} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m

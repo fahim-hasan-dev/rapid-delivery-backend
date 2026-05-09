@@ -15,6 +15,7 @@ const updateProfile = (0, catchAsync_1.default)(async (req, res) => {
         statusCode: http_status_codes_1.StatusCodes.OK,
         success: true,
         message: 'Profile updated successfully',
+        data: result
     });
 });
 const getAllUser = (0, catchAsync_1.default)(async (req, res) => {
@@ -26,7 +27,6 @@ const getAllUser = (0, catchAsync_1.default)(async (req, res) => {
         data: { ...result },
     });
 });
-// get single user
 const getSingleUser = (0, catchAsync_1.default)(async (req, res) => {
     const result = await user_service_1.UserServices.getSingleUser(req.params.id);
     (0, sendResponse_1.default)(res, {
@@ -36,7 +36,6 @@ const getSingleUser = (0, catchAsync_1.default)(async (req, res) => {
         data: result,
     });
 });
-// delete user
 const deleteUser = (0, catchAsync_1.default)(async (req, res) => {
     const result = await user_service_1.UserServices.deleteUser(req.params.id);
     (0, sendResponse_1.default)(res, {
@@ -45,7 +44,6 @@ const deleteUser = (0, catchAsync_1.default)(async (req, res) => {
         message: 'User deleted successfully',
     });
 });
-// get profile
 const getProfile = (0, catchAsync_1.default)(async (req, res) => {
     const result = await user_service_1.UserServices.getProfile(req.user);
     (0, sendResponse_1.default)(res, {
@@ -55,13 +53,30 @@ const getProfile = (0, catchAsync_1.default)(async (req, res) => {
         data: result,
     });
 });
-// delete my account
 const deleteMyAccount = (0, catchAsync_1.default)(async (req, res) => {
     const result = await user_service_1.UserServices.deleteMyAccount(req.user);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_codes_1.StatusCodes.OK,
         success: true,
         message: "Account deleted successfully",
+    });
+});
+const resubmitProfile = (0, catchAsync_1.default)(async (req, res) => {
+    const result = await user_service_1.UserServices.resubmitProfile(req.user, req.body);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_codes_1.StatusCodes.OK,
+        success: true,
+        message: 'Profile resubmitted successfully',
+        data: result
+    });
+});
+const verifyProfileByAdmin = (0, catchAsync_1.default)(async (req, res) => {
+    const result = await user_service_1.UserServices.verifyProfileByAdmin(req.params.id, req.body);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_codes_1.StatusCodes.OK,
+        success: true,
+        message: 'Profile status updated successfully',
+        data: result
     });
 });
 exports.UserController = {
@@ -71,4 +86,6 @@ exports.UserController = {
     deleteUser,
     getProfile,
     deleteMyAccount,
+    resubmitProfile,
+    verifyProfileByAdmin
 };

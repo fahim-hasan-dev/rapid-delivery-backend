@@ -73,19 +73,13 @@ const getProfile = async (user: JwtPayload) => {
     return isExistUser
 }
 
-const deleteMyAccount = async (user: JwtPayload, payload: { password: string }) => {
-    const isExistUser = await User.findById(user.authId).select('+password')
+const deleteMyAccount = async (user: JwtPayload) => {
+    const isExistUser = await User.findById(user.authId)
     if (!isExistUser) {
         throw new ApiError(
             StatusCodes.NOT_FOUND,
             'The requested profile not found or deleted.',
         )
-    }
-
-    // Validate password before allowing account deletion
-    const isPasswordMatched = await User.isPasswordMatched(payload.password, isExistUser.password)
-    if (!isPasswordMatched) {
-        throw new ApiError(StatusCodes.UNAUTHORIZED, 'Incorrect password. Account deletion failed.')
     }
 
     await User.findByIdAndDelete(isExistUser._id)
@@ -114,7 +108,7 @@ const resubmitProfile = async (user: JwtPayload, payload: { nid: string[], drivi
 
     // Notify all Admins and Super Admins about the resubmission
     const admins = await User.find({ role: { $in: [USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN] } }).select('_id');
-    
+
     for (const admin of admins) {
         await NotificationService.insertNotification({
             receiver: admin._id,
@@ -149,8 +143,8 @@ const verifyProfileByAdmin = async (id: string, payload: { status: PROFILE_VERIF
 
     // Notify Driver about the verification result
     const title = payload.status === PROFILE_VERIFICATION_STATUS.APPROVED ? 'Profile Approved' : 'Profile Rejected';
-    const message = payload.status === PROFILE_VERIFICATION_STATUS.APPROVED 
-        ? 'Your profile has been approved! You can now start delivery.' 
+    const message = payload.status === PROFILE_VERIFICATION_STATUS.APPROVED
+        ? 'Your profile has been approved! You can now start delivery.'
         : `Your profile was rejected. Reason: ${updateData['driverInfo.rejectReason']}`;
 
     await NotificationService.insertNotification({

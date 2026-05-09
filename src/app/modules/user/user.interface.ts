@@ -1,5 +1,5 @@
 import { Model, Types } from 'mongoose';
-import { USER_ROLES, USER_STATUS, PROFILE_VERIFICATION_STATUS } from '../../../enum/user';
+import {  PROFILE_VERIFICATION_STATUS, USER_ROLES, USER_STATUS, } from '../../../enum/user';
 
 export interface IAuthentication {
     restrictionLeftAt: Date | null
@@ -20,7 +20,7 @@ export type IUser = {
     phone?: string;
     image?: string;
     password: string;
-    status: USER_STATUS;
+    status: USER_STATUS
     role: USER_ROLES;
     address?: string;
     location?: [number, number];
