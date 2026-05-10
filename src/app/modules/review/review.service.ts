@@ -2,10 +2,31 @@ import QueryBuilder from '../../builder/QueryBuilder'
 import { IReview } from './review.interface'
 import { Review } from './review.model'
 import { User } from '../user/user.model'
+import { Parcel } from '../parcel/parcel.model'
+import { JwtPayload } from 'jsonwebtoken'
+import { StatusCodes } from 'http-status-codes'
+import ApiError from '../../../errors/ApiError'
 import mongoose from 'mongoose'
 
 // create review
-const createReview = async (payload: IReview) => {
+const createReview = async (user: JwtPayload, payload: Partial<IReview> & { parcelId: string }) => {
+  if (!payload.parcelId) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "Parcel ID is required to give a review.")
+  }
+
+  const parcel = await Parcel.findById(payload.parcelId)
+  if (!parcel) {
+    throw new ApiError(StatusCodes.NOT_FOUND, "Parcel not found.")
+  }
+
+  if (!parcel.driver) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "This parcel was not assigned to any driver.")
+  }
+
+  // Set the sender and driver automatically
+  payload.sender = new mongoose.Types.ObjectId(user.authId)
+  payload.driver = parcel.driver
+
   const result = await Review.create(payload)
 
   // Recalculate average and total rating for the driver
@@ -42,6 +63,9 @@ const getAllReviews = async (query: Record<string, unknown>) => {
     .fields()
     .paginate()
 
+  // Select essential fields for reviews
+  reviewQueryBuilder.modelQuery.select("rating comment sender createdAt").lean()
+
   const reviews = await reviewQueryBuilder.modelQuery
   const paginationInfo = await reviewQueryBuilder.getPaginationInfo()
 
@@ -57,6 +81,9 @@ const getReviewsByDriver = async (driverId: string, query: Record<string, unknow
     .sort()
     .fields()
     .paginate()
+
+  // Select essential fields for reviews
+  reviewQueryBuilder.modelQuery.select("rating comment sender createdAt").lean()
 
   const reviews = await reviewQueryBuilder.modelQuery
   const paginationInfo = await reviewQueryBuilder.getPaginationInfo()

@@ -14,7 +14,9 @@ const getAllUser = async (query: Record<string, unknown>) => {
         .fields()
         .paginate()
 
-    const users = await userQueryBuilder.modelQuery.lean()
+    const users = await userQueryBuilder.modelQuery
+        .select('fullName email phone image role status createdAt')
+        .lean()
     const paginationInfo = await userQueryBuilder.getPaginationInfo()
     const totalUsers = await User.countDocuments()
 

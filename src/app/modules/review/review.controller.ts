@@ -6,8 +6,8 @@ import { StatusCodes } from 'http-status-codes'
 
 // create review
 const createReview = catchAsync(async (req, res) => {
-  const payload = req.body
-  const result = await ReviewService.createReview(payload)
+  const user = req.user as any
+  const result = await ReviewService.createReview(user, req.body)
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,

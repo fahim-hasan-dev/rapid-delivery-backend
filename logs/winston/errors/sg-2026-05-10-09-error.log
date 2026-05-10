@@ -16,3 +16,4 @@
 {Sun May 10 2026 09:16:34} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - GET /favicon.ico 404 - 2.074 ms
 {Sun May 10 2026 09:16:49} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - GET /favicon.ico 404 - 0.465 ms
 {Sun May 10 2026 09:17:04} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - POST /api/v1/webhook 400 - 4.377 ms
+{Sun May 10 2026 09:55:14} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - GET /api/v1/user/me 403 - 310.406 ms

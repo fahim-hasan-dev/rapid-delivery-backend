@@ -41,8 +41,8 @@ const auth =
 
                         // Driver specific profile verification guard
                         if (verifyUser.role === USER_ROLES.DRIVER) {
-                            const isGetProfile = req.method === 'GET' && req.originalUrl.includes('/users/me');
-                            const isResubmitProfile = req.originalUrl.includes('/users/resubmit-profile');
+                            const isGetProfile = req.method === 'GET' && req.originalUrl.includes('/user/me');
+                            const isResubmitProfile = req.originalUrl.includes('/user/resubmit-profile');
                             
                             if (!isGetProfile && !isResubmitProfile) {
                                 const driver = await User.findById(verifyUser.authId).lean();

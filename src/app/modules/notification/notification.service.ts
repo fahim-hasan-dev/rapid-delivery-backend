@@ -33,6 +33,10 @@ const insertNotification = async (payload: Partial<INotification>): Promise<INot
 
 const getNotificationFromDB = async (user: JwtPayload, query: FilterQuery<any>): Promise<Object> => {
     const result = new QueryBuilder(Notification.find({ receiver: user.id }), query).paginate();
+    
+    // Select only necessary fields for notifications and use lean()
+    result.modelQuery.select("title message read screen createdAt").lean();
+
     const notifications = await result.modelQuery;
     const pagination = await result.getPaginationInfo();
 

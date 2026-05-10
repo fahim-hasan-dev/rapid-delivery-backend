@@ -122,12 +122,21 @@ const createParcel = async (payload: IParcel, user: JwtPayload) => {
 };
 
 const getAllParcels = async (query: Record<string, unknown>) => {
-    const parcelQuery = new QueryBuilder(Parcel.find().populate("sender driver"), query)
+    const parcelQuery = new QueryBuilder(
+        Parcel.find().populate({
+            path: "sender driver",
+            select: "fullName email phone image"
+        }),
+        query
+    )
         .search(["name", "receiverName", "receiverPhone"])
         .filter()
         .sort()
         .paginate()
         .fields();
+
+    // Select specific fields to reduce payload and use lean() for performance
+    parcelQuery.modelQuery.select("name itemValue status totalPrice vehicleType sender driver createdAt").lean();
 
     const parcels = await parcelQuery.modelQuery;
     const meta = await parcelQuery.getPaginationInfo();
@@ -145,13 +154,19 @@ const getMyParcels = async (
         : { sender: userId };
 
     const parcelQuery = new QueryBuilder(
-        Parcel.find(filter).populate("sender driver"),
+        Parcel.find(filter).populate({
+            path: "sender driver",
+            select: "fullName email phone image"
+        }),
         query
     )
         .filter()
         .sort()
         .paginate()
         .fields();
+
+    // Select essential fields for the list view and use lean()
+    parcelQuery.modelQuery.select("name status totalPrice vehicleType pickupLocation.address dropLocation.address deliveryDate createdAt").lean();
 
     const parcels = await parcelQuery.modelQuery;
     const meta = await parcelQuery.getPaginationInfo();
@@ -207,10 +222,24 @@ const getNearbyParcels = async (
                 localField: "sender",
                 foreignField: "_id",
                 as: "sender",
-                pipeline: [{ $project: { password: 0, authentication: 0 } }],
+                pipeline: [{ $project: { fullName: 1, image: 1, phone: 1 } }],
             },
         },
         { $unwind: { path: "$sender", preserveNullAndEmptyArrays: true } },
+        {
+            $project: {
+                name: 1,
+                totalPrice: 1,
+                vehicleType: 1,
+                "pickupLocation.address": 1,
+                "dropLocation.address": 1,
+                distance: 1,
+                distanceFromDriver: 1,
+                deliveryDate: 1,
+                sender: 1,
+                status: 1
+            }
+        }
     ]);
 
     const totalResult = await Parcel.aggregate([

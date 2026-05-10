@@ -1,0 +1,18 @@
+{Sun May 10 2026 10:06:14} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.94 - GET /api/v1/user/me 200 - 316.344 ms
+{Sun May 10 2026 10:06:36} [Rapid-Delivery 🚚] info: 🔔 Stripe Webhook Received
+{Sun May 10 2026 10:06:36} [Rapid-Delivery 🚚] info: ✅ Webhook verified: checkout.session.completed [evt_1TVNi493XxwmTnv2qoF4XU2D]
+{Sun May 10 2026 10:06:36} [Rapid-Delivery 🚚] info: 💳 Checkout session completed:
+{Sun May 10 2026 10:06:36} [Rapid-Delivery 🚚] info: 📦 Metadata:
+{Sun May 10 2026 10:06:36} [Rapid-Delivery 🚚] info: 🔍 Extracted referenceId: 69ff0cd757d2bd90a60d1aa7
+{Sun May 10 2026 10:06:36} [Rapid-Delivery 🚚] info: 💰 Payment record created in database
+{Sun May 10 2026 10:06:36} [Rapid-Delivery 🚚] info: 🔄 Attempting to update parcel 69ff0cd757d2bd90a60d1aa7 to PENDING...
+{Sun May 10 2026 10:06:37} [Rapid-Delivery 🚚] info: ✅ Parcel 69ff0cd757d2bd90a60d1aa7 status successfully updated to PENDING
+{Sun May 10 2026 10:06:37} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.94 - POST /api/v1/webhook 200 - 646.627 ms
+{Sun May 10 2026 10:06:44} [Rapid-Delivery 🚚] info: 🔔 Stripe Webhook Received
+{Sun May 10 2026 10:06:44} [Rapid-Delivery 🚚] info: ✅ Webhook verified: payment_intent.succeeded [evt_3TVNi393XxwmTnv20vDps1oO]
+{Sun May 10 2026 10:06:44} [Rapid-Delivery 🚚] info: ⚠️ Unhandled event type: payment_intent.succeeded
+{Sun May 10 2026 10:06:44} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.94 - POST /api/v1/webhook 200 - 1.475 ms
+{Sun May 10 2026 10:06:47} [Rapid-Delivery 🚚] info: 🔔 Stripe Webhook Received
+{Sun May 10 2026 10:06:47} [Rapid-Delivery 🚚] info: ✅ Webhook verified: charge.succeeded [evt_3TVNi393XxwmTnv20UKT2NO3]
+{Sun May 10 2026 10:06:47} [Rapid-Delivery 🚚] info: ⚠️ Unhandled event type: charge.succeeded
+{Sun May 10 2026 10:06:47} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.94 - POST /api/v1/webhook 200 - 1.757 ms

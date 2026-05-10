@@ -23,6 +23,9 @@ const getAllVehicles = async (query: Record<string, unknown>) => {
         .fields()
         .paginate();
 
+    // Select essential fields for the vehicle list and use lean()
+    vehicleQueryBuilder.modelQuery.select("name model licensePlate type status assignedUser createdAt").lean();
+
     const vehicles = await vehicleQueryBuilder.modelQuery;
     const paginationInfo = await vehicleQueryBuilder.getPaginationInfo();
     const totalVehicles = await Vehicle.countDocuments();
