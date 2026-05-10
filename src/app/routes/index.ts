@@ -12,6 +12,7 @@ import { ParcelRoutes } from '../modules/parcel/parcel.route';
 import { SettingRoutes } from '../modules/setting/setting.route';
 import { VehicleRoutes } from '../modules/vehicle/vehicle.route';
 import { AdminStatsRoutes } from '../modules/adminStats/adminStats.routes';
+import { SupportRoutes } from '../modules/support/support.route';
 
 const router = express.Router();
 
@@ -29,6 +30,7 @@ const apiRoutes = [
     { path: "/settings", route: SettingRoutes },
     { path: "/vehicle", route: VehicleRoutes },
     { path: "/admin-stats", route: AdminStatsRoutes },
+    { path: "/support", route: SupportRoutes },
 ];
 
 // router.post('/webhook', handleStripeWebhook);

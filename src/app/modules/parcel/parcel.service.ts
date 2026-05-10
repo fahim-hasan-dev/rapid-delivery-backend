@@ -273,7 +273,7 @@ const getNearbyParcels = async (
 const acceptParcel = async (parcelId: string, driverId: string) => {
     const activeDelivery = await Parcel.findOne({
         driver: driverId,
-        status: { $in: [PARCEL_STATUS.PICKED_UP, PARCEL_STATUS.IN_TRANSIT] },
+        status: { $nin: [PARCEL_STATUS.DELIVERED, PARCEL_STATUS.CANCELLED] },
     });
 
     if (activeDelivery) {
