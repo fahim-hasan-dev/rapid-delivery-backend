@@ -187,3 +187,42 @@
 {Sun May 10 2026 14:20:27} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
 {Sun May 10 2026 14:20:27} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5005[39m
 {Sun May 10 2026 14:20:28} [Rapid-Delivery 🚚] info: 🔔 Notification worker ready
+{Sun May 10 2026 14:29:45} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sun May 10 2026 14:29:45} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sun May 10 2026 14:29:45} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sun May 10 2026 14:29:45} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sun May 10 2026 14:29:45} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sun May 10 2026 14:29:48} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sun May 10 2026 14:29:49} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sun May 10 2026 14:29:51} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sun May 10 2026 14:29:51} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sun May 10 2026 14:29:51} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sun May 10 2026 14:29:51} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sun May 10 2026 14:29:51} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Sun May 10 2026 14:29:55} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sun May 10 2026 14:29:55} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sun May 10 2026 14:29:55} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sun May 10 2026 14:29:55} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sun May 10 2026 14:29:56} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Sun May 10 2026 14:29:58} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sun May 10 2026 14:29:58} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sun May 10 2026 14:29:58} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5005[39m
+{Sun May 10 2026 14:29:58} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sun May 10 2026 14:29:58} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sun May 10 2026 14:29:58} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5005[39m
+{Sun May 10 2026 14:29:58} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sun May 10 2026 14:29:58} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sun May 10 2026 14:29:58} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5005[39m
+{Sun May 10 2026 14:29:58} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sun May 10 2026 14:29:58} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sun May 10 2026 14:29:58} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5005[39m
+{Sun May 10 2026 14:29:59} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Sun May 10 2026 14:29:59} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Sun May 10 2026 14:29:59} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5005[39m
+{Sun May 10 2026 14:30:23} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.94 - POST /api/v1/support 201 - 2879.258 ms
+{Sun May 10 2026 14:31:13} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.94 - GET /api/v1/support/my-tickets?page=1&limit=10 200 - 1212.643 ms
+{Sun May 10 2026 14:32:30} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.94 - GET /api/v1/support/all?status=pending&page=1&limit=10 200 - 907.947 ms
+{Sun May 10 2026 14:32:59} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.94 - PATCH /api/v1/support/reply/6a00421fea14229a15572aae 200 - 923.934 ms
+{Sun May 10 2026 14:33:17} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.94 - GET /api/v1/notification/unread-count 200 - 605.229 ms
+{Sun May 10 2026 14:33:30} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.94 - GET /api/v1/notification 200 - 1515.539 ms
+{Sun May 10 2026 14:35:25} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.94 - GET / 200 - 1.372 ms

@@ -4,7 +4,7 @@ const createSupportTicketSchema = z.object({
     body: z.object({
         title: z.string({ required_error: 'Title is required' }),
         description: z.string({ required_error: 'Description is required' }),
-        images: z.array(z.string()).optional(),
+        files: z.array(z.string()).optional(),
     }),
 });
 

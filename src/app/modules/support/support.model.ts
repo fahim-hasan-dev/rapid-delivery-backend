@@ -17,7 +17,7 @@ const SupportSchema = new Schema<ISupport, SupportModel>(
             type: String,
             required: true,
         },
-        images: {
+        files: {
             type: [String],
             default: [],
         },

@@ -4,7 +4,7 @@ export type ISupport = {
     user: Types.ObjectId;
     title: string;
     description: string;
-    images?: string[];
+    files?: string[];
     status: 'pending' | 'resolved';
     adminReply?: string;
     isReplied: boolean;
