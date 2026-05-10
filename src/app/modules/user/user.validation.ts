@@ -1,6 +1,14 @@
 import { z } from "zod";
 import { USER_ROLES, USER_STATUS } from "../../../enum/user";
 
+const coordinateSchema = z.array(z.number())
+    .length(2)
+    .refine((coords) => {
+        const [lng, lat] = coords;
+        return lng >= -180 && lng <= 180 && lat >= -90 && lat <= 90;
+    }, {
+        message: "Invalid coordinates. Format must be [longitude, latitude]. Longitude must be between -180 and 180, and Latitude must be between -90 and 90."
+    });
 
 export const userSignupSchema = z.object({
   body: z.object({
@@ -31,7 +39,7 @@ export const userUpdateSchema = z.object({
     status: z.nativeEnum(USER_STATUS).optional(),
     isEmailVerified: z.boolean().optional(),
     address: z.string().optional(),
-    location: z.array(z.number()).length(2).optional(),
+    location: coordinateSchema.optional(),
     fcmToken: z.array(z.string()).optional(),
   })
 });

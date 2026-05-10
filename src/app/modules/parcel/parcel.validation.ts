@@ -1,17 +1,26 @@
 import { z } from "zod";
 import { PARCEL_STATUS, VEHICLE_TYPE } from "../../../enum/parcel";
 
+const coordinateSchema = z.array(z.number())
+    .length(2)
+    .refine((coords) => {
+        const [lng, lat] = coords;
+        return lng >= -180 && lng <= 180 && lat >= -90 && lat <= 90;
+    }, {
+        message: "Invalid coordinates. Format must be [longitude, latitude]. Longitude must be between -180 and 180, and Latitude must be between -90 and 90."
+    });
+
 const createParcelSchema = z.object({
     body: z.object({
         name: z.string({ required_error: "Parcel name is required" }),
         itemValue: z.number({ required_error: "Item value is required" }),
         pickupLocation: z.object({
             address: z.string({ required_error: "Pickup address is required" }),
-            coordinates: z.array(z.number()).length(2),
+            coordinates: coordinateSchema,
         }),
         dropLocation: z.object({
             address: z.string({ required_error: "Drop address is required" }),
-            coordinates: z.array(z.number()).length(2),
+            coordinates: coordinateSchema,
         }),
         vehicleType: z.nativeEnum(VEHICLE_TYPE),
         deliveryDate: z.string({ required_error: "Delivery date is required" }),
@@ -27,11 +36,11 @@ const updateParcelSchema = z.object({
         itemValue: z.number().optional(),
         pickupLocation: z.object({
             address: z.string(),
-            coordinates: z.array(z.number()).length(2),
+            coordinates: coordinateSchema,
         }).optional(),
         dropLocation: z.object({
             address: z.string(),
-            coordinates: z.array(z.number()).length(2),
+            coordinates: coordinateSchema,
         }).optional(),
         vehicleType: z.nativeEnum(VEHICLE_TYPE).optional(),
         deliveryDate: z.string().optional(),

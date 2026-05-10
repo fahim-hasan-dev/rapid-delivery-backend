@@ -9,8 +9,8 @@ const updateDriverLocation = async (
     const key = `tracking:${parcelId}`;
 
     const locationData = {
-        lat: coords[0].toString(),
-        lng: coords[1].toString(),
+        lng: coords[0].toString(),  // GeoJSON: index 0 = longitude
+        lat: coords[1].toString(),  // GeoJSON: index 1 = latitude
         timestamp: Date.now().toString(),
     };
 

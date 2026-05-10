@@ -7,6 +7,7 @@ import globalErrorHandler from './app/middleware/globalErrorHandler';
 import requestIp from 'request-ip';
 import rateLimit from 'express-rate-limit';
 import ApiError from "./errors/ApiError";
+import handleStripeWebhook from "./stripe/handleStripeWebhook";
 
 const app = express();
 
@@ -27,18 +28,14 @@ const limiter = rateLimit({
     }
 });
 
-// Configure request logging with Morgan
 app.use(Morgan.successHandler);
 app.use(Morgan.errorHandler);
-
-// Parse incoming requests and enable cross-origin support
 app.use(cors());
-app.use('/api/v1/webhook', express.raw({ type: 'application/json' }));
+app.post('/api/v1/webhook', (req, res, next) => { console.log('🚀 Webhook route hit!'); next(); }, express.raw({ type: 'application/json' }), handleStripeWebhook);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(requestIp.mw());
 
-// Serve uploaded media and documents statically
 app.use(express.static('uploads'));
 
 // Define the main API entry point

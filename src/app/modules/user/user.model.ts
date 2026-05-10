@@ -182,4 +182,6 @@ UserSchema.pre("findOneAndUpdate", async function (next) {
     next();
 });
 
+UserSchema.index({ "location": "2dsphere" });
+
 export const User = mongoose.model<IUser, UserModel>("User", UserSchema);

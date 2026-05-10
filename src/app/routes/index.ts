@@ -37,7 +37,7 @@ const apiRoutes = [
     { path: "/admin-stats", route: AdminStatsRoutes },
 ];
 
-router.post('/webhook', handleStripeWebhook);
+// router.post('/webhook', handleStripeWebhook);
 
 apiRoutes.forEach(route => router.use(route.path, route.route));
 export default router;

@@ -45,7 +45,7 @@ const setupTrackingNamespace = (io: Server) => {
             await trackingService.updateDriverLocation(
                 parcelId,
                 user.authId,
-                [lat, lng]
+                [lng, lat]
             );
 
             // Broadcast movement to all users (including the driver) tracking this parcel
