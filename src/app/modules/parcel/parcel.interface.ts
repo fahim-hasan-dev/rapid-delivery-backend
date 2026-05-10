@@ -17,6 +17,7 @@ export type IParcel = {
     };
     vehicleType: VEHICLE_TYPE;
     distance: number;
+    duration: string;
     baseFare: number;
     totalPrice: number;
     paymentId?: string;

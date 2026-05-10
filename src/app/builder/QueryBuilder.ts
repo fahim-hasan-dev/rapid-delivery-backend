@@ -28,46 +28,37 @@ class QueryBuilder<T> {
   }
 
   // Filtering
-// Filtering
-filter() {
-  const queryObj = { ...this.query }
-  const excludeFields = [
-    'searchTerm',
-    'sort',
-    'page',
-    'limit',
-    'fields',
-    'withLocked',
-    'showHidden',
-    'download',
-  ]
-  excludeFields.forEach(el => delete queryObj[el])
+  // Filtering
+  filter() {
+    const queryObj = { ...this.query }
+    const excludeFields = [
+      'searchTerm',
+      'sort',
+      'page',
+      'limit',
+      'fields',
+      'withLocked',
+      'showHidden',
+      'download',
+    ]
+    excludeFields.forEach(el => delete queryObj[el])
 
-  const filters: Record<string, any> = cleanObject(queryObj)
+    const cleanedQuery = cleanObject(queryObj)
+    const filters: Record<string, any> = {}
 
-  // Handle salary range filtering
-  if (queryObj.minSalary || queryObj.maxSalary) {
-    if (queryObj.minSalary) {
-      filters.minSalary = { $gte: Number(queryObj.minSalary) }
-      delete queryObj.minSalary
-    }
-    if (queryObj.maxSalary) {
-      filters.maxSalary = { $lte: Number(queryObj.maxSalary) }
-      delete queryObj.maxSalary
-    }
+    // Support for comma-separated values (e.g., status=ACCEPTED,PICKED_UP)
+    Object.keys(cleanedQuery).forEach((key) => {
+      const value = cleanedQuery[key]
+      if (typeof value === 'string' && value.includes(',')) {
+        filters[key] = { $in: value.split(',') }
+      } else {
+        filters[key] = value
+      }
+    })
+
+    this.modelQuery = this.modelQuery.find(filters as FilterQuery<T>)
+    return this
   }
-
-  // ✅ Add partial match for jobLocation
-  if (this.query.jobLocation) {
-    filters.jobLocation = {
-      $regex: this.query.jobLocation,
-      $options: 'i', // case-insensitive
-    }
-  }
-
-  this.modelQuery = this.modelQuery.find(filters as FilterQuery<T>)
-  return this
-}
 
 
 

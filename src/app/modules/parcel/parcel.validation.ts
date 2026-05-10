@@ -56,8 +56,8 @@ const updateParcelSchema = z.object({
 
 const getNearbyParcelsSchema = z.object({
     query: z.object({
-        lat: z.string({ required_error: "Latitude is required in query" }),
-        lng: z.string({ required_error: "Longitude is required in query" }),
+        latitude: z.string({ required_error: "Latitude is required in query" }),
+        longitude: z.string({ required_error: "Longitude is required in query" }),
         distance: z.string().optional(),
         page: z.string().optional(),
         limit: z.string().optional(),

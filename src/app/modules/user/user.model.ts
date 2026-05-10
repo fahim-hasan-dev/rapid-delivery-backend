@@ -55,36 +55,39 @@ const UserSchema = new Schema(
         },
         // Authentication state for security and multi-factor flows
         authentication: {
-            restrictionLeftAt: {
-                type: Date,
-                default: null,
+            type: {
+                restrictionLeftAt: {
+                    type: Date,
+                    default: null,
+                },
+                resetPassword: {
+                    type: Boolean,
+                    default: false,
+                },
+                wrongLoginAttempts: {
+                    type: Number,
+                    default: 0,
+                },
+                passwordChangedAt: Date,
+                oneTimeCode: {
+                    type: String,
+                    default: "",
+                },
+                latestRequestAt: {
+                    type: Date,
+                    default: Date.now,
+                },
+                expiresAt: Date,
+                requestCount: {
+                    type: Number,
+                    default: 0,
+                },
+                authType: {
+                    type: String,
+                    enum: ['createAccount', 'resetPassword'],
+                },
             },
-            resetPassword: {
-                type: Boolean,
-                default: false,
-            },
-            wrongLoginAttempts: {
-                type: Number,
-                default: 0,
-            },
-            passwordChangedAt: Date,
-            oneTimeCode: {
-                type: String,
-                default: "",
-            },
-            latestRequestAt: {
-                type: Date,
-                default: Date.now,
-            },
-            expiresAt: Date,
-            requestCount: {
-                type: Number,
-                default: 0,
-            },
-            authType: {
-                type: String,
-                enum: ['createAccount', 'resetPassword'],
-            },
+            select: false
         },
         fcmToken: [{
             type: String,

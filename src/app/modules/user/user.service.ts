@@ -42,7 +42,7 @@ const deleteUser = async (id: string) => {
 
 const updateProfile = async (
     user: JwtPayload,
-    payload: Partial<IUser>
+    payload: any
 ) => {
     const isExistUser = await User.findById(user.authId)
 
@@ -50,11 +50,24 @@ const updateProfile = async (
         throw new ApiError(StatusCodes.NOT_FOUND, 'User not found or deleted.')
     }
 
+    // Prepare the update object
+    const updateData: any = { ...payload };
+
+    // If driverInfo fields are sent at top level (from file middleware), map them correctly
+    if (payload.nid) {
+        updateData['driverInfo.nid'] = payload.nid;
+        delete updateData.nid;
+    }
+    if (payload.drivingLicense) {
+        updateData['driverInfo.drivingLicense'] = payload.drivingLicense;
+        delete updateData.drivingLicense;
+    }
+
     const updatedUser = await User.findOneAndUpdate(
         { _id: user.authId, status: { $ne: USER_STATUS.RESTRICTED } },
-        payload,
+        { $set: updateData },
         { new: true },
-    )
+    ).select('-password -authentication')
 
     if (!updatedUser) {
         throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to update profile')

@@ -43,8 +43,9 @@ const auth =
                         if (verifyUser.role === USER_ROLES.DRIVER) {
                             const isGetProfile = req.method === 'GET' && req.originalUrl.includes('/user/me');
                             const isResubmitProfile = req.originalUrl.includes('/user/resubmit-profile');
+                            const isUpdateProfile = req.method === 'PATCH' && req.originalUrl.includes('/user/profile');
                             
-                            if (!isGetProfile && !isResubmitProfile) {
+                            if (!isGetProfile && !isResubmitProfile && !isUpdateProfile) {
                                 const driver = await User.findById(verifyUser.authId).lean();
                                 if (driver?.driverInfo?.profileVerification !== PROFILE_VERIFICATION_STATUS.APPROVED) {
                                     throw new ApiError(

@@ -32,6 +32,10 @@ const ParcelSchema = new Schema<IParcel>(
             type: Number,
             required: true,
         },
+        duration: {
+            type: String,
+            required: true,
+        },
         baseFare: {
             type: Number,
             required: true,

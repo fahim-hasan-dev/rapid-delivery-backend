@@ -14,7 +14,6 @@ import { createPaymentSession } from "../../../stripe/createPaymentSession";
 import { JwtPayload } from "jsonwebtoken";
 
 // Calculates distance and price for a parcel delivery.
-// Used both as a public API endpoint and internally by createParcel.
 const calculateParcelDistanceAndPrice = async (query: Record<string, any>) => {
     const { pickupLat, pickupLng, dropLat, dropLng } = query;
 
@@ -109,6 +108,7 @@ const createParcel = async (payload: IParcel, user: JwtPayload) => {
 
     // Override with server-side calculated values for security
     payload.distance = calculation.distanceKm;
+    payload.duration = calculation.duration;
     payload.baseFare = vehicleData.baseFare;
     payload.totalPrice = vehicleData.totalPrice;
     payload.sender = new Types.ObjectId(user.authId);
@@ -231,8 +231,8 @@ const getNearbyParcels = async (
                 name: 1,
                 totalPrice: 1,
                 vehicleType: 1,
-                "pickupLocation.address": 1,
-                "dropLocation.address": 1,
+                pickupLocation: 1,
+                dropLocation: 1,
                 distance: 1,
                 distanceFromDriver: 1,
                 deliveryDate: 1,
@@ -376,6 +376,10 @@ const updateParcel = async (
         if (payload.status === PARCEL_STATUS.DELIVERED && !payload.deliveryProof) {
             throw new ApiError(StatusCodes.BAD_REQUEST, "Delivery proof is required to mark as delivered.");
         }
+
+        if (payload.status === PARCEL_STATUS.PICKED_UP ) {
+            payload.status = PARCEL_STATUS.IN_TRANSIT;
+        }
     }
 
     // Role-based security check for senders
@@ -385,7 +389,7 @@ const updateParcel = async (
         }
 
         // Senders can only update basic info
-        const forbiddenFields = ["status", "driver", "isDriverAssigned", "pickupProof", "deliveryProof", "pickedUpAt", "deliveredAt"];
+        const forbiddenFields = ["name", "pickupLocation", "dropLocation","itemValue"];
         const keys = Object.keys(payload);
         const hasForbidden = keys.some(key => forbiddenFields.includes(key));
         if (hasForbidden) {
