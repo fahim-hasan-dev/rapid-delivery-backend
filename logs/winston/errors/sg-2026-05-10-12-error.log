@@ -1,0 +1,14 @@
+{Sun May 10 2026 12:01:00} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - GET /api/v1/notification 404 - 6.389 ms
+{Sun May 10 2026 12:17:02} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - POST /api/v1/chat 400 - 323.484 ms
+{Sun May 10 2026 12:24:32} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - POST /api/v1/message 500 - 3.619 ms
+{Sun May 10 2026 12:24:40} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - POST /api/v1/message 400 - 1248.824 ms
+{Sun May 10 2026 12:25:18} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - POST /api/v1/message 400 - 1788.801 ms
+{Sun May 10 2026 12:25:39} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - POST /api/v1/message 500 - 1703.189 ms
+{Sun May 10 2026 12:27:21} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - POST /api/v1/message 500 - 1170.432 ms
+{Sun May 10 2026 12:27:37} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - POST /api/v1/message 500 - 1802.330 ms
+{Sun May 10 2026 12:28:16} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - POST /api/v1/message 500 - 1093.154 ms
+{Sun May 10 2026 12:28:57} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - POST /api/v1/message 500 - 1090.079 ms
+{Sun May 10 2026 12:40:35} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - GET /api/v1/message/6a0022eb225de2da3c08b241 500 - 7.694 ms
+{Sun May 10 2026 12:41:17} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - PATCH /api/v1/messag/6a0026af8471995a7f6153ae 404 - 1.070 ms
+{Sun May 10 2026 12:42:06} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - PATCH /api/v1/messag/6a0026af8471995a7f6153ae 404 - 0.281 ms
+{Sun May 10 2026 12:44:11} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - DELETE /api/v1/message/6a002907f2cffdd0b4cd4b0a 404 - 306.083 ms

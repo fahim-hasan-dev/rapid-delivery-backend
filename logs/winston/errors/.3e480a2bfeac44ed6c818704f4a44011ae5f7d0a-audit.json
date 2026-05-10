@@ -179,6 +179,11 @@
             "date": 1778389466216,
             "name": "D:\\Fahim\\Projects\\Rapid-Delivery\\logs\\winston\\errors\\sg-2026-05-10-11-error.log",
             "hash": "a64b85f5d667212bd7e40eccda3fc0ba133ed5ee5649e769441497660cfb2109"
+        },
+        {
+            "date": 1778392860333,
+            "name": "D:\\Fahim\\Projects\\Rapid-Delivery\\logs\\winston\\errors\\sg-2026-05-10-12-error.log",
+            "hash": "f4ede69e813644196e1d25fae79932b5b21ee9d26212ec6a1a4d7168d6902e6d"
         }
     ],
     "hashType": "sha256"

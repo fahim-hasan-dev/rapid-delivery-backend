@@ -15,8 +15,12 @@ router.post(
         res.status(StatusCodes.BAD_REQUEST).json({ message: "Participant ID is required" });
         return;
       }
+      if (req.body.participant === (req as any).user.authId) {
+        res.status(StatusCodes.BAD_REQUEST).json({ message: "Participant ID cannot be same as user" });
+        return;
+      }
       req.body = {
-        participants: [(req as any).user.id, req.body.participant],
+        participants: [(req as any).user.authId, req.body.participant],
         isAdminSupport: req.body.isAdminSupport || false
       };
       next();

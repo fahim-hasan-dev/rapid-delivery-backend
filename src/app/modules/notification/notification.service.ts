@@ -32,7 +32,7 @@ const insertNotification = async (payload: Partial<INotification>): Promise<INot
 };
 
 const getNotificationFromDB = async (user: JwtPayload, query: FilterQuery<any>): Promise<Object> => {
-    const result = new QueryBuilder(Notification.find({ receiver: user.id }), query).paginate();
+    const result = new QueryBuilder(Notification.find({ receiver: user.authId }), query).paginate();
     
     // Select only necessary fields for notifications and use lean()
     result.modelQuery.select("title message read screen createdAt").lean();
@@ -41,12 +41,12 @@ const getNotificationFromDB = async (user: JwtPayload, query: FilterQuery<any>):
     const pagination = await result.getPaginationInfo();
 
     const unreadCount = await Notification.countDocuments({
-        receiver: user.id,
+        receiver: user.authId,
         read: false,
     });
 
     await Notification.updateMany(
-        { receiver: user.id, read: false },
+        { receiver: user.authId, read: false },
         { $set: { read: true } }
     );
 
@@ -57,11 +57,13 @@ const getNotificationFromDB = async (user: JwtPayload, query: FilterQuery<any>):
     };
 };
 
-const getUnreadCountFromDB = async (user: JwtPayload): Promise<number> => {
-    return await Notification.countDocuments({
-        receiver: user.id,
+const getUnreadCountFromDB = async (user: JwtPayload) => {
+    const unreadCount = await Notification.countDocuments({
+        receiver: user.authId,
         read: false,
     });
+
+    return {unreadCount};
 };
 
 export const NotificationService = {

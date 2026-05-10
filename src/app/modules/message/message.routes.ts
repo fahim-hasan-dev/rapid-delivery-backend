@@ -24,6 +24,7 @@ router.get(
 router.patch(
   '/:id',
   auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+  fileAndBodyProcessorUsingDiskStorage(),
   MessageController.updateMessage
 );
 
@@ -32,13 +33,6 @@ router.get(
   '/unread/count',
   auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
   MessageController.getUnreadCount
-);
-
-// Update status of specialized money request messages
-router.patch(
-  '/:messageId/money-request',
-  auth(USER_ROLES.SENDER, USER_ROLES.DRIVER),
-  MessageController.updateMoneyRequestStatus
 );
 
 // Permanent removal of a message record

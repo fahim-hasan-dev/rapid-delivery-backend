@@ -32,7 +32,7 @@ const getChat = catchAsync(async (req: Request, res: Response) => {
 });
 
 const deleteChat = catchAsync(async (req: Request, res: Response) => {
-    await ChatService.deleteChatFromDB(req.params.id, req.user.id);
+    await ChatService.deleteChatFromDB(req.params.id, req.user.authId);
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,

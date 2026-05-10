@@ -12,6 +12,8 @@ import { SettingServices } from "../setting/setting.service";
 import { redisClient } from "../../../helpers/redis";
 import { createPaymentSession } from "../../../stripe/createPaymentSession";
 import { JwtPayload } from "jsonwebtoken";
+import { NotificationService } from "../notification/notification.service";
+import { USER_ROLES } from "../../../enum/user";
 
 // Calculates distance and price for a parcel delivery.
 const calculateParcelDistanceAndPrice = async (query: Record<string, any>) => {
@@ -311,14 +313,13 @@ const acceptParcel = async (parcelId: string, driverId: string) => {
         { new: true }
     ).populate("sender driver");
 
-    await notificationQueue.add("parcel-accepted", {
-        userId: parcel.sender.toString(),
+    // Notify Sender via in-app notification
+    await NotificationService.insertNotification({
+        receiver: parcel.sender,
         title: "Driver Assigned",
-        body: "A driver has accepted your parcel and will pick it up soon!",
-        data: {
-            screen: "PARCEL_TRACKING",
-            type: "DRIVER_ASSIGNED",
-        },
+        message: "A driver has accepted your parcel and will pick it up soon!",
+        screen: "PARCEL_TRACKING",
+        type: USER_ROLES.SENDER
     });
 
     return updatedParcel;
@@ -378,7 +379,18 @@ const updateParcel = async (
         }
 
         if (payload.status === PARCEL_STATUS.PICKED_UP ) {
+            // Flow validation: Cannot pick up if already transit or delivered
+            if (parcel.status !== PARCEL_STATUS.ACCEPTED) {
+                throw new ApiError(StatusCodes.BAD_REQUEST, `Invalid transition: Cannot pick up a parcel that is currently ${parcel.status.toLowerCase()}`);
+            }
             payload.status = PARCEL_STATUS.IN_TRANSIT;
+        }
+
+        if (payload.status === PARCEL_STATUS.DELIVERED) {
+            // Flow validation: Must be in transit to deliver
+            if (parcel.status !== PARCEL_STATUS.IN_TRANSIT) {
+                throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid transition: Parcel must be picked up before marking as delivered.");
+            }
         }
     }
 
@@ -397,13 +409,45 @@ const updateParcel = async (
         }
     }
 
-    // Handle status transitions and timestamps
-    if (payload.status === PARCEL_STATUS.PICKED_UP) {
+    // Handle status transitions and notifications
+    if (payload.status === PARCEL_STATUS.PICKED_UP || payload.status === PARCEL_STATUS.IN_TRANSIT) {
         payload.pickedUpAt = new Date();
+        // Notify Sender
+        await NotificationService.insertNotification({
+            receiver: parcel.sender,
+            title: "Parcel Picked Up",
+            message: `Your parcel "${parcel.name}" has been picked up and is on the way!`,
+            screen: "PARCEL_TRACKING",
+            type: USER_ROLES.SENDER
+        });
     } else if (payload.status === PARCEL_STATUS.DELIVERED) {
         payload.deliveredAt = new Date();
         // Stop tracking in Redis once delivered
         await trackingService.removeDriverTracking(id, parcel.driver!.toString());
+        // Notify Sender
+        await NotificationService.insertNotification({
+            receiver: parcel.sender,
+            title: "Parcel Delivered",
+            message: `Great news! Your parcel "${parcel.name}" has been successfully delivered.`,
+            screen: "PARCEL_DETAILS",
+            type: USER_ROLES.SENDER
+        });
+    } else if (payload.status === PARCEL_STATUS.CANCELLED) {
+        // Notify both if cancelled
+        const recipients = [
+            { id: parcel.sender, role: USER_ROLES.SENDER },
+            ...(parcel.driver ? [{ id: parcel.driver, role: USER_ROLES.DRIVER }] : [])
+        ];
+
+        for (const recipient of recipients) {
+            await NotificationService.insertNotification({
+                receiver: recipient.id,
+                title: "Parcel Cancelled",
+                message: `The parcel "${parcel.name}" has been cancelled.`,
+                screen: "PARCEL_DETAILS",
+                type: recipient.role
+            });
+        }
     }
 
     const updatedParcel = await Parcel.findByIdAndUpdate(id, payload, {

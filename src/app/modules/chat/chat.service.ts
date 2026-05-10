@@ -37,11 +37,10 @@ const getChatFromDB = async (
 ): Promise<any> => {
     // Build query to find chats where user is a participant
     const chatFilter: FilterQuery<IChat> = {
-        participants: { $in: [user.id] },
+        participants: { $in: [user.authId] },
     };
 
     if (query.searchTerm) {
-        // Use QueryBuilder's native search implementation on the User model
         const userQueryBuilder = new QueryBuilder(User.find(), query)
             .search(['fullName', 'email']);
 
@@ -53,7 +52,7 @@ const getChatFromDB = async (
 
         // Add to query: at least one of the OTHER participants must be in matchingUserIds
         chatFilter.participants = {
-            $all: [user.id],
+            $all: [user.authId],
             $in: matchingUserIds
         };
     }
@@ -67,7 +66,7 @@ const getChatFromDB = async (
         .populate({
             path: 'participants',
             select: '_id fullName profilePicture role email',
-            match: { _id: { $ne: user.id } }
+            match: { _id: { $ne: user.authId } }
         })
         .populate({
             path: 'lastMessage',
@@ -83,8 +82,8 @@ const getChatFromDB = async (
         chats.map(async (chat: any) => {
             const unreadCount = await Message.countDocuments({
                 chatId: chat._id,
-                sender: { $ne: new Types.ObjectId(user.id) },
-                readBy: { $ne: new Types.ObjectId(user.id) }
+                sender: { $ne: new Types.ObjectId(user.authId) },
+                readBy: { $ne: new Types.ObjectId(user.authId) }
             });
 
             return {
