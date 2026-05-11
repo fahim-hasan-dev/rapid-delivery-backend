@@ -75,6 +75,7 @@ export const createUser = async (payload: IUser) => {
           ...payload,
           authentication,
           role: payload.role || USER_ROLES.SENDER,
+          driverInfo: payload.role === USER_ROLES.DRIVER ? {} : undefined,
         },
       ],
       { session },

@@ -19,7 +19,7 @@ const customLogin = catchAsync(async (req: Request, res: Response) => {
 
   sendResponse(res, {
     statusCode: status,
-    success: true,
+    success: status === 407 ? false : true,
     message: message,
     data: { accessToken, refreshToken, userInfo },
   })

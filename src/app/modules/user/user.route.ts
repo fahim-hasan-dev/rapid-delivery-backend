@@ -47,7 +47,9 @@ router.delete(
 )
 
 // Retrieve public profile of a single user
-router.get('/:id', UserController.getSingleUser)
+router.get('/:id',
+  auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+  UserController.getSingleUser)
 
 // Administrative user deletion
 router.delete('/:id', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), UserController.deleteUser)

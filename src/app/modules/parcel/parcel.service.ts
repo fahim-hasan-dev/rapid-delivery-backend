@@ -378,7 +378,7 @@ const updateParcel = async (
             throw new ApiError(StatusCodes.BAD_REQUEST, "Delivery proof is required to mark as delivered.");
         }
 
-        if (payload.status === PARCEL_STATUS.PICKED_UP ) {
+        if (payload.status === PARCEL_STATUS.PICKED_UP) {
             // Flow validation: Cannot pick up if already transit or delivered
             if (parcel.status !== PARCEL_STATUS.ACCEPTED) {
                 throw new ApiError(StatusCodes.BAD_REQUEST, `Invalid transition: Cannot pick up a parcel that is currently ${parcel.status.toLowerCase()}`);
@@ -401,7 +401,7 @@ const updateParcel = async (
         }
 
         // Senders can only update basic info
-        const forbiddenFields = ["name", "pickupLocation", "dropLocation","itemValue"];
+        const forbiddenFields = ["name", "pickupLocation", "dropLocation", "itemValue"];
         const keys = Object.keys(payload);
         const hasForbidden = keys.some(key => forbiddenFields.includes(key));
         if (hasForbidden) {

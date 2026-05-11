@@ -77,7 +77,10 @@ const updateProfile = async (
 }
 
 const getProfile = async (user: JwtPayload) => {
-    const isExistUser = await User.findById(user.authId).lean().select('-password -authentication')
+    const isExistUser = await User.findById(user.authId)
+        .populate('driverInfo.assignedVehicle')
+        .lean();
+
     if (!isExistUser) {
         throw new ApiError(
             StatusCodes.NOT_FOUND,

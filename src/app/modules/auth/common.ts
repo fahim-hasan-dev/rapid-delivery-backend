@@ -6,7 +6,6 @@ import { User } from '../user/user.model'
 import { AuthHelper } from './auth.helper'
 import { generateOtp } from '../../../utils/crypto'
 import { IAuthResponse } from './auth.interface'
-import { IUser } from '../user/user.interface'
 import { emailTemplate } from '../../../shared/emailTemplate'
 import { emailQueue } from '../../../queues'
 
