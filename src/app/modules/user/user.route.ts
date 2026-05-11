@@ -16,6 +16,15 @@ router.get(
 // Admin access to all user records
 router.get('/', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), UserController.getAllUser);
 
+// Get pending verification drivers
+router.get('/new-driver-requests', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), UserController.getNewDriverRequests);
+
+// Retrieve public profile of a single user
+router.get('/:id',
+  auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+  UserController.getSingleUser)
+
+
 // Update profile details with optional image upload
 router.patch(
   '/profile',
@@ -32,6 +41,11 @@ router.patch(
   UserController.resubmitProfile,
 )
 
+//Suspend and Reactive user
+router.patch('/suspend-reactive/:id',
+   auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+    UserController.suspendAndReactivedUser)
+
 // Admin verification of driver profiles
 router.patch(
   '/verify-profile/:id',
@@ -46,10 +60,6 @@ router.delete(
   UserController.deleteMyAccount,
 )
 
-// Retrieve public profile of a single user
-router.get('/:id',
-  auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
-  UserController.getSingleUser)
 
 // Administrative user deletion
 router.delete('/:id', auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN), UserController.deleteUser)

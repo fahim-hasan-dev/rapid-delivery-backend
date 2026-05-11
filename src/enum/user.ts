@@ -6,6 +6,7 @@ export enum USER_ROLES {
 }
 
 export enum USER_STATUS {
+    PENDING = 'pending',
     ACTIVE = 'active',
     RESTRICTED = 'restricted',
     DELETED = 'deleted',

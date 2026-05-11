@@ -38,6 +38,10 @@ const handleLoginLogic = async (payload: ILoginData, isUserExist: any): Promise<
         throw new ApiError(StatusCodes.BAD_REQUEST, 'No account found with this email')
     }
 
+    if (status === USER_STATUS.PENDING) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, 'Your account is pending for acitave verify email.')
+    }
+
     if (status === USER_STATUS.RESTRICTED) {
         if (restrictionLeftAt && new Date() < restrictionLeftAt) {
             const remainingMinutes = Math.ceil((restrictionLeftAt.getTime() - Date.now()) / 60000)

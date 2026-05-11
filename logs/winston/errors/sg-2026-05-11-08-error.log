@@ -1,4 +1,0 @@
-{Mon May 11 2026 08:15:52} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - POST /api/v1/auth/admin-login 401 - 529.259 ms
-{Mon May 11 2026 08:16:13} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - POST /api/v1/auth/create-admin 400 - 315.200 ms
-{Mon May 11 2026 08:16:28} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - POST /api/v1/auth/admin-login 401 - 516.647 ms
-{Mon May 11 2026 08:17:35} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - POST /api/v1/auth/admin-login 401 - 520.947 ms

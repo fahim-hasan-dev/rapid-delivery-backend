@@ -1,6 +1,5 @@
 import { StatusCodes } from 'http-status-codes'
 import ApiError from '../../../errors/ApiError'
-import { IUser } from './user.interface'
 import { User } from './user.model'
 import { USER_ROLES, USER_STATUS, PROFILE_VERIFICATION_STATUS } from '../../../enum/user'
 import { JwtPayload } from 'jsonwebtoken'
@@ -8,7 +7,36 @@ import QueryBuilder from '../../builder/QueryBuilder'
 import { NotificationService } from '../notification/notification.service'
 
 const getAllUser = async (query: Record<string, unknown>) => {
-    const userQueryBuilder = new QueryBuilder(User.find().select('-password -authentication'), query)
+    const userQueryBuilder = new QueryBuilder(User.find({ $and: [{ status: { $ne: USER_ROLES.SUPER_ADMIN } }, { 'driverInfo.profileVerification': { $eq: PROFILE_VERIFICATION_STATUS.APPROVED } }] }).select('-password -authentication'), query)
+        .filter()
+        .sort()
+        .fields()
+        .paginate()
+
+    const users = await userQueryBuilder.modelQuery
+        .select('fullName email phone image role status createdAt')
+        .lean()
+    const paginationInfo = await userQueryBuilder.getPaginationInfo()
+    const totalUsers = await User.countDocuments()
+
+    return {
+        users,
+        staticData: { totalUsers },
+        meta: paginationInfo,
+    }
+}
+
+const getNewDriverRequests = async (query: Record<string, unknown>) => {
+    const userQueryBuilder = new QueryBuilder(User.find({
+        role: USER_ROLES.DRIVER,
+        'driverInfo.profileVerification': {
+            $in: [
+                PROFILE_VERIFICATION_STATUS.PENDING,
+                PROFILE_VERIFICATION_STATUS.RESUBMITTED,
+                PROFILE_VERIFICATION_STATUS.REJECTED,
+            ],
+        },
+    }).select('-password -authentication'), query)
         .filter()
         .sort()
         .fields()
@@ -31,13 +59,19 @@ const getSingleUser = async (id: string) => {
     return await User.findById(id).select('-password -authentication');
 }
 
-const deleteUser = async (id: string) => {
-    const user = await User.findById(id)
-    if (!user) {
-        throw new ApiError(StatusCodes.NOT_FOUND, 'User not found')
+const getProfile = async (user: JwtPayload) => {
+    const isExistUser = await User.findById(user.authId)
+        .populate('driverInfo.assignedVehicle')
+        .lean();
+
+    if (!isExistUser) {
+        throw new ApiError(
+            StatusCodes.NOT_FOUND,
+            'The requested profile not found or deleted.',
+        )
     }
 
-    return await User.findByIdAndDelete(id);
+    return isExistUser
 }
 
 const updateProfile = async (
@@ -76,36 +110,6 @@ const updateProfile = async (
     return updatedUser
 }
 
-const getProfile = async (user: JwtPayload) => {
-    const isExistUser = await User.findById(user.authId)
-        .populate('driverInfo.assignedVehicle')
-        .lean();
-
-    if (!isExistUser) {
-        throw new ApiError(
-            StatusCodes.NOT_FOUND,
-            'The requested profile not found or deleted.',
-        )
-    }
-
-    return isExistUser
-}
-
-const deleteMyAccount = async (user: JwtPayload) => {
-    const isExistUser = await User.findById(user.authId)
-    if (!isExistUser) {
-        throw new ApiError(
-            StatusCodes.NOT_FOUND,
-            'The requested profile not found or deleted.',
-        )
-    }
-
-    await User.findByIdAndDelete(isExistUser._id)
-
-    return 'Account deleted successfully'
-}
-
-// Driver profile resubmission logic
 const resubmitProfile = async (user: JwtPayload, payload: { nid: string[], drivingLicense: string[] }) => {
     const isExistUser = await User.findById(user.authId);
     if (!isExistUser) {
@@ -140,7 +144,6 @@ const resubmitProfile = async (user: JwtPayload, payload: { nid: string[], drivi
     return updatedUser;
 }
 
-// Admin verification logic for approving or rejecting drivers
 const verifyProfileByAdmin = async (id: string, payload: { status: PROFILE_VERIFICATION_STATUS, rejectReason?: string }) => {
     const isExistUser = await User.findById(id);
     if (!isExistUser) {
@@ -176,13 +179,55 @@ const verifyProfileByAdmin = async (id: string, payload: { status: PROFILE_VERIF
     return updatedUser;
 }
 
+const suspendAndReactivedUser = async (id:string) => {
+    const isExistUser = await User.findById(id);
+    if (!isExistUser) {
+        throw new ApiError(StatusCodes.NOT_FOUND, 'User not found');
+    }
+
+    const updateData: any = {
+        status: isExistUser.status === USER_STATUS.ACTIVE ? USER_STATUS.RESTRICTED : USER_STATUS.ACTIVE
+    };
+
+    const updatedUser = await User.findByIdAndUpdate(id, { $set: updateData }, { new: true });
+
+    return updatedUser;
+}
+
+const deleteMyAccount = async (user: JwtPayload) => {
+    const isExistUser = await User.findById(user.authId)
+    if (!isExistUser) {
+        throw new ApiError(
+            StatusCodes.NOT_FOUND,
+            'The requested profile not found or deleted.',
+        )
+    }
+
+    await User.findByIdAndDelete(isExistUser._id)
+
+    return 'Account deleted successfully'
+}
+
+const deleteUser = async (id: string) => {
+    const user = await User.findById(id)
+    if (!user) {
+        throw new ApiError(StatusCodes.NOT_FOUND, 'User not found')
+    }
+
+    return await User.findByIdAndDelete(id);
+}
+
+
+
 export const UserServices = {
     updateProfile,
+    getNewDriverRequests,
     getAllUser,
     getSingleUser,
     deleteUser,
     getProfile,
     deleteMyAccount,
     resubmitProfile,
-    verifyProfileByAdmin
+    verifyProfileByAdmin,
+    suspendAndReactivedUser
 }

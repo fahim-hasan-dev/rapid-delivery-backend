@@ -338,7 +338,7 @@ const verifyAccount = async (
   if (!isUserExist.isEmailVerified) {
     await User.findByIdAndUpdate(
       isUserExist._id,
-      { $set: { isEmailVerified: true } },
+      { $set: { isEmailVerified: true, status: USER_STATUS.ACTIVE } },
       { new: true },
     )
 
