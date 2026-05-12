@@ -14,6 +14,7 @@ import { createPaymentSession } from "../../../stripe/createPaymentSession";
 import { JwtPayload } from "jsonwebtoken";
 import { NotificationService } from "../notification/notification.service";
 import { USER_ROLES } from "../../../enum/user";
+import { User } from "../user/user.model";
 
 // Calculates distance and price for a parcel delivery.
 const calculateParcelDistanceAndPrice = async (query: Record<string, any>) => {
@@ -112,13 +113,22 @@ const createParcel = async (payload: IParcel, user: JwtPayload) => {
     payload.distance = calculation.distanceKm;
     payload.duration = calculation.duration;
     payload.baseFare = vehicleData.baseFare;
-    payload.totalPrice = vehicleData.totalPrice;
+    payload.totalDeliveryFee = vehicleData.totalPrice;
+
+    // Fetch settings for commission calculation
+    const settings = await SettingServices.getSettings();
+    const commissionPercentage = settings?.platformCommissionPercentage || 0;
+
+    // Calculate Breakdown
+    payload.platformCommission = Number(((payload.totalDeliveryFee * commissionPercentage) / 100).toFixed(2));
+    payload.driverShare = Number((payload.totalDeliveryFee - payload.platformCommission).toFixed(2));
+
     payload.sender = new Types.ObjectId(user.authId);
 
     const parcel = await Parcel.create(payload);
 
     // Create Stripe payment session
-    const paymentLink = await createPaymentSession(user, parcel.totalPrice, parcel._id.toString());
+    const paymentLink = await createPaymentSession(user, vehicleData.totalPrice, parcel._id.toString());
 
     return { parcel, paymentLink };
 };
@@ -201,7 +211,6 @@ const getNearbyParcels = async (
         status: PARCEL_STATUS.PENDING,
         isDriverAssigned: false,
         deliveryDate: {
-            $gte: todayStart,
             $lte: todayEnd
         }
     };
@@ -424,6 +433,17 @@ const updateParcel = async (
         payload.deliveredAt = new Date();
         // Stop tracking in Redis once delivered
         await trackingService.removeDriverTracking(id, parcel.driver!.toString());
+
+        // Update Driver Statistics
+        if (parcel.driver) {
+            await User.findByIdAndUpdate(parcel.driver, {
+                $inc: {
+                    "driverInfo.totalDelivery": 1,
+                    "driverInfo.totalEarnings": parcel.driverShare || 0,
+                    "driverInfo.todayEarnings": parcel.driverShare || 0
+                }
+            });
+        }
         // Notify Sender
         await NotificationService.insertNotification({
             receiver: parcel.sender,

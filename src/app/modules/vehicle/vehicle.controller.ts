@@ -49,8 +49,7 @@ const deleteVehicle = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: 'Vehicle deleted successfully',
-        data: result,
+        message: 'Vehicle deleted successfully'
     });
 });
 

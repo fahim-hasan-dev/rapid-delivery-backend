@@ -34,10 +34,7 @@ export type IUser = {
         rejectReason?: string;
         assignedVehicle?: Types.ObjectId;
         totalRating: number;
-        averageRating: number;
-        totalDelivery: number;
-        totalEarnings: number;
-        todayEarnings: number;
+        averageRating: number
     }
 };
 

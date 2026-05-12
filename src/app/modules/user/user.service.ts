@@ -17,11 +17,9 @@ const getAllUser = async (query: Record<string, unknown>) => {
         .select('fullName email phone image role status createdAt')
         .lean()
     const paginationInfo = await userQueryBuilder.getPaginationInfo()
-    const totalUsers = await User.countDocuments()
 
     return {
         users,
-        staticData: { totalUsers },
         meta: paginationInfo,
     }
 }
@@ -46,11 +44,9 @@ const getNewDriverRequests = async (query: Record<string, unknown>) => {
         .select('fullName email phone image role status createdAt')
         .lean()
     const paginationInfo = await userQueryBuilder.getPaginationInfo()
-    const totalUsers = await User.countDocuments()
 
     return {
         users,
-        staticData: { totalUsers },
         meta: paginationInfo,
     }
 }

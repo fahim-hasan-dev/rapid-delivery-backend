@@ -40,7 +40,15 @@ const ParcelSchema = new Schema<IParcel>(
             type: Number,
             required: true,
         },
-        totalPrice: {
+        totalDeliveryFee: {
+            type: Number,
+            required: true,
+        },
+        driverShare: {
+            type: Number,
+            required: true,
+        },
+        platformCommission: {
             type: Number,
             required: true,
         },

@@ -19,7 +19,9 @@ export type IParcel = {
     distance: number;
     duration: string;
     baseFare: number;
-    totalPrice: number;
+    totalDeliveryFee: number;
+    driverShare: number;
+    platformCommission: number;
     paymentId?: string;
     sender: Types.ObjectId;
     deliveryDate: Date;

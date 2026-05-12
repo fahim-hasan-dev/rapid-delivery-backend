@@ -28,11 +28,10 @@ const getAllVehicles = async (query: Record<string, unknown>) => {
 
     const vehicles = await vehicleQueryBuilder.modelQuery;
     const paginationInfo = await vehicleQueryBuilder.getPaginationInfo();
-    const totalVehicles = await Vehicle.countDocuments();
+
 
     return {
         vehicles,
-        staticData: { totalVehicles },
         meta: paginationInfo,
     };
 };
@@ -88,6 +87,7 @@ const assignDriver = async (payload: { vehicleId: string, driverId: string }) =>
     }
 
     const driver = await User.findById(driverId);
+
     if (!driver || driver.role !== USER_ROLES.DRIVER) {
         throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid driver ID.');
     }

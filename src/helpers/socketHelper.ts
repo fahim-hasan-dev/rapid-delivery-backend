@@ -6,7 +6,7 @@ import { logger } from '../shared/logger';
 import config from '../config';
 
 const authenticateSocket = (socket: Socket, next: (err?: Error) => void) => {
-    const token = socket.handshake.auth?.token;
+    const token = socket.handshake.auth?.token || socket.handshake.headers.token;
     if (!token) {
         return next(new Error('Authentication token required'));
     }
@@ -32,11 +32,12 @@ const setupTrackingNamespace = (io: Server) => {
         socket.on('driver:location-update', async (data: {
             parcelId: string;
             lat: number;
-            lng: number;
-            heading?: number;
-            speed?: number;
+            lng: number
         }) => {
-            const { parcelId, lat, lng, heading, speed } = data;
+
+            
+            const { parcelId, lat, lng } = data;
+
 
             // Ensure driver is in the specific parcel room for broadcasting
             socket.join(`parcel:${parcelId}`);
@@ -52,8 +53,6 @@ const setupTrackingNamespace = (io: Server) => {
             tracking.to(`parcel:${parcelId}`).emit('location:updated', {
                 lat,
                 lng,
-                heading: heading || 0,
-                speed: speed || 0,
                 timestamp: Date.now(),
             });
         });

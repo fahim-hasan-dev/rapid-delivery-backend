@@ -29,20 +29,6 @@ router.get(
 );
 
 router.patch(
-    '/:id',
-    auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
-    fileAndBodyProcessorUsingDiskStorage(),
-    validateRequest(VehicleValidations.updateVehicleSchema),
-    VehicleController.updateVehicle
-);
-
-router.delete(
-    '/:id',
-    auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
-    VehicleController.deleteVehicle
-);
-
-router.patch(
     '/assign-driver',
     auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
     validateRequest(VehicleValidations.assignDriverSchema),
@@ -55,5 +41,19 @@ router.patch(
     validateRequest(VehicleValidations.removeDriverSchema),
     VehicleController.removeDriver
 );
+
+router.patch(
+    '/:id',
+    auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+    fileAndBodyProcessorUsingDiskStorage(),
+    validateRequest(VehicleValidations.updateVehicleSchema),
+    VehicleController.updateVehicle
+);
+router.delete(
+    '/:id',
+    auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+    VehicleController.deleteVehicle
+);
+
 
 export const VehicleRoutes = router;

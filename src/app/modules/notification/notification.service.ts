@@ -22,7 +22,7 @@ const insertNotification = async (payload: Partial<INotification>): Promise<INot
     try {
         const io = getIO();
         if (result.receiver) {
-            io.of('/notifications').emit(`notification::${result.receiver.toString()}`, result);
+            io.of('/notifications').emit(`notification::${result.receiver.toString()}`);
         }
     } catch {
         logger.warn('Socket.io not initialized, skipping emit');
@@ -49,6 +49,15 @@ const getNotificationFromDB = async (user: JwtPayload, query: FilterQuery<any>):
         { receiver: user.authId, read: false },
         { $set: { read: true } }
     );
+
+    try {
+        const io = getIO();
+        if (user.authId) {
+            io.of('/notifications').emit(`notification::${user.authId.toString()}`);
+        }
+    } catch {
+        logger.warn('Socket.io not initialized, skipping emit');
+    }
 
     return {
         notifications,

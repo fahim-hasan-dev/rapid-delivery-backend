@@ -112,10 +112,7 @@ const UserSchema = new Schema(
                     default: null
                 },
                 totalRating: { type: Number, default: 0 },
-                averageRating: { type: Number, default: 0 },
-                totalDelivery: { type: Number, default: 0 },
-                totalEarnings: { type: Number, default: 0 },
-                todayEarnings: { type: Number, default: 0 },
+                averageRating: { type: Number, default: 0 }
             }, { _id: false }),
             default: undefined
         },
