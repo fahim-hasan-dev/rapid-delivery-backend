@@ -335,3 +335,7 @@
 {Tue May 12 2026 11:47:08} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
 {Tue May 12 2026 11:47:08} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5005[39m
 {Tue May 12 2026 11:47:11} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - POST /api/v1/auth/login 200 - 1922.721 ms
+{Tue May 12 2026 11:47:11} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/notification/unread-count 200 - 318.052 ms
+{Tue May 12 2026 11:47:11} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/notification/unread-count 200 - 320.002 ms
+{Tue May 12 2026 11:47:11} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/notification/unread-count 200 - 317.942 ms
+{Tue May 12 2026 11:47:11} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/user/me 200 - 314.276 ms
