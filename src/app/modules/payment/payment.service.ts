@@ -8,16 +8,21 @@ import { JwtPayload } from "jsonwebtoken";
 import { Parcel } from "../parcel/parcel.model";
 import ApiError from "../../../errors/ApiError";
 import { StatusCodes } from "http-status-codes";
+import { PARCEL_STATUS } from "../../../enum/parcel";
 
 // Create session
 const creatSession = async (user: JwtPayload, referenceId: string) => {
   const parcel = await Parcel.findById(referenceId);
 
+  if (parcel?.status !== PARCEL_STATUS.CREATED) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "Parcel is not ready for payment");
+  }
+
   if (!parcel) {
     throw new ApiError(StatusCodes.NOT_FOUND, "Parcel not found");
   }
 
-  const url = await createPaymentSession(user, parcel.totalPrice, parcel._id.toString());
+  const url = await createPaymentSession(user, parcel.totalDeliveryFee, parcel._id.toString());
 
   return { url };
 };

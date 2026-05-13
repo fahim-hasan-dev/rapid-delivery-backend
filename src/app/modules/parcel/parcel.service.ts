@@ -148,7 +148,7 @@ const getAllParcels = async (query: Record<string, unknown>) => {
         .fields();
 
     // Select specific fields to reduce payload and use lean() for performance
-    parcelQuery.modelQuery.select("name itemValue status totalPrice vehicleType sender driver createdAt").lean();
+    parcelQuery.modelQuery.select("name itemValue status totalDeliveryFee vehicleType sender driver createdAt").lean();
 
     const parcels = await parcelQuery.modelQuery;
     const meta = await parcelQuery.getPaginationInfo();
@@ -178,7 +178,7 @@ const getMyParcels = async (
         .fields();
 
     // Select essential fields for the list view and use lean()
-    parcelQuery.modelQuery.select("name status totalPrice vehicleType pickupLocation.address dropLocation.address deliveryDate createdAt").lean();
+    parcelQuery.modelQuery.select("name status totalDeliveryFee vehicleType pickupLocation.address dropLocation.address deliveryDate createdAt").lean();
 
     const parcels = await parcelQuery.modelQuery;
     const meta = await parcelQuery.getPaginationInfo();
@@ -240,7 +240,7 @@ const getNearbyParcels = async (
         {
             $project: {
                 name: 1,
-                totalPrice: 1,
+                totalDeliveryFee: 1,
                 vehicleType: 1,
                 pickupLocation: 1,
                 dropLocation: 1,
@@ -434,16 +434,6 @@ const updateParcel = async (
         // Stop tracking in Redis once delivered
         await trackingService.removeDriverTracking(id, parcel.driver!.toString());
 
-        // Update Driver Statistics
-        if (parcel.driver) {
-            await User.findByIdAndUpdate(parcel.driver, {
-                $inc: {
-                    "driverInfo.totalDelivery": 1,
-                    "driverInfo.totalEarnings": parcel.driverShare || 0,
-                    "driverInfo.todayEarnings": parcel.driverShare || 0
-                }
-            });
-        }
         // Notify Sender
         await NotificationService.insertNotification({
             receiver: parcel.sender,

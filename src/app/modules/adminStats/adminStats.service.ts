@@ -6,11 +6,12 @@ import { PARCEL_STATUS } from '../../../enum/parcel';
 
 const getAdminDashboardStats = async (year: number) => {
     // 1. Basic Stats (Top Cards)
-    const totalRevenueResult = await Payment.aggregate([
+    const totalRevenueResult = await Parcel.aggregate([
+        { $match: { status: PARCEL_STATUS.DELIVERED } },
         {
             $group: {
                 _id: null,
-                total: { $sum: '$amount' }
+                total: { $sum: '$platformCommission' }
             }
         }
     ]);
@@ -24,16 +25,17 @@ const getAdminDashboardStats = async (year: number) => {
     const startOfYear = new Date(year, 0, 1);
     const endOfYear = new Date(year, 11, 31, 23, 59, 59);
 
-    const monthlyRevenue = await Payment.aggregate([
+    const monthlyRevenue = await Parcel.aggregate([
         {
             $match: {
-                dateTime: { $gte: startOfYear, $lte: endOfYear }
+                status: PARCEL_STATUS.DELIVERED,
+                deliveredAt: { $gte: startOfYear, $lte: endOfYear }
             }
         },
         {
             $group: {
-                _id: { $month: '$dateTime' },
-                revenue: { $sum: '$amount' }
+                _id: { $month: '$deliveredAt' },
+                revenue: { $sum: '$platformCommission' }
             }
         },
         { $sort: { '_id': 1 } }

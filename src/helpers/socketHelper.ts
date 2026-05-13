@@ -35,7 +35,7 @@ const setupTrackingNamespace = (io: Server) => {
             lng: number
         }) => {
 
-            
+
             const { parcelId, lat, lng } = data;
 
 

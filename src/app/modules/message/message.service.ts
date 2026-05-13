@@ -113,7 +113,7 @@ const getMessageFromDB = async (
 
   const result = new QueryBuilder(
     Message.find({ chatId: id })
-      .populate('sender', 'fullName profilePicture')
+      .populate('sender', 'fullName image')
       .sort({ createdAt: -1 }),
     query
   ).paginate();
@@ -124,7 +124,7 @@ const getMessageFromDB = async (
 
   const participant = await Chat.findById(id).populate({
     path: 'participants',
-    select: '-_id fullName profilePicture ',
+    select: '-_id fullName image ',
     match: {
       _id: { $ne: new mongoose.Types.ObjectId(user.authId) }
     }
