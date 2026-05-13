@@ -212,3 +212,72 @@
 {Wed May 13 2026 11:35:54} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
 {Wed May 13 2026 11:35:54} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
 {Wed May 13 2026 11:35:54} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5005[39m
+{Wed May 13 2026 11:36:42} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Wed May 13 2026 11:36:42} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Wed May 13 2026 11:36:42} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Wed May 13 2026 11:36:42} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Wed May 13 2026 11:36:42} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
+{Wed May 13 2026 11:36:45} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Wed May 13 2026 11:36:45} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Wed May 13 2026 11:36:46} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Wed May 13 2026 11:36:47} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Wed May 13 2026 11:36:47} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
+{Wed May 13 2026 11:36:48} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Wed May 13 2026 11:36:48} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Wed May 13 2026 11:36:48} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5005[39m
+{Wed May 13 2026 11:36:48} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Wed May 13 2026 11:36:48} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Wed May 13 2026 11:36:48} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5005[39m
+{Wed May 13 2026 11:36:49} [Rapid-Delivery 🚚] info: Chat: User 6a0000a0936d3957aab93543 connected
+{Wed May 13 2026 11:36:49} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Wed May 13 2026 11:36:49} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Wed May 13 2026 11:36:49} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5005[39m
+{Wed May 13 2026 11:36:50} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Wed May 13 2026 11:36:50} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Wed May 13 2026 11:36:50} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5005[39m
+{Wed May 13 2026 11:36:50} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications, /chat
+{Wed May 13 2026 11:36:50} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
+{Wed May 13 2026 11:36:50} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5005[39m
+{Wed May 13 2026 11:36:59} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.105 - GET /api/v1/parcel/nearby?radius=5&latitude=23.811056&longitude=90.407608 200 - 1159.522 ms
+{Wed May 13 2026 11:37:14} [Rapid-Delivery 🚚] info: Chat: User 6a0000a0936d3957aab93543 disconnected
+{Wed May 13 2026 11:37:16} [Rapid-Delivery 🚚] info: Chat: User 6a0000a0936d3957aab93543 connected
+{Wed May 13 2026 11:37:18} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/notification 200 - 1882.002 ms
+{Wed May 13 2026 11:37:19} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/notification/unread-count 200 - 757.987 ms
+{Wed May 13 2026 11:37:21} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/notification/unread-count 200 - 750.730 ms
+{Wed May 13 2026 11:37:21} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/parcel/nearby?latitude=23.7809156&longitude=90.4075839&radius=5&page=1&limit=10 200 - 1113.668 ms
+{Wed May 13 2026 11:37:21} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/user/me 200 - 391.499 ms
+{Wed May 13 2026 11:37:22} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/parcel/my-parcels?page=1&limit=1&status=ACCEPTED%2CIN_TRANSIT 200 - 1196.152 ms
+{Wed May 13 2026 11:37:23} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/driver-stats/6a0000a0936d3957aab93543 200 - 3226.044 ms
+{Wed May 13 2026 11:37:25} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/notification/unread-count 200 - 775.716 ms
+{Wed May 13 2026 11:37:26} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/parcel/my-parcels?page=1&limit=10&status=ACCEPTED%2CPENDING%2CIN_TRANSIT 200 - 1149.128 ms
+{Wed May 13 2026 11:38:17} [Rapid-Delivery 🚚] info: Chat: User 6a0000a0936d3957aab93543 disconnected
+{Wed May 13 2026 11:38:19} [Rapid-Delivery 🚚] info: Chat: User 6a0000a0936d3957aab93543 connected
+{Wed May 13 2026 11:38:23} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/notification 200 - 2628.041 ms
+{Wed May 13 2026 11:38:24} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/user/me 200 - 395.417 ms
+{Wed May 13 2026 11:38:24} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/notification/unread-count 200 - 785.171 ms
+{Wed May 13 2026 11:38:24} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/notification/unread-count 200 - 796.953 ms
+{Wed May 13 2026 11:38:24} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/parcel/my-parcels?page=1&limit=1&status=ACCEPTED%2CIN_TRANSIT 200 - 1086.929 ms
+{Wed May 13 2026 11:38:24} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/parcel/nearby?latitude=23.7809026&longitude=90.4075909&radius=5&page=1&limit=10 200 - 1145.825 ms
+{Wed May 13 2026 11:38:27} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/driver-stats/6a0000a0936d3957aab93543 200 - 3708.513 ms
+{Wed May 13 2026 11:38:37} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/parcel/my-parcels?page=1&limit=10&status=ACCEPTED%2CPENDING%2CIN_TRANSIT 200 - 1139.746 ms
+{Wed May 13 2026 11:39:27} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.105 - GET /api/v1/parcel/my-parcels?status=ACCEPTED,IN_TRANSIT 200 - 1145.221 ms
+{Wed May 13 2026 11:40:20} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.105 - GET /api/v1/parcel/my-parcels?status=ACCEPTED,IN_TRANSIT,DELIVERED 200 - 1555.268 ms
+{Wed May 13 2026 11:42:00} [Rapid-Delivery 🚚] info: Chat: User 6a0000a0936d3957aab93543 disconnected
+{Wed May 13 2026 11:42:02} [Rapid-Delivery 🚚] info: Chat: User 6a0000a0936d3957aab93543 connected
+{Wed May 13 2026 11:42:04} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/notification 200 - 1940.899 ms
+{Wed May 13 2026 11:42:06} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/notification/unread-count 200 - 1999.089 ms
+{Wed May 13 2026 11:42:06} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/user/me 200 - 370.253 ms
+{Wed May 13 2026 11:42:07} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/notification/unread-count 200 - 756.111 ms
+{Wed May 13 2026 11:42:07} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/parcel/nearby?latitude=23.7808918&longitude=90.4075973&radius=5&page=1&limit=10 200 - 1157.291 ms
+{Wed May 13 2026 11:42:07} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/driver-stats/6a0000a0936d3957aab93543 200 - 1478.728 ms
+{Wed May 13 2026 11:42:08} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/parcel/my-parcels?page=1&limit=1&status=ACCEPTED%2CIN_TRANSIT 200 - 2036.354 ms
+{Wed May 13 2026 11:42:11} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/notification/unread-count 200 - 1524.894 ms
+{Wed May 13 2026 11:42:11} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/parcel/my-parcels?page=1&limit=10&status=ACCEPTED%2CPENDING%2CIN_TRANSIT%2CDELIVERED 200 - 1546.834 ms
+{Wed May 13 2026 11:42:14} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/parcel/my-parcels?page=1&limit=10&status=ACCEPTED%2CPENDING%2CIN_TRANSIT%2CDELIVERED 200 - 2758.006 ms
+{Wed May 13 2026 11:43:25} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - PATCH /api/v1/parcel/6a04028edbbbdc6bbda93728/accept 200 - 2344.430 ms
+{Wed May 13 2026 11:43:27} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/parcel/my-parcels?page=1&limit=1&status=ACCEPTED%2CIN_TRANSIT 200 - 1535.944 ms
+{Wed May 13 2026 11:43:28} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/driver-stats/6a0000a0936d3957aab93543 200 - 766.339 ms
+{Wed May 13 2026 11:43:29} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/parcel/nearby?latitude=23.7808918&longitude=90.4075973&radius=5&page=1&limit=10 200 - 1154.984 ms
+{Wed May 13 2026 11:43:34} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/parcel/6a04028edbbbdc6bbda93728 200 - 1150.642 ms
+{Wed May 13 2026 11:43:48} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - PATCH /api/v1/parcel/6a04028edbbbdc6bbda93728 200 - 4557.279 ms
+{Wed May 13 2026 11:44:45} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.15 - GET /api/v1/parcel/6a04028edbbbdc6bbda93728 200 - 1153.085 ms
