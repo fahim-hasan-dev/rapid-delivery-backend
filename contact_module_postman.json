@@ -1,0 +1,187 @@
+{
+	"info": {
+		"_postman_id": "contact-module-collection",
+		"name": "Contact Module - Rapid Delivery",
+		"description": "Collection for the dedicated Contact Us module including creation, retrieval, and admin reply functionality.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Contact (Public)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"johndoe@example.com\",\n    \"phone\": \"+1234567890\",\n    \"message\": \"Hello, I have a question regarding my delivery.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/contact",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"contact"
+					]
+				},
+				"description": "Submit a new contact form. This is a public endpoint."
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Contacts (Admin Only)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adminToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/contact?page=1&limit=10",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"contact"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				},
+				"description": "Retrieve a paginated list of all contact submissions. Requires Admin or Super Admin token."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Single Contact (Admin Only)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adminToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/contact/:id",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"contact",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "CONTACT_ID_HERE"
+						}
+					]
+				},
+				"description": "Retrieve details of a specific contact query. Requires Admin or Super Admin token."
+			},
+			"response": []
+		},
+		{
+			"name": "Reply to Contact (Admin Only)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adminToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"replyMessage\": \"Thank you for reaching out. We have looked into your query and resolved the issue.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/contact/reply/:id",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"contact",
+						"reply",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "CONTACT_ID_HERE"
+						}
+					]
+				},
+				"description": "Admin replies to a contact query. This will update the DB and send an email to the user. Requires Admin or Super Admin token."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "adminToken",
+			"value": "PASTE_ADMIN_TOKEN_HERE",
+			"type": "string"
+		}
+	]
+}

@@ -41,30 +41,6 @@ const deletePublic = catchAsync(async (req: Request, res: Response) => {
   })
 })
 
-const createContact = catchAsync(async (req: Request, res: Response) => {
-  const result = await PublicServices.createContact(req.body)
-
-  sendResponse(res, {
-    statusCode: StatusCodes.OK,
-    success: true,
-    message: 'Thank you for contacting us. We will get back to you soon.',
-    data: result,
-  })
-})
-
-const getAllContacts = catchAsync(async (req: Request, res: Response) => {
-  const result = await PublicServices.getAllContacts(req.query)
-
-  sendResponse(res, {
-    statusCode: StatusCodes.OK,
-    success: true,
-    message: 'Contacts retrieved successfully',
-    data: result,
-  })
-})
-
-
-
 const createFaq = catchAsync(async (req: Request, res: Response) => {
   const faqData = req.body
   const result = await PublicServices.createFaq(faqData)
@@ -128,11 +104,9 @@ export const PublicController = {
   createPublic,
   getAllPublics,
   deletePublic,
-  createContact,
   createFaq,
   updateFaq,
   getSingleFaq,
   getAllFaqs,
   deleteFaq,
-  getAllContacts,
 }

@@ -19,14 +19,6 @@ router.delete('/:id',
   auth(USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN),
   PublicController.deletePublic
 )
-router.post(
-  '/contact',
-  validateRequest(PublicValidation.contactZodSchema),
-  PublicController.createContact,
-)
-router.get('/contact/all',
-  auth(USER_ROLES.ADMIN,USER_ROLES.SUPER_ADMIN),
-   PublicController.getAllContacts)
 
 
 

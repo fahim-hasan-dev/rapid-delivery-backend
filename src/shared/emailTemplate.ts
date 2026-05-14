@@ -399,6 +399,82 @@ const userContactConfirmationEmail = (payload: {
 }
 
 
+const contactReplyEmail = (payload: {
+  email: string
+  name: string
+  originalMessage: string
+  replyMessage: string
+}) => {
+  return {
+    to: payload.email,
+    subject: '📬 Reply to your message - Rapid-Delivery Support',
+    html: `
+<body style="margin:0; padding:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0"
+         style="max-width:640px; margin:40px auto; background-color:#ffffff; border-radius:14px;
+                overflow:hidden; box-shadow:0 5px 25px rgba(0,0,0,0.08);">
+
+    <!-- Header -->
+    <tr>
+      <td align="center" 
+          style="background:linear-gradient(135deg,#FEF5F0,#FFE6D9); padding:35px 20px; border-bottom:1px solid #FF4A0033;">
+      </td>
+    </tr>
+
+    <!-- Body -->
+    <tr>
+      <td style="padding:45px;">
+        <h1 style="color:#FF4A00; font-size:26px; font-weight:700; margin-bottom:20px; text-align:center;">
+          Response from Support 🛠️
+        </h1>
+
+        <p style="color:#4D1600; font-size:16px; line-height:1.6; text-align:left;">
+          Hi <strong>${payload.name}</strong>,<br><br>
+          Our team has reviewed your recent query. Here is our response:
+        </p>
+
+        <!-- Admin Reply -->
+        <div style="background-color:#F9F9F9; border-left:4px solid #FF4A00; 
+                    padding:20px; margin:20px 0;">
+          <p style="font-size:15px; color:#333; line-height:1.6; margin:0;">
+            ${payload.replyMessage.replace(/\n/g, '<br>')}
+          </p>
+        </div>
+
+        <!-- Original Message -->
+        <h3 style="color:#4D1600; font-size:16px; margin-top:30px;">Your original message:</h3>
+        <div style="background-color:#F1F1F1; padding:15px; border-radius:8px; margin-bottom:20px;">
+          <p style="font-size:14px; color:#555; line-height:1.5; margin:0; font-style:italic;">
+            "${payload.originalMessage}"
+          </p>
+        </div>
+
+        <p style="color:#4D1600; font-size:15px; line-height:1.6; text-align:left;">
+          If you have any further questions, feel free to contact us again.<br><br>
+          Best regards,<br>
+          <strong>The Rapid-Delivery Team</strong>
+        </p>
+
+      </td>
+    </tr>
+
+    <!-- Footer -->
+    <tr>
+      <td align="center" 
+          style="background:linear-gradient(135deg,#FEF5F0,#FFE6D9); padding:25px 20px; border-top:1px solid #FF4A0033;">
+        <p style="margin:0; color:#4D1600; font-size:13px;">
+          © ${new Date().getFullYear()} <strong>Rapid-Delivery</strong>. All rights reserved.
+        </p>
+      </td>
+    </tr>
+
+  </table>
+</body>
+    `,
+  }
+}
+
+
 const sendPaymentConfirmationEmail = (data: any) => {
   const parcelsHtml = data.parcel
     .map(
@@ -1026,6 +1102,7 @@ export const emailTemplate = {
   resendOtp,
   userContactConfirmationEmail,
   adminContactNotificationEmail,
+  contactReplyEmail,
   sendPaymentConfirmationEmail,
   sendAdminPaymentNotificationEmail,
   businessUserShipmentInfoEmail,

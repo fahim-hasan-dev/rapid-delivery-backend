@@ -668,6 +668,36 @@ const createAdmin = async (payload: IUser) => {
   return result;
 }
 
+// Add a new FCM token to the user's account
+const addFcmToken = async (user: JwtPayload, fcmToken: string) => {
+  const result = await User.findByIdAndUpdate(
+    user.authId,
+    { $addToSet: { fcmToken: fcmToken } },
+    { new: true },
+  )
+
+  if (!result) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'User not found')
+  }
+
+  return result
+}
+
+// Remove an existing FCM token from the user's account
+const removeFcmToken = async (user: JwtPayload, fcmToken: string) => {
+  const result = await User.findByIdAndUpdate(
+    user.authId,
+    { $pull: { fcmToken: fcmToken } },
+    { new: true },
+  )
+
+  if (!result) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'User not found')
+  }
+
+  return result
+}
+
 export const AuthServices = {
   forgetPassword,
   resetPassword,
@@ -680,7 +710,9 @@ export const AuthServices = {
   changePassword,
   createUser,
   adminLogin,
-  createAdmin
+  createAdmin,
+  addFcmToken,
+  removeFcmToken,
 }
 
 

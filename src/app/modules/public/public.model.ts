@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose'
-import { ContactModel, FaqModel, IContact, IFaq, IPublic, PublicModel } from './public.interface'
+import { FaqModel, IFaq, IPublic, PublicModel } from './public.interface'
 
 const publicSchema = new Schema<IPublic, PublicModel>(
   {
@@ -29,18 +29,4 @@ const faqSchema = new Schema<IFaq, FaqModel>(
 export const Faq = model<IFaq, FaqModel>('Faq', faqSchema)
 
 
-const contactSchema = new Schema<IContact, ContactModel>(
-  {
-    name: { type: String },
-    email: { type: String },
-    phone: { type: String, optional: true },
-    message: { type: String },
-    createdAt: { type: Date },
-    updatedAt: { type: Date },
-  },
-  {
-    timestamps: true,
-  },
-)
 
-export const Contact = model<IContact, ContactModel>('Contact', contactSchema)

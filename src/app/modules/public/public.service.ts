@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
 import ApiError from '../../../errors/ApiError'
-import { IContact, IFaq, IPublic } from './public.interface'
-import { Contact, Faq, Public } from './public.model'
+import { IFaq, IPublic } from './public.interface'
+import { Faq, Public } from './public.model'
 import { User } from '../../../app/modules/user/user.model'
 import { emailQueue } from '../../../queues'
 import QueryBuilder from '../../builder/QueryBuilder'
@@ -42,55 +42,6 @@ const getAllPublics = async (
 const deletePublic = async (id: string) => {
   const result = await Public.findByIdAndDelete(id)
   return result
-}
-
-const createContact = async (payload: IContact) => {
-  try {
-    // Find admin user to send notification
-    const admin = await User.findOne({ role: 'admin' })
-
-    if (!admin || !admin.email) {
-      throw new ApiError(
-        StatusCodes.INTERNAL_SERVER_ERROR,
-        'Admin user not found',
-      )
-    }
-
-    const result = await Contact.create(payload)
-    if (!result)
-      throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create Contact')
-    
-    // send admin email
-    await emailQueue.add('send-email', emailTemplate.adminContactNotificationEmail(payload))
-    // send user email
-    await emailQueue.add('send-email', emailTemplate.userContactConfirmationEmail(payload))
-
-    return {
-      message: 'Contact form submitted successfully',
-    }
-  } catch (error) {
-    throw new ApiError(
-      StatusCodes.INTERNAL_SERVER_ERROR,
-      'Failed to submit contact form',
-    )
-  }
-}
-
-const getAllContacts = async (query: Record<string, unknown>) => {
-  const contactQueryBuilder = new QueryBuilder(Contact.find(), query)
-
-  contactQueryBuilder.paginate()
-
-  const result = await contactQueryBuilder.modelQuery.lean()
-
-  // Get pagination info separately
-  const paginationResult = await contactQueryBuilder.getPaginationInfo()
-
-  // Return clean objects without circular references
-  return {
-    meta: paginationResult,
-    result,
-  }
 }
 
 const createFaq = async (payload: IFaq) => {
@@ -138,11 +89,9 @@ export const PublicServices = {
   createPublic,
   getAllPublics,
   deletePublic,
-  createContact,
   createFaq,
   getAllFaqs,
   getSingleFaq,
   updateFaq,
   deleteFaq,
-  getAllContacts,
 }

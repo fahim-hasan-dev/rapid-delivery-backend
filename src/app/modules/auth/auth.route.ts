@@ -109,5 +109,19 @@ router.post(
   AuthController.createAdmin,
 )
 
+router.patch(
+  '/add-fcm',
+  auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+  validateRequest(AuthValidations.fcmTokenZodSchema),
+  AuthController.addFcmToken,
+)
+
+router.patch(
+  '/remove-fcm',
+  auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+  validateRequest(AuthValidations.fcmTokenZodSchema),
+  AuthController.removeFcmToken,
+)
+
 export const AuthRoutes = router
 

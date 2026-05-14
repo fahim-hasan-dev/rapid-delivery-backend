@@ -76,6 +76,12 @@ const createUserZodSchema = z.object({
   }),
 })
 
+const fcmTokenZodSchema = z.object({
+  body: z.object({
+    fcmToken: z.string({ required_error: 'FCM token is required' }),
+  }),
+})
+
 export const AuthValidations = {
   verifyEmailOrPhoneOtpZodSchema,
   forgetPasswordZodSchema,
@@ -86,5 +92,6 @@ export const AuthValidations = {
   changePasswordZodSchema,
   createUserZodSchema,
   deleteAccount,
+  fcmTokenZodSchema,
 }
 
