@@ -1,0 +1,5 @@
+{Thu May 14 2026 12:00:38} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.37 - PATCH /api/v1/vehicle/assign-driver 400 - 348.461 ms
+{Thu May 14 2026 12:15:10} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.37 - GET /api/v1/notification/unread-count 500 - 30011.213 ms
+{Thu May 14 2026 12:15:10} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.37 - GET /api/v1/user?page=1&role=driver 500 - 30014.246 ms
+{Thu May 14 2026 12:15:10} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.37 - GET /api/v1/user/new-driver-requests?page=1 500 - 30015.647 ms
+{Thu May 14 2026 12:15:10} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.37 - GET /api/v1/vehicle?page=1 500 - 30015.363 ms

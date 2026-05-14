@@ -10,6 +10,7 @@ import { StatusCodes } from 'http-status-codes';
 import { User } from '../user/user.model';
 import { getIO } from '../../../helpers/socketManager';
 import { notificationQueue } from '../../../queues';
+import { logger } from '../../../shared/logger';
 
 // Send a new message and notify chat participants
 const sendMessageToDB = async (payload: any): Promise<IMessage> => {
@@ -36,9 +37,9 @@ const sendMessageToDB = async (payload: any): Promise<IMessage> => {
     const io = getIO();
     if (io && payload.chatId) {
       const chatNamespace = io.of('/chat');
-      
+
       // Dispatch real-time gateway events to the specific chat room
-      chatNamespace.to(payload.chatId.toString()).emit(`getMessage::${payload?.chatId}`, response);
+      chatNamespace.to(payload.chatId.toString()).emit(`message::received`, response);
 
       // Notify participants to update their chat list
       isExistChat.participants.forEach((participantId: any) => {
@@ -49,7 +50,7 @@ const sendMessageToDB = async (payload: any): Promise<IMessage> => {
       });
     }
   } catch (error) {
-    console.error("Socket error in sendMessageToDB:", error);
+    logger.error("Socket error in sendMessageToDB:", error);
   }
 
   // Handle push notifications for participants
@@ -67,16 +68,26 @@ const sendMessageToDB = async (payload: any): Promise<IMessage> => {
       );
 
       if (recipientId) {
-        await notificationQueue.add('push-notification', {
-          userId: recipientId.toString(),
-          title,
-          body,
-          data: { screen: "CHAT", chatId: payload.chatId?.toString() }
-        });
+        // Check if recipient is currently in the chat room to avoid redundant push notifications
+        const io = getIO();
+        const chatNamespace = io.of('/chat');
+        const socketsInRoom = await chatNamespace.in(payload.chatId.toString()).fetchSockets();
+        const isRecipientInRoom = socketsInRoom.some(
+          (s: any) => s.data?.user?.authId?.toString() === recipientId.toString()
+        );
+
+        if (!isRecipientInRoom) {
+          await notificationQueue.add('push-notification', {
+            userId: recipientId.toString(),
+            title,
+            body,
+            data: { screen: "CHAT", chatId: payload.chatId?.toString() }
+          });
+        }
       }
     }
   } catch (error) {
-    console.error("Failed to add push notification to queue:", error);
+    logger.error("Failed to process push notification logic:", error);
   }
 
   return response;
@@ -153,10 +164,10 @@ const updateMessageToDB = async (messageId: string, userId: string, payload: Par
   try {
     const io = getIO();
     if (io && updatedMessage) {
-      io.of('/chat').to(updatedMessage.chatId.toString()).emit(`getMessage::${updatedMessage.chatId}`, updatedMessage);
+      io.of('/chat').to(updatedMessage.chatId.toString()).emit(`message::received`, updatedMessage);
     }
   } catch (error) {
-    console.error("Socket error in updateMessageToDB:", error);
+    logger.error("Socket error in updateMessageToDB:", error);
   }
 
   return updatedMessage;

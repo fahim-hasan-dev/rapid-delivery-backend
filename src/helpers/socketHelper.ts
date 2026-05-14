@@ -81,9 +81,11 @@ const setupNotificationNamespace = (io: Server) => {
 
     notifications.on('connection', (socket) => {
         const user = socket.data.user;
+        logger.info(`Notification: ${user.role} ${user.authId} connected`);
         socket.join(`user:${user.authId}`);
 
         socket.on('disconnect', () => {
+            logger.info(`Notification: ${user.role} ${user.authId} disconnected`);
             socket.leave(`user:${user.authId}`);
         });
     });
