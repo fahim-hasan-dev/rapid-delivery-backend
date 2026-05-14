@@ -69,6 +69,13 @@ const setupTrackingNamespace = (io: Server) => {
             }
         });
 
+        // 3. User stops tracking a parcel
+        socket.on('user:untrack-parcel', (data: { parcelId: string }) => {
+            const { parcelId } = data;
+            socket.leave(`parcel:${parcelId}`);
+            logger.info(`User ${user.authId} stopped tracking parcel: ${parcelId}`);
+        });
+
         socket.on('disconnect', () => {
             logger.info(`Tracking: ${user.role} ${user.authId} disconnected`);
         });
