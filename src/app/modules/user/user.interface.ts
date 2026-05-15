@@ -26,6 +26,7 @@ export type IUser = {
     location?: [number, number];
     isEmailVerified: boolean;
     authentication: IAuthentication;
+    dateOfBirth?: Date;
     fcmToken?: string[];
     driverInfo?: {
         nid: string[];

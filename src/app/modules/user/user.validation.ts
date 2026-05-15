@@ -10,6 +10,8 @@ const coordinateSchema = z.array(z.number())
         message: "Invalid coordinates. Format must be [longitude, latitude]. Longitude must be between -180 and 180, and Latitude must be between -90 and 90."
     });
 
+
+
 export const userSignupSchema = z.object({
   body: z.object({
     email: z.string().email("Invalid email address").toLowerCase().trim(),
@@ -41,6 +43,9 @@ export const userUpdateSchema = z.object({
     address: z.string().optional(),
     location: coordinateSchema.optional(),
     fcmToken: z.array(z.string()).optional(),
+    nid: z.array(z.string()).optional(),
+    drivingLicense: z.array(z.string()).optional(),
+    dateOfBirth: z.string().optional(),
   })
 });
 

@@ -1,9 +1,11 @@
 import { Model } from 'mongoose'
 
 export type IContact = {
-    name: string
+    firstName: string
+    lastName: string
     email: string
     phone?: string
+    subject: string
     message: string
     isReplied: boolean
     replyMessage?: string

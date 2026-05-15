@@ -1,0 +1,3 @@
+{Fri May 15 2026 16:00:26} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.37 - GET /api/v1/parcel/calculate-distance?pickupLat=23.811056&pickupLng=90.407608&dropLat=23.766732&dropLng=90.381109 200 - 321.545 ms
+{Fri May 15 2026 16:01:15} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.37 - OPTIONS /api/v1/notification/unread-count 204 - 0.040 ms
+{Fri May 15 2026 16:01:15} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.37 - GET /api/v1/notification/unread-count 304 - 297.776 ms

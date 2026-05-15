@@ -27,7 +27,7 @@ const createContact = async (payload: IContact) => {
     await NotificationService.insertNotification({
       receiver: admin._id,
       title: 'New Contact Query',
-      message: `${payload.name} has submitted a new contact message.`,
+      message: `${payload.firstName} ${payload.lastName} has submitted a new contact message.`,
       screen: 'CONTACT_LIST',
       type: admin.role
     });
@@ -43,7 +43,7 @@ const createContact = async (payload: IContact) => {
 
 const getAllContacts = async (query: Record<string, unknown>) => {
   const contactQueryBuilder = new QueryBuilder(Contact.find(), query)
-    .search(['name', 'email', 'phone'])
+    .search(['firstName', 'lastName', 'email', 'phone', 'subject'])
     .filter()
     .sort()
     .paginate()
@@ -91,7 +91,7 @@ const replyToContact = async (id: string, replyMessage: string) => {
   // Queue reply email
   await emailQueue.add('send-email', emailTemplate.contactReplyEmail({
     email: contact.email,
-    name: contact.name,
+    name: `${contact.firstName} ${contact.lastName}`,
     originalMessage: contact.message,
     replyMessage: replyMessage
   }));

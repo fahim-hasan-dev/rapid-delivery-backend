@@ -239,9 +239,11 @@ const resendOtp = (values: {
 }
 
 const adminContactNotificationEmail = (payload: {
-  name: string
+  firstName: string
+  lastName: string
   email: string
   phone?: string
+  subject: string
   message: string
 }) => {
   return {
@@ -276,7 +278,14 @@ const adminContactNotificationEmail = (payload: {
           <tr>
             <td style="padding:12px 0; font-size:15px; color:#4D1600;">👤 <strong>Name:</strong></td>
             <td style="padding:12px 0; font-size:15px; color:#4D1600; text-align:right;">
-              ${payload.name}
+              ${payload.firstName} ${payload.lastName}
+            </td>
+          </tr>
+
+          <tr style="border-top:1px solid #FF4A0022;">
+            <td style="padding:12px 0; font-size:15px; color:#4D1600;">📝 <strong>Subject:</strong></td>
+            <td style="padding:12px 0; font-size:15px; color:#4D1600; text-align:right;">
+              ${payload.subject}
             </td>
           </tr>
 
@@ -330,8 +339,10 @@ const adminContactNotificationEmail = (payload: {
 
 
 const userContactConfirmationEmail = (payload: {
-  name: string
+  firstName: string
+  lastName: string
   email: string
+  subject: string
   message: string
 }) => {
   return {
@@ -358,8 +369,8 @@ const userContactConfirmationEmail = (payload: {
         </h1>
 
         <p style="color:#4D1600; font-size:16px; line-height:1.6; text-align:center;">
-          Dear <strong>${payload.name}</strong>,<br>
-          We’ve received your message! Our support team will reach out to you shortly.
+          Dear <strong>${payload.firstName} ${payload.lastName}</strong>,<br>
+          We’ve received your message regarding "<strong>${payload.subject}</strong>"! Our support team will reach out to you shortly.
         </p>
 
         <!-- User Message -->

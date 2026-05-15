@@ -3,9 +3,11 @@ import { ContactModel, IContact } from './contact.interface'
 
 const contactSchema = new Schema<IContact, ContactModel>(
   {
-    name: { type: String, required: true },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
     email: { type: String, required: true },
     phone: { type: String, optional: true },
+    subject: { type: String, required: true },
     message: { type: String, required: true },
     isReplied: { type: Boolean, default: false },
     replyMessage: { type: String },

@@ -44,7 +44,10 @@ const UserSchema = new Schema(
             type: String,
             default: "",
         },
-        // Geographical coordinates for delivery tracking
+        dateOfBirth: {
+            type: Date,
+            default: null
+        },
         location: {
             type: [Number],
             default: [0, 0]
