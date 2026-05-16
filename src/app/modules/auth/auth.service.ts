@@ -105,7 +105,7 @@ const login = async (payload: ILoginData): Promise<IAuthResponse> => {
 
   const isUserExist = await User.findOne({
     ...query,
-    status: { $in: [USER_STATUS.ACTIVE, USER_STATUS.RESTRICTED] },
+    status: { $in: [USER_STATUS.ACTIVE, USER_STATUS.RESTRICTED, USER_STATUS.PENDING] },
   })
     .select('+password +authentication')
     .lean()
