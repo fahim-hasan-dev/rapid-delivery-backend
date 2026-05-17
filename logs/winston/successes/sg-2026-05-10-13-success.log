@@ -1,5 +1,0 @@
-{Sun May 10 2026 13:00:33} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.94 - GET /api/v1/public/faq/all 200 - 306.980 ms
-{Sun May 10 2026 13:01:02} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.94 - DELETE /api/v1/public/faq/6a002ceedfc371713a205fe9 200 - 621.327 ms
-{Sun May 10 2026 13:01:08} [Rapid-Delivery 🚚] info: ::ffff:10.10.7.94 - GET /api/v1/public/faq/all 200 - 306.433 ms
-{Sun May 10 2026 13:06:27} [Rapid-Delivery 🚚] info: 📧 Email worker ready
-{Sun May 10 2026 13:06:27} [Rapid-Delivery 🚚] info: 🔔 Notification worker ready

@@ -1,8 +1,0 @@
-{Sun May 10 2026 10:14:16} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - PATCH /api/v1/user/profile 403 - 315.420 ms
-{Sun May 10 2026 10:27:18} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - PATCH /api/v1/user/resubmit-profile 500 - 2050.687 ms
-{Sun May 10 2026 10:29:13} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - GET /api/v1/parcel/nearby?latitude=23.8103&longitude=90.4125 403 - 317.201 ms
-{Sun May 10 2026 10:31:09} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - GET /api/v1/user?role=driver 500 - 2.252 ms
-{Sun May 10 2026 10:36:57} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - PATCH /api/v1/user/verify-profile/6a0000a0936d3957aab93543 500 - 1.483 ms
-{Sun May 10 2026 10:37:21} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - GET /api/v1/parcel/nearby?latitude=23.8103&longitude=90.4125 400 - 314.151 ms
-{Sun May 10 2026 10:39:01} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - GET /api/v1/parcel/nearby?lat=23.8103&long=90.4125 400 - 312.418 ms
-{Sun May 10 2026 10:45:09} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - GET /api/v1/parcel/nearby?radius=5&latitude=23.811056 400 - 305.477 ms

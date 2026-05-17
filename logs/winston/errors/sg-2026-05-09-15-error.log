@@ -1,4 +1,0 @@
-{Sat May 09 2026 15:02:14} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - GET /api/v1/parcel/calculate-distance?pickupLat=23.811056&pickupLng=90.407608&dropLat=23.766732&dropLng=90.481109 500 - 332.174 ms
-{Sat May 09 2026 15:02:19} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - GET /api/v1/parcel/calculate-distance?pickupLat=23.811056&pickupLng=90.407608&dropLat=23.766732&dropLng=90.481109 500 - 327.714 ms
-{Sat May 09 2026 15:06:41} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - POST /api/v1/parcel/create-parcel 400 - 40.654 ms
-{Sat May 09 2026 15:08:59} [Rapid-Delivery 🚨] error: ::ffff:10.10.7.94 - POST /api/v1/parcel/create-parcel 500 - 675.978 ms

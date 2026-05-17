@@ -1,7 +1,0 @@
-{Sun May 03 2026 09:48:42} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
-{Sun May 03 2026 09:52:41} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
-{Sun May 03 2026 09:56:36} [Rapid-Delivery 🚚] info: 🔴 Redis client connected
-{Sun May 03 2026 09:56:37} [Rapid-Delivery 🚚] info: [32m🚀 Database connected successfully[39m
-{Sun May 03 2026 09:56:37} [Rapid-Delivery 🚚] info: Socket.io namespaces initialized: /tracking, /notifications
-{Sun May 03 2026 09:56:37} [Rapid-Delivery 🚚] info: [32m🍁 Server connected successfully[39m
-{Sun May 03 2026 09:56:37} [Rapid-Delivery 🚚] info: [33m♻️  Application listening on port:5004[39m
