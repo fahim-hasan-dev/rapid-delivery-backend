@@ -11,7 +11,7 @@ import handleStripeWebhook from "./stripe/handleStripeWebhook";
 
 const app = express();
 
-// Security middleware to prevent brute-force attacks by limiting requests
+// Security middleware to prevent brute-force attacks by limiting 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 1000,
