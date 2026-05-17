@@ -4,3 +4,4 @@ uploads
 /winston
 dist/
 .idea/
+logs/
