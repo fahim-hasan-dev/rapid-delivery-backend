@@ -17,7 +17,6 @@ router.post(
 
 router.get(
     "/calculate-distance",
-    auth(USER_ROLES.SENDER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
     ParcelController.calculateDistance
 );
 
