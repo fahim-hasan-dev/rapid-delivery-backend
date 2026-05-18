@@ -169,11 +169,12 @@ const getMyParcels = async (
     const parcelQuery = new QueryBuilder(
         Parcel.find(filter).populate({
             path: "sender driver",
-            select: "fullName email phone image"
+            select: "fullName email phone image driverInfo.averageRating driverInfo.totalRating"
         }),
         query
     )
         .filter()
+        .search(["name", "receiverName", "receiverPhone","_id"])
         .sort()
         .paginate()
         .fields();
