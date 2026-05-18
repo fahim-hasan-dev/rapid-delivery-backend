@@ -341,7 +341,7 @@ const getSingleParcel = async (id: string) => {
         throw new ApiError(StatusCodes.NOT_FOUND, "Parcel not found");
     }
 
-    const reviews = await Review.find({ parcel: id });
+    const review = await Review.findOne({ parcel: id });
 
     // Merge Redis location if available (Cache-Aside pattern)
     const liveLocation = await trackingService.getDriverLocation(id);
@@ -352,10 +352,10 @@ const getSingleParcel = async (id: string) => {
             coordinates: [liveLocation.lng, liveLocation.lat],
             updatedAt: new Date(liveLocation.timestamp),
         };
-        return { ...parcelObj, reviews };
+        return { ...parcelObj, review };
     }
 
-    return { ...parcel, reviews };
+    return { ...parcel, review };
 };
 
 const updateParcel = async (
