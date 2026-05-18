@@ -12,6 +12,11 @@ const ReviewSchema = new mongoose.Schema<IReview>({
     ref: 'User',
     required: true,
   },
+  parcel: {
+    type: Schema.Types.ObjectId,
+    ref: 'Parcel',
+    required: true,
+  },
   rating: {
     type: Number,
     required: true,

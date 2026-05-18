@@ -15,6 +15,7 @@ import { JwtPayload } from "jsonwebtoken";
 import { NotificationService } from "../notification/notification.service";
 import { USER_ROLES } from "../../../enum/user";
 import { User } from "../user/user.model";
+import { Review } from "../review/review.model";
 
 // Calculates distance and price for a parcel delivery.
 const calculateParcelDistanceAndPrice = async (query: Record<string, any>) => {
@@ -340,6 +341,8 @@ const getSingleParcel = async (id: string) => {
         throw new ApiError(StatusCodes.NOT_FOUND, "Parcel not found");
     }
 
+    const reviews = await Review.find({ parcel: id });
+
     // Merge Redis location if available (Cache-Aside pattern)
     const liveLocation = await trackingService.getDriverLocation(id);
     if (liveLocation) {
@@ -349,10 +352,10 @@ const getSingleParcel = async (id: string) => {
             coordinates: [liveLocation.lng, liveLocation.lat],
             updatedAt: new Date(liveLocation.timestamp),
         };
-        return parcelObj;
+        return { ...parcelObj, reviews };
     }
 
-    return parcel;
+    return { ...parcel, reviews };
 };
 
 const updateParcel = async (

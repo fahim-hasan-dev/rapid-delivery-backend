@@ -26,6 +26,8 @@ const createReview = async (user: JwtPayload, payload: Partial<IReview> & { parc
   // Set the sender and driver automatically
   payload.sender = new mongoose.Types.ObjectId(user.authId)
   payload.driver = parcel.driver
+  payload.parcel = parcel._id
+
 
   const result = await Review.create(payload)
 
@@ -99,6 +101,7 @@ const getSingleReview = async (id: string) => {
   const result = await Review.findById(id).populate('sender', 'fullName image').populate('driver', 'fullName')
   return result
 }
+
 
 // delete review
 const deleteReview = async (id: string) => {
