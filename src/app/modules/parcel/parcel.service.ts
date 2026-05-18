@@ -337,25 +337,32 @@ const acceptParcel = async (parcelId: string, driverId: string) => {
 
 const getSingleParcel = async (id: string) => {
     const parcel = await Parcel.findById(id).populate("sender driver");
+
     if (!parcel) {
         throw new ApiError(StatusCodes.NOT_FOUND, "Parcel not found");
     }
 
     const review = await Review.findOne({ parcel: id });
 
-    // Merge Redis location if available (Cache-Aside pattern)
+    // Convert mongoose document to plain object
+    const parcelObj = parcel.toObject() as any;
+
+    // Get live driver location from Redis
     const liveLocation = await trackingService.getDriverLocation(id);
+
+    // Attach live location if available
     if (liveLocation) {
-        const parcelObj = parcel.toObject() as any;
         parcelObj.driverLocation = {
-            // GeoJSON format: [lng, lat]
+            type: "Point",
             coordinates: [liveLocation.lng, liveLocation.lat],
             updatedAt: new Date(liveLocation.timestamp),
         };
-        return { ...parcelObj, review };
     }
 
-    return { ...parcel, review };
+    // Attach review
+    parcelObj.review = review;
+
+    return parcelObj;
 };
 
 const updateParcel = async (
