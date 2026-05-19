@@ -39,7 +39,7 @@ const sendMessageToDB = async (payload: any): Promise<IMessage> => {
       const chatNamespace = io.of('/chat');
 
       // Dispatch real-time gateway events to the specific chat room
-      chatNamespace.to(payload.chatId.toString()).emit(`message::received`, {...response, type: 'created'});
+      chatNamespace.to(payload.chatId.toString()).emit(`message::received`, {...response, operationType: 'created'});
 
       // Notify participants to update their chat list
       isExistChat.participants.forEach((participantId: any) => {
@@ -164,7 +164,7 @@ const updateMessageToDB = async (messageId: string, userId: string, payload: Par
   try {
     const io = getIO();
     if (io && updatedMessage) {
-      io.of('/chat').to(updatedMessage.chatId.toString()).emit(`message::received`, {...updatedMessage, type: 'updated'});
+      io.of('/chat').to(updatedMessage.chatId.toString()).emit(`message::received`, {...updatedMessage, operationType: 'updated'});
     }
   } catch (error) {
     logger.error("Socket error in updateMessageToDB:", error);
@@ -212,7 +212,7 @@ const deleteMessageFromDB = async (messageId: string, userId: string): Promise<I
     try {
     const io = getIO();
     if (io && res) {
-      io.of('/chat').to(res.chatId.toString()).emit(`message::received`, {...res, type: 'deleted'});
+      io.of('/chat').to(res.chatId.toString()).emit(`message::received`, {...res, operationType: 'deleted'});
     }
   } catch (error) {
     logger.error("Socket error in deleteMessageToDB:", error);
