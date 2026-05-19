@@ -1,4 +1,4 @@
-import { FilterQuery, Query, PopulateOptions } from 'mongoose'
+import { FilterQuery, Query, PopulateOptions, Types } from 'mongoose'
 
 class QueryBuilder<T> {
   public modelQuery: Query<T[], T>
@@ -12,22 +12,34 @@ class QueryBuilder<T> {
   // Searching
   search(searchableFields: string[]) {
     if (this?.query?.searchTerm) {
-      this.modelQuery = this.modelQuery.find({
-        $or: searchableFields.map(
-          field =>
-            ({
-              [field]: {
-                $regex: this.query.searchTerm,
-                $options: 'i',
-              },
-            }) as FilterQuery<T>,
-        ),
-      })
+      const searchTerm = this.query.searchTerm as string
+      const isObjectId = Types.ObjectId.isValid(searchTerm)
+
+      const orConditions = searchableFields
+        .map(field => {
+          if (field === '_id') {
+            return isObjectId
+              ? ({ [field]: new Types.ObjectId(searchTerm) } as FilterQuery<T>)
+              : null
+          }
+          return {
+            [field]: {
+              $regex: searchTerm,
+              $options: 'i',
+            },
+          } as FilterQuery<T>
+        })
+        .filter(Boolean) as FilterQuery<T>[]
+
+      if (orConditions.length > 0) {
+        this.modelQuery = this.modelQuery.find({
+          $or: orConditions,
+        })
+      }
     }
     return this
   }
 
-  // Filtering
   // Filtering
   filter() {
     const queryObj = { ...this.query }
