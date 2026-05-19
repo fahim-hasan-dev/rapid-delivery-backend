@@ -25,7 +25,7 @@ const sendMessageToDB = async (payload: any): Promise<IMessage> => {
     throw new ApiError(StatusCodes.BAD_REQUEST, "You are not a participant!");
   }
 
-  const response = await Message.create(payload);
+  const response = (await Message.create(payload)).toObject();
 
   // Update the chat with latest message information
   await Chat.findByIdAndUpdate(payload.chatId, {
@@ -161,10 +161,12 @@ const updateMessageToDB = async (messageId: string, userId: string, payload: Par
     { new: true }
   );
 
+  const resdata = updatedMessage?.toObject()
+
   try {
     const io = getIO();
-    if (io && updatedMessage) {
-      io.of('/chat').to(updatedMessage.chatId.toString()).emit(`message::received`, {...updatedMessage, operationType: 'updated'});
+    if (io && resdata) {
+      io.of('/chat').to(resdata.chatId.toString()).emit(`message::received`, {...resdata, operationType: 'updated'});
     }
   } catch (error) {
     logger.error("Socket error in updateMessageToDB:", error);
@@ -208,16 +210,20 @@ const deleteMessageFromDB = async (messageId: string, userId: string): Promise<I
     throw new ApiError(StatusCodes.FORBIDDEN, "You can only delete your own messages");
   }
 
-  const res = await Message.findByIdAndDelete(messageId)
+  const deletedMessage = await Message.findByIdAndDelete(messageId)
+
+  const resdata =deletedMessage?.toObject()
+
+  
     try {
     const io = getIO();
-    if (io && res) {
-      io.of('/chat').to(res.chatId.toString()).emit(`message::received`, {...res, operationType: 'deleted'});
+    if (io && resdata) {
+      io.of('/chat').to(resdata.chatId.toString()).emit(`message::received`, {...resdata, operationType: 'deleted'});
     }
   } catch (error) {
     logger.error("Socket error in deleteMessageToDB:", error);
   }
-  return res;
+  return deletedMessage;
 };
 
 
