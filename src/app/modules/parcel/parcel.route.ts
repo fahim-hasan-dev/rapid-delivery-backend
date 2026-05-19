@@ -22,7 +22,7 @@ router.get(
 
 router.get(
     "/my-parcels",
-    auth(USER_ROLES.SENDER, USER_ROLES.DRIVER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+    auth(USER_ROLES.SENDER, USER_ROLES.DRIVER),
     ParcelController.getMyParcels
 );
 

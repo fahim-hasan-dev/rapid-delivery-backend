@@ -1,6 +1,6 @@
 node_modules
 uploads
-.env
 dist/
 .idea/
 logs/
+config.bat
