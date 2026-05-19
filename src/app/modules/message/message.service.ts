@@ -39,7 +39,7 @@ const sendMessageToDB = async (payload: any): Promise<IMessage> => {
       const chatNamespace = io.of('/chat');
 
       // Dispatch real-time gateway events to the specific chat room
-      chatNamespace.to(payload.chatId.toString()).emit(`message::received`, response);
+      chatNamespace.to(payload.chatId.toString()).emit(`message::received`, {...response, type: 'created'});
 
       // Notify participants to update their chat list
       isExistChat.participants.forEach((participantId: any) => {
@@ -164,7 +164,7 @@ const updateMessageToDB = async (messageId: string, userId: string, payload: Par
   try {
     const io = getIO();
     if (io && updatedMessage) {
-      io.of('/chat').to(updatedMessage.chatId.toString()).emit(`message::received`, updatedMessage);
+      io.of('/chat').to(updatedMessage.chatId.toString()).emit(`message::received`, {...updatedMessage, type: 'updated'});
     }
   } catch (error) {
     logger.error("Socket error in updateMessageToDB:", error);
@@ -208,7 +208,16 @@ const deleteMessageFromDB = async (messageId: string, userId: string): Promise<I
     throw new ApiError(StatusCodes.FORBIDDEN, "You can only delete your own messages");
   }
 
-  return await Message.findByIdAndDelete(messageId);
+  const res = await Message.findByIdAndDelete(messageId)
+    try {
+    const io = getIO();
+    if (io && res) {
+      io.of('/chat').to(res.chatId.toString()).emit(`message::received`, {...res, type: 'deleted'});
+    }
+  } catch (error) {
+    logger.error("Socket error in deleteMessageToDB:", error);
+  }
+  return res;
 };
 
 
