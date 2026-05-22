@@ -251,7 +251,6 @@ const getNearbyParcels = async (
         {
             $project: {
                 name: 1,
-                totalDeliveryFee: 1,
                 vehicleType: 1,
                 pickupLocation: 1,
                 dropLocation: 1,
@@ -259,7 +258,8 @@ const getNearbyParcels = async (
                 distanceFromDriver: 1,
                 deliveryDate: 1,
                 sender: 1,
-                status: 1
+                status: 1,
+                driverShare:1
             }
         }
     ]);
@@ -368,6 +368,9 @@ const getSingleParcel = async (id: string) => {
             updatedAt: new Date(liveLocation.timestamp),
         };
     }
+
+    const settings = await SettingServices.getSettings();
+    parcelObj.perKiloCost=settings?.perKiloCost;
 
     // Attach review
     parcelObj.review = review;

@@ -104,8 +104,7 @@ const cancelParcel = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Parcel cancelled successfully",
-        data: result,
+        message: "Parcel cancelled successfully"
     });
 });
 
