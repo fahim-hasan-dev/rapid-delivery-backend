@@ -4,7 +4,9 @@ import ApiError from "../../../errors/ApiError";
 import { IParcel } from "./parcel.interface";
 import { Parcel } from "./parcel.model";
 import { PARCEL_STATUS } from "../../../enum/parcel";
-import { notificationQueue } from "../../../queues";
+import { notificationQueue, parcelCleanupQueue } from "../../../queues";
+import stripe from "../../../config/stripe";
+import { Payment } from "../payment/payment.model";
 import QueryBuilder from "../../builder/QueryBuilder";
 import { trackingService } from "../../../helpers/trackingService";
 import { getDistanceAndDuration } from "../../../utils/googleMaps.util";
@@ -127,6 +129,13 @@ const createParcel = async (payload: IParcel, user: JwtPayload) => {
     payload.sender = new Types.ObjectId(user.authId);
 
     const parcel = await Parcel.create(payload);
+
+    // Add a delayed job to clean up the parcel if it remains unpaid for 1 hour (60 minutes)
+    await parcelCleanupQueue.add(
+        'cleanupUnpaidParcel',
+        { parcelId: parcel._id.toString() },
+        { delay: 60 * 60 * 1000 } // 1 hour in milliseconds
+    );
 
     // Create Stripe payment session
     const paymentLink = await createPaymentSession(user, vehicleData.totalPrice, parcel._id.toString());
@@ -479,6 +488,101 @@ const updateParcel = async (
     return updatedParcel;
 };
 
+const cancelParcel = async (id: string, user: JwtPayload) => {
+    const parcel = await Parcel.findById(id);
+
+    if (!parcel) {
+        throw new ApiError(StatusCodes.NOT_FOUND, "Parcel not found");
+    }
+
+    // Role-based authorization & rules check
+    if (user.role === USER_ROLES.SENDER) {
+        if (parcel.sender.toString() !== user.authId) {
+            throw new ApiError(StatusCodes.FORBIDDEN, "You do not own this parcel");
+        }
+
+        // Sender can only cancel before driver acceptance (status is CREATED or PENDING)
+        if (parcel.status !== PARCEL_STATUS.CREATED && parcel.status !== PARCEL_STATUS.PENDING) {
+            throw new ApiError(
+                StatusCodes.BAD_REQUEST,
+                `Cannot cancel parcel. Driver has already accepted or the parcel is in ${parcel.status.toLowerCase()} state.`
+            );
+        }
+    } else if (user.role === USER_ROLES.ADMIN || user.role === USER_ROLES.SUPER_ADMIN) {
+        // Admin can cancel at any stage before delivered
+        if (parcel.status === PARCEL_STATUS.DELIVERED) {
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Cannot cancel a delivered parcel.");
+        }
+        if (parcel.status === PARCEL_STATUS.CANCELLED) {
+            throw new ApiError(StatusCodes.BAD_REQUEST, "Parcel is already cancelled.");
+        }
+    } else {
+        throw new ApiError(StatusCodes.FORBIDDEN, "You are not authorized to cancel this parcel");
+    }
+
+    // Refund logic if payment has been processed/initiated
+    const paidStatuses = [PARCEL_STATUS.PENDING, PARCEL_STATUS.ACCEPTED, PARCEL_STATUS.PICKED_UP, PARCEL_STATUS.IN_TRANSIT];
+    if (paidStatuses.includes(parcel.status)) {
+        // Find the payment record
+        const payment = await Payment.findOne({ referenceId: parcel._id });
+        if (payment && payment.transactionId) {
+            try {
+                let paymentIntentId = payment.transactionId;
+                // Handle checkout session IDs if any
+                if (paymentIntentId.startsWith("cs_")) {
+                    const session = await stripe.checkout.sessions.retrieve(paymentIntentId);
+                    if (session.payment_intent) {
+                        paymentIntentId = session.payment_intent as string;
+                    }
+                }
+
+                // Process immediate refund through Stripe
+                await stripe.refunds.create({
+                    payment_intent: paymentIntentId,
+                });
+            } catch (stripeError: any) {
+                throw new ApiError(
+                    StatusCodes.INTERNAL_SERVER_ERROR,
+                    `Stripe refund failed: ${stripeError.message || stripeError}`
+                );
+            }
+        }
+    }
+
+    // Update parcel status to CANCELLED and reset isDriverAssigned
+    const updatedParcel = await Parcel.findByIdAndUpdate(
+        id,
+        {
+            status: PARCEL_STATUS.CANCELLED,
+            isDriverAssigned: false,
+        },
+        { new: true }
+    ).populate("sender driver");
+
+    // Remove driver tracking from Redis if driver is assigned
+    if (parcel.driver) {
+        await trackingService.removeDriverTracking(id, parcel.driver.toString());
+    }
+
+    // Send notifications to both sender and driver (if driver exists)
+    const recipients = [
+        { id: parcel.sender, role: USER_ROLES.SENDER },
+        ...(parcel.driver ? [{ id: parcel.driver, role: USER_ROLES.DRIVER }] : [])
+    ];
+
+    for (const recipient of recipients) {
+        await NotificationService.insertNotification({
+            receiver: recipient.id,
+            title: "Parcel Cancelled",
+            message: `The parcel "${parcel.name}" has been cancelled.`,
+            screen: "PARCEL_DETAILS",
+            type: recipient.role
+        });
+    }
+
+    return updatedParcel;
+};
+
 const deleteParcel = async (id: string) => {
     const parcel = await Parcel.findById(id);
     if (!parcel) {
@@ -497,5 +601,6 @@ export const ParcelServices = {
     getSingleParcel,
     calculateParcelDistanceAndPrice,
     updateParcel,
+    cancelParcel,
     deleteParcel,
 };

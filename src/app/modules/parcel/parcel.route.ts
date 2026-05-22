@@ -59,6 +59,12 @@ router.patch(
     ParcelController.updateParcel
 );
 
+router.patch(
+    "/:id/cancel",
+    auth(USER_ROLES.SENDER, USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),
+    ParcelController.cancelParcel
+);
+
 router.delete(
     "/:id",
     auth(USER_ROLES.ADMIN, USER_ROLES.SUPER_ADMIN),

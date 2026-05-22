@@ -11,7 +11,7 @@ import {
 import { ILoginData } from '../../../interfaces/auth'
 import { emailTemplate } from '../../../shared/emailTemplate'
 import { JwtPayload } from 'jsonwebtoken'
-import { emailQueue } from '../../../queues'
+import { emailQueue, userCleanupQueue } from '../../../queues'
 import { jwtHelper } from '../../../helpers/jwtHelper'
 import config from '../../../config'
 import bcrypt from 'bcrypt'
@@ -89,6 +89,13 @@ export const createUser = async (payload: IUser) => {
 
     // Send the verification email via queue AFTER successful transaction
     await emailQueue.add('send-email', createAccountEmail)
+
+    // Schedule automated cleanup of unverified account after 1 hour
+    await userCleanupQueue.add(
+      'cleanupUnverifiedUser',
+      { userId: user[0]._id.toString() },
+      { delay: 60 * 60 * 1000 } // 1 hour delay
+    )
 
     return user[0]._id
   } catch (error) {

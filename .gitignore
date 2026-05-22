@@ -1,6 +1,8 @@
 node_modules
 uploads
-dist/
+dist
 .idea/
 logs/
 config.bat
+.env
+.vscode

@@ -97,6 +97,18 @@ const updateParcel = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const cancelParcel = catchAsync(async (req: Request, res: Response) => {
+    const user = req.user as JwtPayload;
+    const result = await ParcelServices.cancelParcel(req.params.id, user);
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Parcel cancelled successfully",
+        data: result,
+    });
+});
+
 const deleteParcel = catchAsync(async (req: Request, res: Response) => {
     await ParcelServices.deleteParcel(req.params.id);
 
@@ -127,5 +139,6 @@ export const ParcelController = {
     getSingleParcel,
     calculateDistance,
     updateParcel,
+    cancelParcel,
     deleteParcel,
 };
