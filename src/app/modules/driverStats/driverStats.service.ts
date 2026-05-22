@@ -1,10 +1,13 @@
 import { PARCEL_STATUS } from "../../../enum/parcel";
 import { Parcel } from "../parcel/parcel.model";
 import { Types } from "mongoose";
+import { checkMongooseIDValidation } from "../../../shared/checkMongooseIDValidation";
 
 const getDriverStats = async (driverId: string) => {
+    checkMongooseIDValidation(driverId, "Driver");
     const id = new Types.ObjectId(driverId);
     const now = new Date();
+
 
     // today
     const todayStart = new Date(now);
@@ -68,6 +71,55 @@ const getDriverStats = async (driverId: string) => {
     };
 };
 
-export const DriverStatsService = {
-    getDriverStats
+const getDriverEarnings = async (driverId: string, range: string = 'all') => {
+    const id = new Types.ObjectId(driverId);
+    const now = new Date();
+    const matchQuery: any = {
+        driver: id,
+        status: PARCEL_STATUS.DELIVERED
+    };
+
+    const todayEnd = new Date(now);
+    todayEnd.setHours(23, 59, 59, 999);
+
+    if (range === 'today') {
+        const todayStart = new Date(now);
+        todayStart.setHours(0, 0, 0, 0);
+        matchQuery.deliveredAt = { $gte: todayStart, $lte: todayEnd };
+    } else if (range === 'weekly') {
+        const weekStart = new Date(now);
+        weekStart.setDate(now.getDate() - now.getDay());
+        weekStart.setHours(0, 0, 0, 0);
+        matchQuery.deliveredAt = { $gte: weekStart, $lte: todayEnd };
+    } else if (range === 'monthly') {
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        monthStart.setHours(0, 0, 0, 0);
+        matchQuery.deliveredAt = { $gte: monthStart, $lte: todayEnd };
+    }
+
+    const parcels = await Parcel.find(matchQuery)
+        .select('_id name distance driverShare deliveredAt')
+        .sort({ deliveredAt: -1 })
+        .lean();
+
+    const totalEarnings = parcels.reduce((sum, p) => sum + (p.driverShare || 0), 0);
+    const earningsList = parcels.map(p => ({
+        _id: p._id.toString(),
+        trackingId: `#TR-${p._id.toString().slice(-4).toUpperCase()}`,
+        name: p.name,
+        distance: p.distance,
+        driverShare: p.driverShare,
+        deliveredAt: p.deliveredAt
+    }));
+
+    return {
+        totalEarnings: Number(totalEarnings.toFixed(2)),
+        earningsList
+    };
 };
+
+export const DriverStatsService = {
+    getDriverStats,
+    getDriverEarnings
+};
+

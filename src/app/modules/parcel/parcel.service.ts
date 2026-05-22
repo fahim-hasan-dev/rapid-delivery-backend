@@ -4,7 +4,7 @@ import ApiError from "../../../errors/ApiError";
 import { IParcel } from "./parcel.interface";
 import { Parcel } from "./parcel.model";
 import { PARCEL_STATUS } from "../../../enum/parcel";
-import { notificationQueue, parcelCleanupQueue } from "../../../queues";
+import { notificationQueue, parcelCleanupQueue, reviewReminderQueue } from "../../../queues";
 import stripe from "../../../config/stripe";
 import { Payment } from "../payment/payment.model";
 import QueryBuilder from "../../builder/QueryBuilder";
@@ -465,6 +465,13 @@ const updateParcel = async (
             screen: "PARCEL_DETAILS",
             type: USER_ROLES.SENDER
         });
+
+        // Schedule review reminder after 24 hours
+        await reviewReminderQueue.add(
+            'sendReviewReminder',
+            { parcelId: parcel._id.toString() },
+            { delay: 24 * 60 * 60 * 1000 } // 24 hours delay
+        );
     } else if (payload.status === PARCEL_STATUS.CANCELLED) {
         // Notify both if cancelled
         const recipients = [

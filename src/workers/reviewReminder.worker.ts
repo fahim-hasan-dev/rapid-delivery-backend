@@ -1,0 +1,49 @@
+import { Worker } from 'bullmq';
+import { getRedisConnection } from '../helpers/redis';
+import { Parcel } from '../app/modules/parcel/parcel.model';
+import { Review } from '../app/modules/review/review.model';
+import { NotificationService } from '../app/modules/notification/notification.service';
+import { USER_ROLES } from '../enum/user';
+import { logger } from '../shared/logger';
+
+const connection = getRedisConnection();
+
+const reviewReminderWorker = new Worker(
+  'reviewReminder',
+  async (job) => {
+    const { parcelId } = job.data;
+
+    // Find the parcel
+    const parcel = await Parcel.findById(parcelId);
+
+    // If the parcel does not exist, do nothing
+    if (!parcel) {
+      return;
+    }
+
+    // Check if the user has already rated/reviewed this parcel
+    const existingReview = await Review.findOne({ parcel: parcelId });
+
+    // If no rating/review exists, send a notification
+    if (!existingReview) {
+      await NotificationService.insertNotification({
+        receiver: parcel.sender,
+        title: "Review Reminder",
+        message: `Please rate your experience for parcel "${parcel.name}".`,
+        screen: "PARCEL_DETAILS",
+        type: USER_ROLES.SENDER
+      });
+      logger.info(`🔔 Review reminder push notification sent for parcel ${parcelId} to sender.`);
+    }
+  },
+  {
+    connection,
+    concurrency: 5,
+  }
+);
+
+reviewReminderWorker.on('failed', (job, err) => {
+  logger.error(`Review reminder job ${job?.id} failed:`, err);
+});
+
+export default reviewReminderWorker;
