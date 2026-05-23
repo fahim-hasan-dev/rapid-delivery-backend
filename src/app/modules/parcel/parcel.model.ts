@@ -65,6 +65,7 @@ const ParcelSchema = new Schema<IParcel>(
             required: true,
         },
         receiverName: {
+
             type: String,
             required: true,
             trim: true,

@@ -19,7 +19,10 @@ import { USER_ROLES } from "../../../enum/user";
 import { User } from "../user/user.model";
 import { Review } from "../review/review.model";
 
+
+
 // Calculates distance and price for a parcel delivery.
+
 const calculateParcelDistanceAndPrice = async (query: Record<string, any>) => {
     const { pickupLat, pickupLng, dropLat, dropLng } = query;
 
@@ -95,9 +98,12 @@ const calculateParcelDistanceAndPrice = async (query: Record<string, any>) => {
 };
 
 const createParcel = async (payload: IParcel, user: JwtPayload) => {
+    payload.deliveryDate = new Date(payload.deliveryDate);
+
     // Automatically calculate distance and price before creation
     const calculation = await calculateParcelDistanceAndPrice({
         // GeoJSON format: coordinates = [lng, lat]
+
         pickupLat: payload.pickupLocation.coordinates[1],
         pickupLng: payload.pickupLocation.coordinates[0],
         dropLat: payload.dropLocation.coordinates[1],
@@ -189,7 +195,8 @@ const getMyParcels = async (
         .fields();
 
     // Select essential fields for the list view and use lean()
-    parcelQuery.modelQuery.select("name status totalDeliveryFee vehicleType pickupLocation.address dropLocation.address deliveryDate createdAt").lean();
+    parcelQuery.modelQuery.select("name status totalDeliveryFee vehicleType pickupLocation.address dropLocation.address deliveryDate deliveryTime createdAt").lean();
+
 
     const parcels = await parcelQuery.modelQuery;
     const meta = await parcelQuery.getPaginationInfo();
@@ -211,18 +218,15 @@ const getNearbyParcels = async (
     const limit = Number(query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    // Calculate start and end of today for filtering deliveryDate
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
-
-    const todayEnd = new Date();
-    todayEnd.setHours(23, 59, 59, 999);
+    // Show parcels whose deliveryDate is less than or equal to 1 hour from now
+    const oneHourFromNow = new Date();
+    oneHourFromNow.setHours(oneHourFromNow.getHours() + 1);
 
     const matchQuery = {
         status: PARCEL_STATUS.PENDING,
         isDriverAssigned: false,
         deliveryDate: {
-            $lte: todayEnd
+            $lte: oneHourFromNow
         }
     };
 
@@ -235,6 +239,7 @@ const getNearbyParcels = async (
                 spherical: true,
                 query: matchQuery,
             },
+
         },
         { $skip: skip },
         { $limit: limit },
@@ -259,10 +264,11 @@ const getNearbyParcels = async (
                 deliveryDate: 1,
                 sender: 1,
                 status: 1,
-                driverShare:1
+                driverShare: 1
             }
         }
     ]);
+
 
     const totalResult = await Parcel.aggregate([
         {
@@ -387,6 +393,11 @@ const updateParcel = async (
     if (!parcel) {
         throw new ApiError(StatusCodes.NOT_FOUND, "Parcel not found");
     }
+
+    if (payload.deliveryDate) {
+        payload.deliveryDate = new Date(payload.deliveryDate);
+    }
+
 
     // Role-based security check for drivers
     if (user.role === "driver") {
