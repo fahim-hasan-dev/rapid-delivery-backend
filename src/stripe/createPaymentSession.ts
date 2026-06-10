@@ -7,12 +7,12 @@ export const createPaymentSession = async (user: JwtPayload, amount: number, ref
         payment_method_types: ['card'],
         line_items: [{
             price_data: {
-                currency: 'usd',
+                currency: 'xof',
                 product_data: {
                     name: 'Payment',
                     description: `Payment for reference: ${referenceId}`,
                 },
-                unit_amount: Math.round(amount * 100),
+                unit_amount: Math.round(amount),
             },
             quantity: 1,
         }],

@@ -44,7 +44,7 @@ const handleStripeWebhook = catchAsync(async (req: Request, res: Response) => {
 
                     const paymentData = {
                         email: session.customer_details?.email,
-                        amount: (session.amount_total || 0) / 100,
+                        amount: session.amount_total || 0,
                         transactionId: session.payment_intent as string || session.id,
                         dateTime: new Date(),
                         customerName: session.customer_details?.name,

@@ -151,7 +151,7 @@ const createParcel = async (payload: IParcel, user: JwtPayload) => {
 
 const getAllParcels = async (query: Record<string, unknown>) => {
     const parcelQuery = new QueryBuilder(
-        Parcel.find().populate({
+        Parcel.find({ status: { $ne: PARCEL_STATUS.CREATED } }).populate({
             path: "sender driver",
             select: "fullName email phone image"
         }),
@@ -178,8 +178,8 @@ const getMyParcels = async (
     query: Record<string, unknown>
 ) => {
     const filter = role === "driver"
-        ? { driver: userId }
-        : { sender: userId };
+        ? { driver: userId, status: { $ne: PARCEL_STATUS.CREATED } }
+        : { sender: userId, status: { $ne: PARCEL_STATUS.CREATED } };
 
     const parcelQuery = new QueryBuilder(
         Parcel.find(filter).populate({
@@ -352,7 +352,7 @@ const acceptParcel = async (parcelId: string, driverId: string) => {
 };
 
 const getSingleParcel = async (id: string) => {
-    const parcel = await Parcel.findById(id).populate("sender driver");
+    const parcel = await Parcel.findOne({ _id: id, status: { $ne: PARCEL_STATUS.CREATED } }).populate("sender driver");
 
     if (!parcel) {
         throw new ApiError(StatusCodes.NOT_FOUND, "Parcel not found");
