@@ -11,7 +11,7 @@ import handleStripeWebhook from "./stripe/handleStripeWebhook";
 
 const app = express();
 
-// Security middleware to prevent brute-force attacks by limiting 
+// Security middleware to prevent brute-force attacks by limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 1000,
@@ -41,7 +41,7 @@ app.use(express.static('uploads'));
 // Define the main API entry point
 app.use('/api/v1', router);
 
-// Root path handler with a welcoming UI for the Rapid-Delivery API
+// Root path 
 app.get("/", (req: Request, res: Response) => {
     res.send(`
     <body style="margin: 0; padding: 0;">
