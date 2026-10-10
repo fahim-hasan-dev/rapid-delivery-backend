@@ -82,6 +82,14 @@ const fcmTokenZodSchema = z.object({
   }),
 })
 
+const socialLoginZodSchema = z.object({
+  body: z.object({
+    idToken: z.string({ required_error: 'ID Token is required' }),
+    role: z.enum([USER_ROLES.SENDER, USER_ROLES.DRIVER], { required_error: 'Role is required and must be sender or driver' }),
+    fcmToken: z.string().optional(),
+  }),
+})
+
 export const AuthValidations = {
   verifyEmailOrPhoneOtpZodSchema,
   forgetPasswordZodSchema,
@@ -93,5 +101,6 @@ export const AuthValidations = {
   createUserZodSchema,
   deleteAccount,
   fcmTokenZodSchema,
+  socialLoginZodSchema,
 }
 

@@ -58,6 +58,13 @@ router.post(
   AuthController.login,
 )
 
+// Social login endpoint (Google/Apple via Firebase)
+router.post(
+  '/social-login',
+  validateRequest(AuthValidations.socialLoginZodSchema),
+  AuthController.socialLogin,
+)
+
 // Initiate the password recovery process
 router.post(
   '/forget-password',

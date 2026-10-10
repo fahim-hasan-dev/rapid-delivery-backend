@@ -705,7 +705,84 @@ const removeFcmToken = async (user: JwtPayload, fcmToken: string) => {
   return result
 }
 
+
+export const socialLogin = async (payload: { idToken: string, role: USER_ROLES, fcmToken?: string }) => {
+  let decodedToken;
+  try {
+     // We assume admin is initialized somewhere else, but just in case we can initialize it lazily
+     const admin = require('firebase-admin');
+     if (admin.apps.length === 0) {
+        let serviceAccountPath = require('path').join(process.cwd(), 'serviceAccountKey.json');
+        if (require('fs').existsSync(serviceAccountPath)) {
+            admin.initializeApp({
+                credential: admin.credential.cert(serviceAccountPath),
+            });
+        } else if (config.firebase_service_account_base64) {
+             admin.initializeApp({
+                credential: admin.credential.cert(JSON.parse(Buffer.from(config.firebase_service_account_base64, 'base64').toString('utf8')))
+             });
+        } else {
+            admin.initializeApp();
+        }
+     }
+     decodedToken = await admin.auth().verifyIdToken(payload.idToken);
+  } catch (error) {
+     throw new ApiError(StatusCodes.UNAUTHORIZED, 'Invalid Firebase token');
+  }
+
+  const { email, name, picture } = decodedToken;
+  if (!email) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Email is required from social login');
+  }
+
+  let isUserExist = await User.findOne({ email });
+
+  if (!isUserExist) {
+    // Generate random 10 char string for temp password since it's required for local accounts
+    const randomPassword = Math.random().toString(36).slice(-10);
+    isUserExist = await User.create({
+      email,
+      fullName: name || 'User',
+      role: payload.role,
+      status: USER_STATUS.ACTIVE,
+      isEmailVerified: true,
+      image: picture,
+      password: randomPassword
+    });
+  }
+
+  if (payload.fcmToken) {
+    await User.findByIdAndUpdate(isUserExist._id, { $addToSet: { fcmToken: payload.fcmToken } });
+  }
+
+  const tokens = AuthHelper.createToken(
+    isUserExist._id,
+    isUserExist.role,
+    isUserExist.fullName || 'User',
+    isUserExist.email as string
+  );
+
+  const userInfo = {
+    id: isUserExist._id,
+    role: isUserExist.role,
+    name: isUserExist.fullName || 'User',
+    email: isUserExist.email!,
+    image: isUserExist.image,
+  };
+
+  return authResponse(
+    StatusCodes.OK,
+    'User logged in successfully',
+    undefined,
+    tokens.accessToken,
+    tokens.refreshToken,
+    undefined,
+    userInfo
+  );
+};
+
 export const AuthServices = {
+  socialLogin,
   forgetPassword,
   resetPassword,
   verifyAccount,
