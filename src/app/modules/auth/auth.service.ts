@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 import { IAuthResponse, IResetPassword } from './auth.interface'
 import { User } from '../user/user.model'
 import ApiError from '../../../errors/ApiError'
-import { USER_ROLES, USER_STATUS } from '../../../enum/user'
+import { PROFILE_VERIFICATION_STATUS, USER_ROLES, USER_STATUS } from '../../../enum/user'
 import { AuthHelper } from './auth.helper'
 import {
   AuthCommonServices,
@@ -706,7 +706,7 @@ const removeFcmToken = async (user: JwtPayload, fcmToken: string) => {
 }
 
 
-export const socialLogin = async (payload: { idToken: string, role: USER_ROLES, fcmToken?: string }) => {
+export const socialLogin = async (payload: { idToken: string, role?: USER_ROLES, fcmToken?: string }): Promise<IAuthResponse> => {
   let decodedToken;
   try {
      // We assume admin is initialized somewhere else, but just in case we can initialize it lazily
@@ -737,9 +737,128 @@ export const socialLogin = async (payload: { idToken: string, role: USER_ROLES, 
 
   let isUserExist = await User.findOne({ email });
 
-  if (!isUserExist) {
-    // Generate random 10 char string for temp password since it's required for local accounts
-    const randomPassword = Math.random().toString(36).slice(-10);
+  // -------------------------------------------------------------
+  // Case 1: User already exists in Database
+  // -------------------------------------------------------------
+  if (isUserExist) {
+    if (isUserExist.status === USER_STATUS.DELETED) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, 'Account has been deleted');
+    }
+
+    if (payload.fcmToken) {
+      await User.findByIdAndUpdate(isUserExist._id, { $addToSet: { fcmToken: payload.fcmToken } });
+    }
+
+    // Subcase 1A: User has a completed role (SENDER or DRIVER)
+    if (isUserExist.role !== USER_ROLES.UNASSIGNED) {
+      const tokens = AuthHelper.createToken(
+        isUserExist._id,
+        isUserExist.role,
+        isUserExist.fullName || 'User',
+        isUserExist.email as string
+      );
+
+      const userInfo = {
+        id: isUserExist._id,
+        role: isUserExist.role,
+        name: isUserExist.fullName || 'User',
+        email: isUserExist.email!,
+        image: isUserExist.image,
+      };
+
+      return authResponse(
+        StatusCodes.OK,
+        'User logged in successfully',
+        undefined,
+        tokens.accessToken,
+        tokens.refreshToken,
+        undefined,
+        userInfo,
+        undefined,
+        false
+      );
+    }
+
+    // Subcase 1B: User has role === UNASSIGNED (previously dropped off or tempToken expired)
+    // If request provided a role (e.g. Website passed 'sender' or app passed 'driver'):
+    if (payload.role && (payload.role === USER_ROLES.SENDER || payload.role === USER_ROLES.DRIVER)) {
+      isUserExist.role = payload.role;
+      if (payload.role === USER_ROLES.DRIVER) {
+        isUserExist.driverInfo = {
+          nid: [],
+          drivingLicense: [],
+          profileVerification: PROFILE_VERIFICATION_STATUS.PENDING,
+          totalRating: 0,
+          averageRating: 0,
+        };
+      }
+      await isUserExist.save();
+
+      const tokens = AuthHelper.createToken(
+        isUserExist._id,
+        isUserExist.role,
+        isUserExist.fullName || 'User',
+        isUserExist.email as string
+      );
+
+      const userInfo = {
+        id: isUserExist._id,
+        role: isUserExist.role,
+        name: isUserExist.fullName || 'User',
+        email: isUserExist.email!,
+        image: isUserExist.image,
+      };
+
+      return authResponse(
+        StatusCodes.OK,
+        'User logged in successfully',
+        undefined,
+        tokens.accessToken,
+        tokens.refreshToken,
+        undefined,
+        userInfo,
+        undefined,
+        false
+      );
+    }
+
+    // If request did NOT provide a role (Mobile app social login without role):
+    // Issue a fresh new tempToken (renewing the 15-minute validity window)
+    const { accessToken: tempToken } = AuthHelper.tempAccessToken(
+      isUserExist._id,
+      USER_ROLES.UNASSIGNED,
+      isUserExist.fullName || 'User',
+      isUserExist.email as string
+    );
+
+    const userInfo = {
+      id: isUserExist._id,
+      role: USER_ROLES.UNASSIGNED,
+      name: isUserExist.fullName || 'User',
+      email: isUserExist.email!,
+      image: isUserExist.image,
+    };
+
+    return authResponse(
+      StatusCodes.OK,
+      'Please select your role to complete registration',
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      userInfo,
+      tempToken,
+      true
+    );
+  }
+
+  // -------------------------------------------------------------
+  // Case 2: Brand new user (Does not exist in DB)
+  // -------------------------------------------------------------
+  const randomPassword = Math.random().toString(36).slice(-10);
+
+  // Subcase 2A: Role is provided (e.g. Website passed 'sender' or app passed 'driver')
+  if (payload.role && (payload.role === USER_ROLES.SENDER || payload.role === USER_ROLES.DRIVER)) {
     isUserExist = await User.create({
       email,
       fullName: name || 'User',
@@ -747,13 +866,113 @@ export const socialLogin = async (payload: { idToken: string, role: USER_ROLES, 
       status: USER_STATUS.ACTIVE,
       isEmailVerified: true,
       image: picture,
-      password: randomPassword
+      password: randomPassword,
+      fcmToken: payload.fcmToken ? [payload.fcmToken] : [],
+      driverInfo: payload.role === USER_ROLES.DRIVER ? {
+        nid: [],
+        drivingLicense: [],
+        profileVerification: PROFILE_VERIFICATION_STATUS.PENDING,
+        totalRating: 0,
+        averageRating: 0,
+      } : undefined,
     });
+
+    const tokens = AuthHelper.createToken(
+      isUserExist._id,
+      isUserExist.role,
+      isUserExist.fullName || 'User',
+      isUserExist.email as string
+    );
+
+    const userInfo = {
+      id: isUserExist._id,
+      role: isUserExist.role,
+      name: isUserExist.fullName || 'User',
+      email: isUserExist.email!,
+      image: isUserExist.image,
+    };
+
+    return authResponse(
+      StatusCodes.OK,
+      'User registered successfully',
+      undefined,
+      tokens.accessToken,
+      tokens.refreshToken,
+      undefined,
+      userInfo,
+      undefined,
+      false
+    );
   }
 
-  if (payload.fcmToken) {
-    await User.findByIdAndUpdate(isUserExist._id, { $addToSet: { fcmToken: payload.fcmToken } });
+  // Subcase 2B: Role is NOT provided (Mobile app social signup)
+  isUserExist = await User.create({
+    email,
+    fullName: name || 'User',
+    role: USER_ROLES.UNASSIGNED,
+    status: USER_STATUS.ACTIVE,
+    isEmailVerified: true,
+    image: picture,
+    password: randomPassword,
+    fcmToken: payload.fcmToken ? [payload.fcmToken] : [],
+  });
+
+  const { accessToken: tempToken } = AuthHelper.tempAccessToken(
+    isUserExist._id,
+    USER_ROLES.UNASSIGNED,
+    isUserExist.fullName || 'User',
+    isUserExist.email as string
+  );
+
+  const userInfo = {
+    id: isUserExist._id,
+    role: USER_ROLES.UNASSIGNED,
+    name: isUserExist.fullName || 'User',
+    email: isUserExist.email!,
+    image: isUserExist.image,
+  };
+
+  return authResponse(
+    StatusCodes.OK,
+    'Account created successfully. Please select your role.',
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    userInfo,
+    tempToken,
+    true
+  );
+};
+
+export const selectRole = async (user: JwtPayload, payload: { role: USER_ROLES }): Promise<IAuthResponse> => {
+  const isUserExist = await User.findById(user.authId);
+
+  if (!isUserExist) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'User not found');
   }
+
+  if (isUserExist.role !== USER_ROLES.UNASSIGNED) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Role is already assigned and cannot be changed');
+  }
+
+  if (payload.role !== USER_ROLES.SENDER && payload.role !== USER_ROLES.DRIVER) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Role must be sender or driver');
+  }
+
+  isUserExist.role = payload.role;
+
+  if (payload.role === USER_ROLES.DRIVER) {
+    isUserExist.driverInfo = {
+      nid: [],
+      drivingLicense: [],
+      profileVerification: PROFILE_VERIFICATION_STATUS.PENDING,
+      totalRating: 0,
+      averageRating: 0,
+    };
+  }
+
+  await isUserExist.save();
 
   const tokens = AuthHelper.createToken(
     isUserExist._id,
@@ -772,17 +991,20 @@ export const socialLogin = async (payload: { idToken: string, role: USER_ROLES, 
 
   return authResponse(
     StatusCodes.OK,
-    'User logged in successfully',
+    'Role selected successfully',
     undefined,
     tokens.accessToken,
     tokens.refreshToken,
     undefined,
-    userInfo
+    userInfo,
+    undefined,
+    false
   );
 };
 
 export const AuthServices = {
   socialLogin,
+  selectRole,
   forgetPassword,
   resetPassword,
   verifyAccount,

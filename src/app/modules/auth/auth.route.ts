@@ -3,7 +3,7 @@ import { AuthController } from './auth.controller'
 import validateRequest from '../../middleware/validateRequest'
 import { AuthValidations } from './auth.validation'
 import { USER_ROLES } from '../../../enum/user'
-import auth from '../../middleware/auth'
+import auth, { tempAuth } from '../../middleware/auth'
 import { UserValidations } from '../user/user.validation'
 import fileUploadHandler from '../../middleware/fileUploadHandler'
 import { getSingleFilePath } from '../../../shared/getFilePath'
@@ -63,6 +63,14 @@ router.post(
   '/social-login',
   validateRequest(AuthValidations.socialLoginZodSchema),
   AuthController.socialLogin,
+)
+
+// Role selection endpoint for new social login users
+router.post(
+  '/select-role',
+  tempAuth(),
+  validateRequest(AuthValidations.selectRoleZodSchema),
+  AuthController.selectRole,
 )
 
 // Initiate the password recovery process

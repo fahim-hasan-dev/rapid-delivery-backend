@@ -29,7 +29,7 @@ const createContact = async (payload: IContact) => {
       title: 'New Contact Query',
       message: `${payload.firstName} ${payload.lastName} has submitted a new contact message.`,
       screen: 'CONTACT_LIST',
-      type: admin.role
+      type: admin.role as USER_ROLES
     });
   }
 

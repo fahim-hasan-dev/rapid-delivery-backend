@@ -2,7 +2,8 @@ export enum USER_ROLES {
     ADMIN = "admin",
     SUPER_ADMIN = "super_admin",
     SENDER = "sender",
-    DRIVER = "driver"
+    DRIVER = "driver",
+    UNASSIGNED = "unassigned"
 }
 
 export enum USER_STATUS {

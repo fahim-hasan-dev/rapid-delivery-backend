@@ -191,7 +191,7 @@ const removeFcmToken = catchAsync(async (req: Request, res: Response) => {
 
 const socialLogin = catchAsync(async (req: Request, res: Response) => {
   const result = await AuthServices.socialLogin(req.body)
-  const { status, message, accessToken, refreshToken, role, userInfo } = result
+  const { status, message, accessToken, refreshToken, role, userInfo, tempToken, isNewUser } = result
   
   if (refreshToken) {
     res.cookie('refreshToken', refreshToken, {
@@ -208,6 +208,34 @@ const socialLogin = catchAsync(async (req: Request, res: Response) => {
       status,
       accessToken,
       refreshToken,
+      tempToken,
+      isNewUser,
+      role,
+      userInfo,
+    },
+  })
+})
+
+const selectRole = catchAsync(async (req: Request, res: Response) => {
+  const result = await AuthServices.selectRole(req.user!, req.body)
+  const { status, message, accessToken, refreshToken, role, userInfo, isNewUser } = result
+
+  if (refreshToken) {
+    res.cookie('refreshToken', refreshToken, {
+      secure: config.node_env === 'production',
+      httpOnly: true,
+    })
+  }
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message,
+    data: {
+      status,
+      accessToken,
+      refreshToken,
+      isNewUser,
       role,
       userInfo,
     },
@@ -230,4 +258,5 @@ export const AuthController = {
   addFcmToken,
   removeFcmToken,
   socialLogin,
+  selectRole,
 }

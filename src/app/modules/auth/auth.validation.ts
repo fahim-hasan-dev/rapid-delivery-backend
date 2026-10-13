@@ -85,8 +85,16 @@ const fcmTokenZodSchema = z.object({
 const socialLoginZodSchema = z.object({
   body: z.object({
     idToken: z.string({ required_error: 'ID Token is required' }),
-    role: z.enum([USER_ROLES.SENDER, USER_ROLES.DRIVER], { required_error: 'Role is required and must be sender or driver' }),
+    role: z.enum([USER_ROLES.SENDER, USER_ROLES.DRIVER]).optional(),
     fcmToken: z.string().optional(),
+  }),
+})
+
+const selectRoleZodSchema = z.object({
+  body: z.object({
+    role: z.enum([USER_ROLES.SENDER, USER_ROLES.DRIVER], {
+      required_error: 'Role is required and must be sender or driver',
+    }),
   }),
 })
 
@@ -102,5 +110,6 @@ export const AuthValidations = {
   deleteAccount,
   fcmTokenZodSchema,
   socialLoginZodSchema,
+  selectRoleZodSchema,
 }
 

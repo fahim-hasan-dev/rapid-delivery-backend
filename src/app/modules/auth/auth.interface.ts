@@ -30,11 +30,13 @@ export type IAuthResponse = {
     message: string
     role?: string
     token?: string
+    tempToken?: string
     accessToken?: string
     refreshToken?: string
+    isNewUser?: boolean
     userInfo?: {
         id: Types.ObjectId
-        role: USER_ROLES
+        role?: USER_ROLES
         name: string
         email: string
         image?: string

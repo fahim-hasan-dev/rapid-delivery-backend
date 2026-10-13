@@ -81,43 +81,40 @@ export const tempAuth =
         async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const tokenWithBearer = req.headers.authorization
-                console.log('tempAuth tokenWithBearer', req.headers.authorization)
                 if (!tokenWithBearer) {
                     throw new ApiError(StatusCodes.NOT_FOUND, 'Token not found!')
                 }
 
-                if (tokenWithBearer && tokenWithBearer.startsWith('Bearer')) {
-                    const token = tokenWithBearer.split(' ')[1]
+                if (!tokenWithBearer.startsWith('Bearer ')) {
+                    throw new ApiError(StatusCodes.UNAUTHORIZED, 'Invalid token format')
+                }
 
-                    console.log({ token })
+                const token = tokenWithBearer.split(' ')[1]
 
-                    try {
-                        // Verify token
-                        const verifyUser = jwtHelper.verifyToken(
-                            token,
-                            config.jwt.temp_jwt_secret as Secret,
+                try {
+                    // Verify token
+                    const verifyUser = jwtHelper.verifyToken(
+                        token,
+                        config.jwt.temp_jwt_secret as Secret,
+                    )
+
+                    // Set user to header
+                    req.user = verifyUser
+
+                    // Guard user
+                    if (roles.length && !roles.includes(verifyUser.role)) {
+                        throw new ApiError(
+                            StatusCodes.FORBIDDEN,
+                            "You don't have permission to access this API",
                         )
-
-                        console.log({ verifyUser })
-
-                        // Set user to header
-                        req.user = verifyUser
-
-                        // Guard user
-                        if (roles.length && !roles.includes(verifyUser.role)) {
-                            throw new ApiError(
-                                StatusCodes.FORBIDDEN,
-                                "You don't have permission to access this API",
-                            )
-                        }
-
-                        next()
-                    } catch (error) {
-                        if (error instanceof Error && error.name === 'TokenExpiredError') {
-                            throw new ApiError(StatusCodes.UNAUTHORIZED, 'Access Token has expired')
-                        }
-                        throw new ApiError(StatusCodes.FORBIDDEN, 'Invalid Access Token')
                     }
+
+                    next()
+                } catch (error) {
+                    if (error instanceof Error && error.name === 'TokenExpiredError') {
+                        throw new ApiError(StatusCodes.UNAUTHORIZED, 'Temporary token has expired. Please login again.')
+                    }
+                    throw new ApiError(StatusCodes.FORBIDDEN, 'Invalid Temporary Token')
                 }
             } catch (error) {
                 next(error)

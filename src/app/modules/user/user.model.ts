@@ -38,7 +38,9 @@ const UserSchema = new Schema(
         },
         role: {
             type: String,
-            required: true
+            enum: Object.values(USER_ROLES),
+            default: USER_ROLES.UNASSIGNED,
+            required: true,
         },
         address: {
             type: String,
@@ -175,7 +177,10 @@ UserSchema.pre("findOneAndUpdate", async function (next) {
     const update = this.getUpdate() as any;
     const user = await this.model.findOne(this.getQuery());
 
-    if (user && user.role !== USER_ROLES.DRIVER) {
+    const newRole = update?.$set?.role !== undefined ? update.$set.role : update?.role;
+    const effectiveRole = newRole !== undefined ? newRole : user?.role;
+
+    if (effectiveRole !== USER_ROLES.DRIVER) {
         if (update.$set) {
             delete update.$set.driverInfo;
         } else {

@@ -108,6 +108,8 @@ export const authResponse = (
     refreshToken?: string,
     token?: string,
     userInfo?: IAuthResponse['userInfo'],
+    tempToken?: string,
+    isNewUser?: boolean,
 ): IAuthResponse => {
     return {
         status,
@@ -116,7 +118,9 @@ export const authResponse = (
         ...(accessToken && { accessToken }),
         ...(refreshToken && { refreshToken }),
         ...(token && { token }),
+        ...(tempToken && { tempToken }),
         ...(userInfo && { userInfo }),
+        ...(isNewUser !== undefined && { isNewUser }),
     }
 }
 
