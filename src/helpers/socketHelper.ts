@@ -21,6 +21,36 @@ const authenticateSocket = (socket: Socket, next: (err?: Error) => void) => {
     }
 };
 
+const handleDriverLocationUpdate = async (
+    user: any,
+    socket: Socket,
+    trackingNamespace: any,
+    data: { lat: number; lng: number; parcelId?: string }
+) => {
+    const { parcelId, lat, lng } = data || {};
+    if (!lat || !lng) return;
+
+    if (user.role === USER_ROLES.DRIVER) {
+        await trackingService.updateDriverLiveLocation(user.authId, [lng, lat]);
+    }
+
+    if (parcelId && trackingNamespace) {
+        socket.join(`parcel:${parcelId}`);
+
+        await trackingService.updateDriverLocation(
+            parcelId,
+            user.authId,
+            [lng, lat]
+        );
+
+        trackingNamespace.to(`parcel:${parcelId}`).emit('location:updated', {
+            lat,
+            lng,
+            timestamp: Date.now(),
+        });
+    }
+};
+
 const setupTrackingNamespace = (io: Server) => {
     const tracking = io.of('/tracking');
     tracking.use(authenticateSocket);
@@ -30,46 +60,14 @@ const setupTrackingNamespace = (io: Server) => {
         logger.info(`Tracking: ${user.role} ${user.authId} connected`);
         socket.join(`user:${user.authId}`);
 
-        socket.on('driver:update-location', async (data: { lat: number; lng: number }) => {
-            if (user.role === USER_ROLES.DRIVER && data?.lat && data?.lng) {
-                await trackingService.updateDriverLiveLocation(user.authId, [data.lng, data.lat]);
-            }
+        socket.on('driver:location-update', (data: { lat: number; lng: number; parcelId?: string }) => {
+            return handleDriverLocationUpdate(user, socket, tracking, data);
         });
 
         socket.on('driver:offline', async () => {
             if (user.role === USER_ROLES.DRIVER) {
                 await trackingService.removeDriverLiveLocation(user.authId);
             }
-        });
-
-        // 1. Driver sends location updates 
-        socket.on('driver:location-update', async (data: {
-            parcelId: string;
-            lat: number;
-            lng: number
-        }) => {
-            const { parcelId, lat, lng } = data;
-
-            // Ensure driver is in the specific parcel room for broadcasting
-            socket.join(`parcel:${parcelId}`);
-
-            // Save location to Redis for persistence/initial user load
-            await trackingService.updateDriverLocation(
-                parcelId,
-                user.authId,
-                [lng, lat]
-            );
-
-            if (user.role === USER_ROLES.DRIVER && lat && lng) {
-                await trackingService.updateDriverLiveLocation(user.authId, [lng, lat]);
-            }
-
-            // Broadcast movement to all users (including the driver) tracking this parcel
-            tracking.to(`parcel:${parcelId}`).emit('location:updated', {
-                lat,
-                lng,
-                timestamp: Date.now(),
-            });
         });
 
         // 2. User starts tracking a parcel
@@ -109,10 +107,8 @@ const setupNotificationNamespace = (io: Server) => {
         logger.info(`Notification: ${user.role} ${user.authId} connected`);
         socket.join(`user:${user.authId}`);
 
-        socket.on('driver:update-location', async (data: { lat: number; lng: number }) => {
-            if (user.role === USER_ROLES.DRIVER && data?.lat && data?.lng) {
-                await trackingService.updateDriverLiveLocation(user.authId, [data.lng, data.lat]);
-            }
+        socket.on('driver:location-update', (data: { lat: number; lng: number; parcelId?: string }) => {
+            return handleDriverLocationUpdate(user, socket, io.of('/tracking'), data);
         });
 
         socket.on('driver:offline', async () => {
