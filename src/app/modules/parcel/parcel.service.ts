@@ -231,6 +231,9 @@ const getNearbyParcels = async (
         }
     };
 
+    const sortField = (query.sortBy as string) || "createdAt";
+    const sortOrder = query.sortOrder === "asc" ? 1 : -1;
+
     const parcels = await Parcel.aggregate([
         {
             $geoNear: {
@@ -240,8 +243,8 @@ const getNearbyParcels = async (
                 spherical: true,
                 query: matchQuery,
             },
-
         },
+        { $sort: { [sortField]: sortOrder } },
         { $skip: skip },
         { $limit: limit },
         {
@@ -265,7 +268,8 @@ const getNearbyParcels = async (
                 deliveryDate: 1,
                 sender: 1,
                 status: 1,
-                driverShare: 1
+                driverShare: 1,
+                createdAt: 1,
             }
         }
     ]);

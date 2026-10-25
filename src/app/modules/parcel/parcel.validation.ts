@@ -186,6 +186,8 @@ const getNearbyParcelsSchema = z.object({
         distance: z.string().optional(),
         page: z.string().optional(),
         limit: z.string().optional(),
+        sortBy: z.string().optional(),
+        sortOrder: z.enum(['asc', 'desc']).optional(),
     }),
 });
 
