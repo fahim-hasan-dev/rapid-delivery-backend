@@ -11,6 +11,9 @@ const createAccount = (values: ICreateAccount) => {
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
 </head>
 <body style="margin:0; padding:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
  <table width="100%" cellpadding="0" cellspacing="0"
@@ -36,12 +39,16 @@ const createAccount = (values: ICreateAccount) => {
     </p>
 
     <!-- OTP Box -->
-    <div style="background:linear-gradient(145deg,#FFEBE0,#FFD6C2); border:2px solid #FF4A00; 
-          border-radius:12px; padding:25px 0; text-align:center; margin:30px auto; max-width:300px;">
-     <span style="font-size:40px; font-weight:700; color:#4D1600; letter-spacing:6px;">
-      ${values.otp}
-     </span>
-    </div>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%"
+           style="max-width:320px; margin:30px auto; background-color:#1F140E; border:2px solid #FF4A00; border-radius:12px; text-align:center;">
+     <tr>
+      <td align="center" style="padding:22px 15px; background-color:#1F140E; border-radius:10px;">
+       <span style="font-size:38px; font-weight:800; color:#FFFFFF !important; letter-spacing:8px; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display:inline-block;">
+        ${values.otp}
+       </span>
+      </td>
+     </tr>
+    </table>
 
     <p style="color:#4D1600; font-size:15px; line-height:1.6; text-align:center;">
      This code will expire in <strong>5 minutes</strong>.<br>
@@ -90,6 +97,9 @@ const resetPassword = (values: IResetPassword) => {
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
 </head>
 <body style="margin:0; padding:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
  <table width="100%" cellpadding="0" cellspacing="0"
@@ -116,12 +126,16 @@ const resetPassword = (values: IResetPassword) => {
     </p>
 
     <!-- OTP Box -->
-    <div style="background:linear-gradient(145deg,#FFEBE0,#FFD6C2); border:2px solid #FF4A00;
-          border-radius:12px; padding:25px 0; text-align:center; margin:30px auto; max-width:300px;">
-     <span style="font-size:40px; font-weight:700; color:#4D1600; letter-spacing:6px;">
-      ${values.otp}
-     </span>
-    </div>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%"
+           style="max-width:320px; margin:30px auto; background-color:#1F140E; border:2px solid #FF4A00; border-radius:12px; text-align:center;">
+     <tr>
+      <td align="center" style="padding:22px 15px; background-color:#1F140E; border-radius:10px;">
+       <span style="font-size:38px; font-weight:800; color:#FFFFFF !important; letter-spacing:8px; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display:inline-block;">
+        ${values.otp}
+       </span>
+      </td>
+     </tr>
+    </table>
 
     <p style="color:#4D1600; font-size:15px; line-height:1.6; text-align:center;">
      This verification code is valid for <strong>5 minutes</strong>.<br>
@@ -178,6 +192,9 @@ const resendOtp = (values: {
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
 </head>
 <body style="margin:0; padding:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
  <table width="100%" cellpadding="0" cellspacing="0"
@@ -207,14 +224,16 @@ const resendOtp = (values: {
     </p>
 
     <!-- OTP Box -->
-    <div style="background:linear-gradient(145deg,#FFEBE0,#FFD6C2);
-          border:2px solid #FF4A00; border-radius:12px;
-          padding:25px 0; text-align:center;
-          margin:30px auto; max-width:300px;">
-     <span style="font-size:40px; font-weight:700; color:#4D1600; letter-spacing:6px;">
-      ${values.otp}
-     </span>
-    </div>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%"
+           style="max-width:320px; margin:30px auto; background-color:#1F140E; border:2px solid #FF4A00; border-radius:12px; text-align:center;">
+     <tr>
+      <td align="center" style="padding:22px 15px; background-color:#1F140E; border-radius:10px;">
+       <span style="font-size:38px; font-weight:800; color:#FFFFFF !important; letter-spacing:8px; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display:inline-block;">
+        ${values.otp}
+       </span>
+      </td>
+     </tr>
+    </table>
 
     <p style="color:#662400; font-size:15px; line-height:1.6; text-align:center;">
      This code is valid for <strong>5 minutes</strong>.<br>
