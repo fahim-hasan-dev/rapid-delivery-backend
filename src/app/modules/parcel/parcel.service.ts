@@ -5,14 +5,16 @@ import { IParcel } from "./parcel.interface";
 import { Parcel } from "./parcel.model";
 import { PARCEL_STATUS } from "../../../enum/parcel";
 import { notificationQueue, parcelCleanupQueue, reviewReminderQueue } from "../../../queues";
-import stripe from "../../../config/stripe";
 import { Payment } from "../payment/payment.model";
 import QueryBuilder from "../../builder/QueryBuilder";
 import { trackingService } from "../../../helpers/trackingService";
 import { getDistanceAndDuration } from "../../../utils/googleMaps.util";
 import { SettingServices } from "../setting/setting.service";
 import { redisClient } from "../../../helpers/redis";
-import { createPaymentSession } from "../../../stripe/createPaymentSession";
+import { createPaymentSession } from "../../../camerpay/createPaymentSession";
+import axios from "axios";
+import config from "../../../config";
+import { logger } from "../../../shared/logger";
 import { JwtPayload } from "jsonwebtoken";
 import { NotificationService } from "../notification/notification.service";
 import { USER_ROLES } from "../../../enum/user";
@@ -143,7 +145,6 @@ const createParcel = async (payload: IParcel, user: JwtPayload) => {
         { delay: 60 * 60 * 1000 } // 1 hour in milliseconds
     );
 
-    // Create Stripe payment session
     const paymentLink = await createPaymentSession(user, vehicleData.totalPrice, parcel._id.toString());
 
     return { parcel, paymentLink };
@@ -348,6 +349,13 @@ const acceptParcel = async (parcelId: string, driverId: string) => {
         type: USER_ROLES.SENDER
     });
 
+    if (parcel.pickupLocation?.coordinates) {
+        await trackingService.notifyParcelAccepted(
+            parcelId,
+            parcel.pickupLocation.coordinates as [number, number]
+        );
+    }
+
     return updatedParcel;
 };
 
@@ -541,31 +549,23 @@ const cancelParcel = async (id: string, user: JwtPayload) => {
         throw new ApiError(StatusCodes.FORBIDDEN, "You are not authorized to cancel this parcel");
     }
 
-    // Refund logic if payment has been processed/initiated
     const paidStatuses = [PARCEL_STATUS.PENDING, PARCEL_STATUS.ACCEPTED, PARCEL_STATUS.PICKED_UP, PARCEL_STATUS.IN_TRANSIT];
     if (paidStatuses.includes(parcel.status)) {
-        // Find the payment record
         const payment = await Payment.findOne({ referenceId: parcel._id });
-        if (payment && payment.transactionId) {
+        if (payment && payment.transactionId && config.camerpay.apiToken) {
             try {
-                let paymentIntentId = payment.transactionId;
-                // Handle checkout session IDs if any
-                if (paymentIntentId.startsWith("cs_")) {
-                    const session = await stripe.checkout.sessions.retrieve(paymentIntentId);
-                    if (session.payment_intent) {
-                        paymentIntentId = session.payment_intent as string;
+                await axios.post(
+                    `${config.camerpay.baseUrl}/api/v1/payments/${payment.transactionId}/refund`,
+                    { reason: 'Parcel cancelled by user/admin' },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${config.camerpay.apiToken}`,
+                            'Content-Type': 'application/json',
+                        },
                     }
-                }
-
-                // Process immediate refund through Stripe
-                await stripe.refunds.create({
-                    payment_intent: paymentIntentId,
-                });
-            } catch (stripeError: any) {
-                throw new ApiError(
-                    StatusCodes.INTERNAL_SERVER_ERROR,
-                    `Stripe refund failed: ${stripeError.message || stripeError}`
                 );
+            } catch (refundError: any) {
+                logger.error('Refund processing error:', refundError?.response?.data || refundError?.message || refundError);
             }
         }
     }
@@ -583,6 +583,13 @@ const cancelParcel = async (id: string, user: JwtPayload) => {
     // Remove driver tracking from Redis if driver is assigned
     if (parcel.driver) {
         await trackingService.removeDriverTracking(id, parcel.driver.toString());
+    }
+
+    if (parcel.status === PARCEL_STATUS.PENDING && parcel.pickupLocation?.coordinates) {
+        await trackingService.notifyParcelAccepted(
+            id,
+            parcel.pickupLocation.coordinates as [number, number]
+        );
     }
 
     // Send notifications to both sender and driver (if driver exists)

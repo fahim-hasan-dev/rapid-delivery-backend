@@ -7,7 +7,7 @@ import globalErrorHandler from './app/middleware/globalErrorHandler';
 import requestIp from 'request-ip';
 import rateLimit from 'express-rate-limit';
 import ApiError from "./errors/ApiError";
-import handleStripeWebhook from "./stripe/handleStripeWebhook";
+import handleCamerPayWebhook from "./camerpay/handleCamerPayWebhook";
 
 const app = express();
 
@@ -31,7 +31,7 @@ const limiter = rateLimit({
 app.use(Morgan.successHandler);
 app.use(Morgan.errorHandler);
 app.use(cors());
-app.post('/api/v1/webhook', (req, res, next) => { console.log('🚀 Webhook route hit!'); next(); }, express.raw({ type: 'application/json' }), handleStripeWebhook);
+app.post('/api/v1/webhook', express.urlencoded({ extended: true }), express.json(), handleCamerPayWebhook);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(requestIp.mw());

@@ -37,7 +37,5 @@ const apiRoutes = [
     { path: "/contact", route: ContactRoutes },
 ];
 
-// router.post('/webhook', handleStripeWebhook);
-
 apiRoutes.forEach(route => router.use(route.path, route.route));
 export default router;

@@ -1,7 +1,7 @@
 import QueryBuilder from "../../builder/QueryBuilder";
 import { IPayment } from "./payment.interface";
 import { Payment } from "./payment.model";
-import { createPaymentSession } from "../../../stripe/createPaymentSession";
+import { createPaymentSession } from "../../../camerpay/createPaymentSession";
 import config from "../../../config";
 import { JwtPayload } from "jsonwebtoken";
 

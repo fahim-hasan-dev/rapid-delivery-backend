@@ -4,6 +4,7 @@ import { jwtHelper } from './jwtHelper';
 import { trackingService } from './trackingService';
 import { logger } from '../shared/logger';
 import config from '../config';
+import { USER_ROLES } from '../enum/user';
 
 const authenticateSocket = (socket: Socket, next: (err?: Error) => void) => {
     const token = socket.handshake.auth?.token || socket.handshake.headers.token;
@@ -27,6 +28,19 @@ const setupTrackingNamespace = (io: Server) => {
     tracking.on('connection', (socket) => {
         const user = socket.data.user;
         logger.info(`Tracking: ${user.role} ${user.authId} connected`);
+        socket.join(`user:${user.authId}`);
+
+        socket.on('driver:update-location', async (data: { lat: number; lng: number }) => {
+            if (user.role === USER_ROLES.DRIVER && data?.lat && data?.lng) {
+                await trackingService.updateDriverLiveLocation(user.authId, [data.lng, data.lat]);
+            }
+        });
+
+        socket.on('driver:offline', async () => {
+            if (user.role === USER_ROLES.DRIVER) {
+                await trackingService.removeDriverLiveLocation(user.authId);
+            }
+        });
 
         // 1. Driver sends location updates 
         socket.on('driver:location-update', async (data: {
@@ -34,10 +48,7 @@ const setupTrackingNamespace = (io: Server) => {
             lat: number;
             lng: number
         }) => {
-
-
             const { parcelId, lat, lng } = data;
-
 
             // Ensure driver is in the specific parcel room for broadcasting
             socket.join(`parcel:${parcelId}`);
@@ -48,6 +59,10 @@ const setupTrackingNamespace = (io: Server) => {
                 user.authId,
                 [lng, lat]
             );
+
+            if (user.role === USER_ROLES.DRIVER && lat && lng) {
+                await trackingService.updateDriverLiveLocation(user.authId, [lng, lat]);
+            }
 
             // Broadcast movement to all users (including the driver) tracking this parcel
             tracking.to(`parcel:${parcelId}`).emit('location:updated', {
@@ -76,8 +91,11 @@ const setupTrackingNamespace = (io: Server) => {
             logger.info(`User ${user.authId} stopped tracking parcel: ${parcelId}`);
         });
 
-        socket.on('disconnect', () => {
+        socket.on('disconnect', async () => {
             logger.info(`Tracking: ${user.role} ${user.authId} disconnected`);
+            if (user.role === USER_ROLES.DRIVER) {
+                await trackingService.removeDriverLiveLocation(user.authId);
+            }
         });
     });
 };
@@ -91,8 +109,23 @@ const setupNotificationNamespace = (io: Server) => {
         logger.info(`Notification: ${user.role} ${user.authId} connected`);
         socket.join(`user:${user.authId}`);
 
-        socket.on('disconnect', () => {
+        socket.on('driver:update-location', async (data: { lat: number; lng: number }) => {
+            if (user.role === USER_ROLES.DRIVER && data?.lat && data?.lng) {
+                await trackingService.updateDriverLiveLocation(user.authId, [data.lng, data.lat]);
+            }
+        });
+
+        socket.on('driver:offline', async () => {
+            if (user.role === USER_ROLES.DRIVER) {
+                await trackingService.removeDriverLiveLocation(user.authId);
+            }
+        });
+
+        socket.on('disconnect', async () => {
             logger.info(`Notification: ${user.role} ${user.authId} disconnected`);
+            if (user.role === USER_ROLES.DRIVER) {
+                await trackingService.removeDriverLiveLocation(user.authId);
+            }
             socket.leave(`user:${user.authId}`);
         });
     });

@@ -34,11 +34,10 @@ export default {
 
     frontend_url: process.env.FRONTEND_URL,
     backend_url: process.env.BACKEND_URL,
-    stripe: {
-        stripeSecretKey: process.env.STRIPE_API_SECRET,
-        webhookSecret: process.env.WEBHOOK_SECRET,
-        paymentSuccess: process.env.SUCCESS_URL,
-        frontendUrl: process.env.FRONTEND_URL,
+    camerpay: {
+        baseUrl: process.env.CAMERPAY_BASE_URL || 'https://camerpay.biz',
+        apiToken: process.env.CAMERPAY_API_TOKEN,
+        webhookSecret: process.env.CAMERPAY_WEBHOOK_SECRET,
     },
     redis: {
         host: process.env.REDIS_HOST || '127.0.0.1',
@@ -52,5 +51,5 @@ export default {
         secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
         bucketName: process.env.CLOUDFLARE_R2_BUCKET_NAME,
         publicUrl: process.env.CLOUDFLARE_R2_PUBLIC_URL,
-    }
-}
+    },
+};

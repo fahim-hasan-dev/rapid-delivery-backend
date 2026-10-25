@@ -3,7 +3,7 @@ import catchAsync from "../../../shared/catchAsync";
 import { PaymentService } from "./payment.service";
 import { StatusCodes } from "http-status-codes";
 import sendResponse from "../../../shared/sendResponse";
-import handleStripeWebhook from "../../../stripe/handleStripeWebhook";
+import handleCamerPayWebhook from "../../../camerpay/handleCamerPayWebhook";
 
 const createCheckoutSession = catchAsync(async (req: Request, res: Response) => {
   const result = await PaymentService.creatSession(req.user!, req.params.referenceId as string);
@@ -52,5 +52,5 @@ export const PaymentController = {
   createPaymentController,
   getPaymentsController,
   getPaymentByIdController,
-  handleStripeWebhook,
+  handleCamerPayWebhook,
 };
